@@ -1,5 +1,5 @@
 import OculosModelo from '../models/oculosModelo.mjs'
-import LogModelo from '../models/LogModelo.mjs'
+import LogModelo from '../models/logModelo.mjs'
 
 // tipo (query string) -> categoria no banco + view + título
 const TIPOS = {
@@ -113,7 +113,6 @@ const oculosControle = {
 
             if (
                 !req.body.nome?.trim() ||
-                !req.body.marca?.trim() ||
                 !req.body.preco ||
                 Number(req.body.preco) <= 0
             ) {
@@ -130,15 +129,20 @@ const oculosControle = {
             await OculosModelo.criar({
 
                 nome: req.body.nome,
-                marca: req.body.marca,
-                grau: req.body.grau,
+                descricao: req.body.descricao,
+                categoria: req.body.categoria,
                 cor: req.body.cor,
-                material: req.body.material,
+                tamanho: req.body.tamanho,
                 preco: req.body.preco,
+                estoque: req.body.estoque,
                 imagem
             })
 
-            await LogModelo.registrar(
+            // await LogModelo.registrar(
+            //     `Óculos cadastrado: ${req.body.nome}`
+            // )
+
+            console.log(
                 `Óculos cadastrado: ${req.body.nome}`
             )
 

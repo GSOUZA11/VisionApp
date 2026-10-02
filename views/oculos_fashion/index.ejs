@@ -1,0 +1,130 @@
+<div class="container py-5">
+
+    <div class="row">
+
+        <!-- ================= FILTROS ================= -->
+        <div class="col-lg-3 mb-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <h5 class="text-primary mb-3">Filtros</h5>
+
+                    <!-- COR -->
+                    <h6>Cor da Lente</h6>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <div class="cor-bolinha cinza"></div>
+                        <div class="cor-bolinha marrom"></div>
+                        <div class="cor-bolinha espelhado"></div>
+                        <div class="cor-bolinha azul"></div>
+                        <div class="cor-bolinha rosa"></div>
+                        <div class="cor-bolinha preto"></div>
+                    </div>
+
+                    <!-- MODELOS -->
+                    <h6>Modelos</h6>
+
+                    <div class="d-flex flex-column gap-1 mb-3">
+
+                        <a href="/oculos?tipo=classico" class="text-decoration-none">Clássico</a>
+                        <a href="/oculos?tipo=esportivo" class="text-decoration-none">Esportivos</a>
+                        <a href="/oculos?tipo=grau" class="text-decoration-none">Grau</a>
+                        <a href="/oculos?tipo=sol" class="text-decoration-none">Sol</a>
+                        <a href="/oculos?tipo=vintage" class="text-decoration-none">Vintage</a>
+                        <a href="/oculos?tipo=fashion" class="text-decoration-none fw-bold text-primary">Fashion</a>
+
+                    </div>
+
+                    <!-- PREÇO -->
+                    <h6>Preço</h6>
+
+                    <input type="number" class="form-control mb-2" placeholder="Min">
+                    <input type="number" class="form-control mb-2" placeholder="Max">
+
+                    <input type="range" class="form-range mb-3">
+
+                    <button class="btn btn-outline-primary w-100">
+                        Aplicar Filtros
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= PRODUTOS ================= -->
+        <div class="col-lg-9">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h3 class="text-primary m-0">
+                    Óculos Fashion
+                </h3>
+
+                <select class="form-select w-auto">
+                    <option>Mais Vendidos</option>
+                    <option>Menor Preço</option>
+                    <option>Maior Preço</option>
+                    <option>Lançamentos</option>
+                </select>
+
+            </div>
+
+            <div class="row g-4">
+
+                <% if (produtos && produtos.length > 0) { %>
+
+                    <% produtos.forEach(produto => { %>
+
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card shadow border-0 rounded-4 h-100">
+
+                                <img
+                                    src="/uploads/<%= produto.imagem %>"
+                                    class="card-img-top"
+                                    alt="<%= produto.nome %>"
+                                >
+
+                                <div class="card-body">
+
+                                    <h5 class="card-title">
+                                        <%= produto.nome %>
+                                    </h5>
+
+                                    <p class="text-muted">
+                                        R$ <%= produto.preco %>
+                                    </p>
+
+                                    <a href="/compra/<%= produto.id %>" class="btn btn-warning w-100">
+                                        Comprar
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <div class="col-12">
+                        <p class="text-center text-muted">
+                            Nenhum produto encontrado.
+                        </p>
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

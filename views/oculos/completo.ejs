@@ -1,0 +1,382 @@
+<div class="container-fluid py-4">
+
+    <div class="row">
+
+        <!-- FILTROS -->
+        <aside class="col-lg-3 col-xl-2 mb-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">Cor da Lente</h5>
+
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+
+                        <span class="rounded-circle border"
+                            style="width:25px;height:25px;background:#808080;"></span>
+
+                        <span class="rounded-circle border"
+                            style="width:25px;height:25px;background:#8B4513;"></span>
+
+                        <span class="rounded-circle border"
+                            style="width:25px;height:25px;background:#4169E1;"></span>
+
+                        <span class="rounded-circle border"
+                            style="width:25px;height:25px;background:#FF69B4;"></span>
+
+                        <span class="rounded-circle border"
+                            style="width:25px;height:25px;background:#000;"></span>
+
+                    </div>
+
+                    <h5 class="mb-3">Modelos</h5>
+
+                    <div class="list-group mb-4">
+
+                        <a href="/oculos?tipo=classico"
+                            class="list-group-item list-group-item-action">
+                            Clássico
+                        </a>
+
+                        <a href="/oculos?tipo=esportivo"
+                            class="list-group-item list-group-item-action">
+                            Esportivo
+                        </a>
+
+                        <a href="/oculos?tipo=grau"
+                            class="list-group-item list-group-item-action">
+                            Grau
+                        </a>
+
+                        <a href="/oculos?tipo=sol"
+                            class="list-group-item list-group-item-action">
+                            Sol
+                        </a>
+
+                        <a href="/oculos?tipo=vintage"
+                            class="list-group-item list-group-item-action">
+                            Vintage
+                        </a>
+
+                        <a href="/oculos?tipo=fashion"
+                            class="list-group-item list-group-item-action">
+                            Fashion
+                        </a>
+
+                    </div>
+
+                    <h5 class="mb-3">Faixa de Preço</h5>
+
+                    <div class="mb-3">
+
+                        <input
+                            type="number"
+                            id="preco-min"
+                            class="form-control mb-2"
+                            value="0">
+
+                        <input
+                            type="number"
+                            id="preco-max"
+                            class="form-control"
+                            value="1000">
+
+                    </div>
+
+                    <input
+                        type="range"
+                        class="form-range"
+                        id="preco-range"
+                        min="0"
+                        max="1000"
+                        value="1000">
+
+                    <p class="text-center mt-2">
+                        R$ <span id="preco-atual">0 - 1000</span>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+        <!-- PRODUTOS -->
+        <section class="col-lg-9 col-xl-10">
+
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+
+                <h2 class="mb-3 mb-md-0">Todos os Óculos em Destaque</h2>
+
+                <div>
+
+                    <label
+                        for="ordenar"
+                        class="me-2">
+                        Ordenar por:
+                    </label>
+
+                    <select
+                        id="ordenar"
+                        class="form-select d-inline-block w-auto">
+
+                        <option>Mais Vendidos</option>
+                        <option>Menor Preço</option>
+                        <option>Maior Preço</option>
+                        <option>Lançamentos</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="row g-4">
+
+                <!-- PRODUTO 1 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-classico-1.png"
+                            class="card-img-top p-3"
+                            alt="Dourado Precision Vision">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                Dourado Precision Vision
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 269,90
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUTO 2 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-esportivos-6.png"
+                            class="card-img-top p-3"
+                            alt="AuroraGold">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                AuroraGold
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 109,90
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUTO 3 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-vintage-3.png"
+                            class="card-img-top p-3"
+                            alt="Azul Nautilus">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                Azul Nautilus
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 198,00
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUTO 4 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-fashion-1.png"
+                            class="card-img-top p-3"
+                            alt="EmeraldFeline">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                EmeraldFeline
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 269,90
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUTO 5 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-classico-2.png"
+                            class="card-img-top p-3"
+                            alt="Classic Loop Black">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                Classic Loop Black
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 199,90
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PRODUTO 6 -->
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm card-produto">
+
+                        <img
+                            src="/uploads/oculos-de-sol-1.png"
+                            class="card-img-top p-3"
+                            alt="Eclipse Ruby">
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title nome-produto">
+                                Eclipse Ruby
+                            </h5>
+
+                            <p class="fw-bold text-primary preco-produto">
+                                R$ 299,90
+                            </p>
+
+                            <a
+                                href="/compra"
+                                class="btn btn-primary">
+                                Comprar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script>
+
+const precoMin = document.getElementById('preco-min');
+const precoMax = document.getElementById('preco-max');
+const precoAtual = document.getElementById('preco-atual');
+const produtos = document.querySelectorAll('.card-produto');
+
+function extrairPreco(texto) {
+
+    return parseFloat(
+        texto
+            .replace('R$', '')
+            .replace('.', '')
+            .replace(',', '.')
+            .trim()
+    );
+
+}
+
+function filtrarProdutos() {
+
+    const min = Number(precoMin.value);
+    const max = Number(precoMax.value);
+
+    produtos.forEach(produto => {
+
+        const preco =
+            extrairPreco(
+                produto.querySelector('.preco-produto').innerText
+            );
+
+        produto.parentElement.style.display =
+            preco >= min && preco <= max
+                ? 'block'
+                : 'none';
+
+    });
+
+    precoAtual.textContent = `${min} - ${max}`;
+
+}
+
+precoMin.addEventListener('input', filtrarProdutos);
+precoMax.addEventListener('input', filtrarProdutos);
+
+</script>

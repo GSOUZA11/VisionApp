@@ -1,0 +1,377 @@
+<form action="/pagamento" method="POST" id="formPagamento">
+
+    <input type="hidden" name="metodo" id="metodoSelecionado" value="cartao">
+
+    <div class="container py-5">
+
+        <div class="row mb-4">
+
+            <div class="col-12">
+
+                <h2 class="fw-bold">
+                    Pagamento
+                </h2>
+
+                <nav class="mt-3" style="--bs-breadcrumb-divider:'>'">
+
+                    <ol class="breadcrumb">
+
+                        <li class="breadcrumb-item">
+
+                            Entrega
+
+                        </li>
+
+                        <li class="breadcrumb-item active fw-bold">
+
+                            Pagamento
+
+                        </li>
+
+                    </ol>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- ESQUERDA -->
+
+            <div class="col-lg-8">
+
+                <div class="card shadow-sm border-0">
+
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-4">
+
+                            Método de Pagamento
+
+                        </h4>
+
+                        <ul class="nav nav-pills mb-4" id="metodos">
+
+                            <li class="nav-item">
+
+                                <button type="button" class="nav-link active" data-bs-target="#cartao"
+                                    data-metodo="cartao">
+
+                                    💳 Cartão
+
+                                </button>
+
+                            </li>
+
+                            <li class="nav-item ms-2">
+
+                                <button type="button" class="nav-link" data-bs-target="#pix" data-metodo="pix">
+
+                                    📱 Pix
+
+                                </button>
+
+                            </li>
+
+                            <li class="nav-item ms-2">
+
+                                <button type="button" class="nav-link" data-bs-target="#boleto" data-metodo="boleto">
+
+                                    🏦 Boleto
+
+                                </button>
+
+                            </li>
+
+                        </ul>
+
+                        <!-- CARTÃO -->
+
+                        <div id="cartao">
+
+                            <div class="row">
+
+                                <div class="col-md-12 mb-3">
+
+                                    <label class="form-label">
+
+                                        Número do cartão
+
+                                    </label>
+
+                                    <input class="form-control" placeholder="0000 0000 0000 0000">
+
+                                </div>
+
+                                <div class="col-md-8 mb-3">
+
+                                    <label class="form-label">
+
+                                        Nome impresso
+
+                                    </label>
+
+                                    <input class="form-control" placeholder="Nome no cartão">
+
+                                </div>
+
+                                <div class="col-md-2 mb-3">
+
+                                    <label class="form-label">
+
+                                        Validade
+
+                                    </label>
+
+                                    <input class="form-control" placeholder="MM/AA">
+
+                                </div>
+
+                                <div class="col-md-2 mb-3">
+
+                                    <label class="form-label">
+
+                                        CVV
+
+                                    </label>
+
+                                    <input class="form-control" placeholder="123">
+
+                                </div>
+
+                                <div class="col-md-12">
+
+                                    <label class="form-label">
+
+                                        Parcelas
+
+                                    </label>
+
+                                    <select class="form-select" name="parcelas">
+
+                                        <% parcelas.forEach(parcela=>{ %>
+
+                                            <option value="<%= parcela.numero %>">
+
+                                                <%= parcela.numero %>x de
+                                                    <%= parcela.valorFormatado %>
+                                                        sem juros
+
+                                            </option>
+
+                                            <% }) %>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- PIX -->
+
+                        <div id="pix" class="d-none">
+
+                            <div class="alert alert-success">
+
+                                <h5>
+
+                                    Pagamento via PIX
+
+                                </h5>
+
+                                <p>
+
+                                    Copie o código abaixo:
+
+                                </p>
+
+                                <textarea class="form-control" rows="5" readonly><%= codigoPix %></textarea>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BOLETO -->
+
+                        <div id="boleto" class="d-none">
+
+                            <div class="alert alert-warning">
+
+                                <h5>
+
+                                    Pagamento via Boleto
+
+                                </h5>
+
+                                <p>
+
+                                    Código:
+
+                                </p>
+
+                                <textarea class="form-control" rows="4" readonly><%= codigoBoleto %></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- DIREITA -->
+
+            <div class="col-lg-4">
+
+                <div class="card shadow-sm border-0 sticky-top">
+
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-4">
+                            Resumo do Pedido
+                        </h4>
+
+                        <% produtos.forEach(produto=> { %>
+
+                            <div class="d-flex mb-3">
+
+                                <img src="/uploads/<%= produto.imagem %>" class="rounded border"
+                                    style="width:80px;height:80px;object-fit:contain;">
+
+                                <div class="ms-3">
+
+                                    <strong>
+                                        <%= produto.nome %>
+                                    </strong>
+
+                                    <div class="text-muted small">
+                                        Cor:
+                                        <%= produto.cor %>
+                                    </div>
+
+                                    <div class="text-muted small">
+                                        Tamanho:
+                                        <%= produto.tamanho %>
+                                    </div>
+
+                                    <div class="small">
+                                        Quantidade:
+                                        <%= produto.quantidade %>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <% }) %>
+
+                                <div class="d-flex justify-content-between">
+
+                                    <span>Subtotal</span>
+
+                                    <strong>
+                                        <%= formatarMoeda(subtotal) %>
+                                    </strong>
+
+                                </div>
+
+                                <div class="d-flex justify-content-between my-3">
+
+                                    <span>Frete</span>
+
+                                    <strong>
+
+                                        <%= frete==0 ? "Grátis" : formatarMoeda(frete) %>
+
+                                    </strong>
+
+                                </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-between fs-4 fw-bold">
+
+                                    <span>Total</span>
+
+                                    <span>
+
+                                        <%= formatarMoeda(total) %>
+
+                                    </span>
+
+                                </div>
+
+                                <button class="btn btn-warning btn-lg w-100 mt-4" type="submit">
+
+                                    Finalizar Pagamento
+
+                                </button>
+
+                                <div class="text-center mt-3 text-muted small">
+
+                                    🔒 Compra 100% segura
+
+                                </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+<script>
+
+    const tabs =
+        document.querySelectorAll(".nav-link");
+
+    const cartao =
+        document.getElementById("cartao");
+
+    const pix =
+        document.getElementById("pix");
+
+    const boleto =
+        document.getElementById("boleto");
+
+    const metodo =
+        document.getElementById("metodoSelecionado");
+
+    tabs.forEach(botao => {
+
+        botao.addEventListener("click", () => {
+
+            tabs.forEach(t => t.classList.remove("active"));
+
+            botao.classList.add("active");
+
+            cartao.classList.add("d-none");
+
+            pix.classList.add("d-none");
+
+            boleto.classList.add("d-none");
+
+            metodo.value =
+                botao.dataset.metodo;
+
+            document
+                .querySelector(botao.dataset.bsTarget)
+                .classList.remove("d-none");
+
+        });
+
+    });
+
+</script>

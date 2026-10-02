@@ -1,0 +1,55 @@
+<div class="container-login">
+
+    <h2>Login</h2>
+
+    <p>
+        Preencha e-mail e senha para fazer login em sua conta
+        Ecommerce Vision.
+    </p>
+
+    <% if (erro) { %>
+        <div class="alert alert-danger w-100">
+            <%= erro %>
+        </div>
+        <% } %>
+
+            <div id="alert" class="alert w-100"></div>
+
+            <form id="loginForm" action="/autenticacao/login" method="POST" novalidate class="w-100">
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+
+                    <input type="text" id="email" name="identificador" placeholder="Usuário ou e-mail" required>
+
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+
+                    <input type="password" id="password" name="senha" placeholder="Digite sua senha" required>
+
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-options text-end mb-3">
+                    <a href="/esqueceu_senha" class="forgot-password">
+                        Esqueceu a senha?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Entrar
+                </button>
+
+                <p class="signup-link mt-3">
+                    Não tem uma conta?
+                    <a href="/cadastro">Inscreva-se</a>
+                </p>
+
+            </form>
+
+</div>
+
+<script src="/js/login.js?v=20"></script>

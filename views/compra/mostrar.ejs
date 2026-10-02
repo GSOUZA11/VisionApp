@@ -1,0 +1,74 @@
+<main class="container py-5">
+    <section class="row g-5 bg-white rounded shadow-sm p-4 align-items-center">
+
+        <div class="col-lg-6 text-center">
+            <img
+                src="/uploads/<%= oculos.imagem %>"
+                alt="<%= oculos.nome %>"
+                class="img-fluid produto-img"
+            >
+        </div>
+
+        <div class="col-lg-6">
+            <h1 class="fw-bold mb-3 produto-titulo">
+                <%= oculos.nome %>
+            </h1>
+
+            <p class="fs-3 fw-bold text-primary mb-4">
+                R$ <%= Number(oculos.preco).toFixed(2).replace('.', ',') %>
+            </p>
+
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item px-0">
+                    <strong>Cor:</strong> <%= oculos.cor || 'Não informado' %>
+                </li>
+
+                <li class="list-group-item px-0">
+                    <strong>Tamanho:</strong> <%= oculos.tamanho || 'Não informado' %>
+                </li>
+
+                <li class="list-group-item px-0">
+                    <strong>Categoria:</strong> <%= oculos.categoria || 'Não informado' %>
+                </li>
+
+                <li class="list-group-item px-0">
+                    <strong>Estoque:</strong> <%= oculos.estoque || 0 %>
+                </li>
+            </ul>
+
+            <p class="text-muted mb-4">
+                <%= oculos.descricao || 'Produto sem descrição.' %>
+            </p>
+
+            <form action="/carrinho/adicionar/<%= oculos.id %>" method="POST">
+                <button type="submit" class="btn btn-warning btn-lg w-100 fw-semibold">
+                    Adicionar ao Carrinho
+                </button>
+            </form>
+        </div>
+
+    </section>
+</main>
+
+<style>
+    .produto-img {
+        max-height: 420px;
+        object-fit: contain;
+    }
+
+    .produto-titulo {
+        color: #2f2416;
+    }
+
+    .btn-warning {
+        background-color: var(--comp);
+        border-color: var(--comp);
+        color: var(--branco);
+    }
+
+    .btn-warning:hover {
+        background-color: #2c5aa0;
+        border-color: #2c5aa0;
+        color: var(--branco);
+    }
+</style>

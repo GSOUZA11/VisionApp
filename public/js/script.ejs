@@ -1,0 +1,43 @@
+// Confirmação para excluir
+
+function confirmarExclusao(){
+
+    return confirm(
+        "Deseja realmente excluir este registro?"
+    )
+
+}
+
+// Mensagem simples
+
+function mostrarMensagem(texto){
+
+    alert(texto)
+
+}
+
+// Atualiza relógio do sistema
+
+function atualizarRelogio(){
+
+    const relogio =
+        document.getElementById(
+            'relogio'
+        )
+
+    if(!relogio){
+        return
+    }
+
+    const agora =
+        new Date()
+
+    relogio.innerHTML =
+        agora.toLocaleTimeString()
+
+}
+
+setInterval(
+    atualizarRelogio,
+    1000
+)

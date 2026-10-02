@@ -1,0 +1,59 @@
+<div class="container-login">
+    <h2>Inscrever-se</h2>
+
+    <p>Preencha seus dados para criar sua conta Vision.</p>
+
+    <% if (erro) { %>
+        <div class="error">
+            <%= erro %>
+        </div>
+        <% } %>
+            <% if (sucesso) { %>
+                <div class="alert alert-success">
+                    <%= sucesso %>
+                </div>
+
+                <script>
+                    setTimeout(() => {
+                        window.location.href = "/autenticacao/login";
+                    }, 2000);
+                </script>
+                <% } %>
+                    <form action="/cadastro" method="POST">
+
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" name="nome" required placeholder="Seu nome">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sobrenome</label>
+                            <input type="text" name="sobrenome" required placeholder="Seu sobrenome">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" name="telefone" placeholder="Seu telefone">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="seu@email.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" name="senha" required placeholder="Mínimo 6 caracteres">
+                        </div>
+
+                        <button type="submit" class="btn-login">
+                            Enviar
+                        </button>
+
+                        <p class="signup-link">
+                            Já tem uma conta?
+                            <a href="/autenticacao/login">Entrar</a>
+                        </p>
+
+                    </form>
+</div>

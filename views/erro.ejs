@@ -1,0 +1,15 @@
+<div class="container py-5">
+
+    <h2>Erro no sistema</h2>
+
+    <p>
+        <%= typeof mensagem !== 'undefined' ? mensagem : 'Ocorreu um erro inesperado.' %>
+    </p>
+
+    <% if (typeof erro !== 'undefined' && erro && erro.stack) { %>
+        <pre>
+<%= erro.stack %>
+        </pre>
+    <% } %>
+
+</div>

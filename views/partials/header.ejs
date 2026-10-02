@@ -1,0 +1,132 @@
+<style>
+  .btn-icone {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .usuario-logado {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .sair-link {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .sair-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<header>
+  <div class="container-header">
+    <a href="/" id="logo">
+      <img src="/uploads/logo-vision.png" alt="Vision Logo" class="logo-img" />
+    </a>
+
+    <div class="links-href">
+      <a href="/" id="<%= typeof pagina !== 'undefined' && pagina === 'home' ? 'active' : 'paginas' %>">
+        Início
+      </a>
+
+      <a href="/oculos/completo"
+        id="<%= typeof pagina !== 'undefined' && pagina === 'catalogo' ? 'active' : 'paginas' %>">
+        Todos os Óculos
+      </a>
+
+      <a href="/sobre_nos" class="<%= typeof pagina !== 'undefined' && pagina === 'sobre' ? 'active' : '' %>">
+        Sobre Nós
+      </a>
+    </div>
+
+    <nav class="menu">
+      <div class="organizacao">
+
+        <% if (usuario) { %>
+          <div class="usuario-logado">
+            <span>Olá, <%= usuario.nome %></span>
+            <a href="/autenticacao/logout" class="sair-link">Sair</a>
+          </div>
+          <% } else { %>
+            <button type="button" class="btn-icone" onclick="toggleLogin()">
+              <img src="/uploads/user.png" width="35" height="35" alt="Usuário" />
+            </button>
+            <% } %>
+
+              <a href="/carrinho">
+                <img src="/uploads/carrinho.png" width="35" height="35" alt="Carrinho" />
+              </a>
+
+      </div>
+
+      <div class="popup" id="loginPopup">
+        <h2>Login</h2>
+
+        <form action="/autenticacao/login" method="POST">
+
+          <input type="email" name="identificador" placeholder="E-mail" required>
+
+          <input type="password" name="senha" placeholder="Senha" required>
+
+          <button type="submit">
+            Entrar
+          </button>
+
+        </form>
+
+        <button type="button" class="close" onclick="toggleLogin()">
+          Fechar
+        </button>
+
+        <div class="links">
+          <a href="/esqueceu_senha"> Esqueceu a senha? </a>
+
+          <a href="/cadastro"> Criar conta </a>
+        </div>
+      </div>
+
+      <input type="checkbox" id="hamburger" class="hamburger" />
+
+      <label for="hamburger" class="hamburger-label">
+        <img src="/img/Menu Hamburguer.png" width="35" alt="Menu" />
+      </label>
+
+      <div class="nav-links">
+        <a href="/">Home</a>
+
+        <a href="/oculos/completo"> Todos os Óculos </a>
+
+        <a href="/sobre"> Sobre Nós </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleLogin() {
+    const popup = document.getElementById("loginPopup");
+
+    popup.style.display = popup.style.display === "block" ? "none" : "block";
+  }
+
+  document.addEventListener("click", function (event) {
+    const popup = document.getElementById("loginPopup");
+
+    const userIcon = document.querySelector(".organizacao");
+
+    if (
+      popup.style.display === "block" &&
+      !popup.contains(event.target) &&
+      !userIcon.contains(event.target)
+    ) {
+      popup.style.display = "none";
+    }
+  });
+</script>

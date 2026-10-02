@@ -1,0 +1,149 @@
+<main class="politica-entrega-main">
+
+    <h1 class="entrega-titulo">Política de Entrega</h1>
+
+    <div class="entrega-container">
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/1048/1048989.png" alt="Entrega">
+            <div>
+                <h3>Como entregamos</h3>
+                <p>
+                    As entregas são realizadas via Correios e transportadoras parceiras.
+                    Selecionamos sempre o método mais rápido e seguro para garantir que seu produto
+                    chegue em perfeitas condições.
+                </p>
+            </div>
+        </div>
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3039/3039444.png" alt="Prazo">
+            <div>
+                <h3>Prazos de envio</h3>
+                <p>
+                    O prazo varia conforme a localização do cliente.
+                    Normalmente, os envios levam entre 3 e 10 dias úteis, com o prazo exato
+                    informado no checkout antes da finalização da compra.
+                </p>
+            </div>
+        </div>
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3500/3500833.png" alt="Rastreamento">
+            <div>
+                <h3>Rastreamento</h3>
+                <p>
+                    Após o envio, você receberá um código de rastreamento por e-mail ou poderá acompanhar
+                    diretamente pela sua área de cliente. Assim, você acompanha cada etapa do caminho.
+                </p>
+            </div>
+        </div>
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3004/3004613.png" alt="Frete">
+            <div>
+                <h3>Cálculo do frete</h3>
+                <p>
+                    O frete é calculado automaticamente com base no CEP e no tipo de envio escolhido.
+                    Em períodos promocionais, podemos oferecer descontos ou até frete grátis.
+                </p>
+            </div>
+        </div>
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/869/869636.png" alt="Problemas na entrega">
+            <div>
+                <h3>Problemas na entrega</h3>
+                <p>
+                    Em casos de atraso, devolução, endereço incorreto ou qualquer irregularidade,
+                    nossa equipe realiza a correção e o reenvio o mais rápido possível.
+                </p>
+            </div>
+        </div>
+
+        <div class="entrega-card">
+            <img src="https://cdn-icons-png.flaticon.com/512/6357/6357073.png" alt="Garantia">
+            <div>
+                <h3>Garantia de recebimento</h3>
+                <p>
+                    Se por algum motivo o seu pedido não chegar, assumimos toda a responsabilidade e
+                    resolvemos diretamente com a transportadora, garantindo que você não fique sem o produto.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<style>
+    .politica-entrega-main {
+        padding: 20px 0 50px;
+    }
+
+    .entrega-titulo {
+        text-align: center;
+        font-size: 38px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .entrega-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin: 0 20px;
+    }
+
+    .entrega-card {
+        background: #F5F5F5;
+        border: 1px solid #ddd;
+        border-radius: 14px;
+        padding: 50px;
+        display: flex;
+        gap: 17px;
+        align-items: flex-start;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+    .entrega-card img {
+        width: 55px;
+        height: 55px;
+        flex-shrink: 0;
+    }
+
+    .entrega-card h3 {
+        font-size: 22px;
+        margin: 0;
+        color: #2f2416;
+    }
+
+    .entrega-card p {
+        font-size: 15px;
+        margin-top: 5px;
+        line-height: 1.5em;
+        color: #4e4a42;
+    }
+
+    @media (max-width: 900px) {
+        .entrega-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .entrega-titulo {
+            font-size: 30px;
+        }
+
+        .entrega-card {
+            padding: 30px;
+        }
+
+        .entrega-card img {
+            width: 45px;
+            height: 45px;
+        }
+    }
+</style>

@@ -1,0 +1,582 @@
+<main>
+    <div id="filtro-overlay" class="filtro-overlay"></div>
+
+    <div class="layout-principal">
+        <aside class="barra-lateral">
+            <div class="filtro-grupo">
+                <h3>Cor da Lente</h3>
+
+                <div class="filtro-opcoes filtro-cor">
+                    <div class="cor-bolinha cinza" title="Cinza"></div>
+                    <div class="cor-bolinha marrom" title="Marrom"></div>
+                    <div class="cor-bolinha espelhado" title="Espelhado"></div>
+                    <div class="cor-bolinha azul" title="Azul"></div>
+                    <div class="cor-bolinha rosa" title="Rosa"></div>
+                    <div class="cor-bolinha preto" title="Preto"></div>
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <h3>Modelos</h3>
+
+                <div class="filtro-opcoes">
+                    <div><a href="/oculos?tipo=classico">Classico</a></div>
+                    <div><a href="/oculos?tipo=esportivo">Esportivos</a></div>
+                    <div><a href="/oculos?tipo=grau">Grau</a></div>
+                    <div><a href="/oculos?tipo=sol">Sol</a></div>
+                    <div><a href="/oculos?tipo=vintage">Vintage</a></div>
+                    <div><a href="/oculos?tipo=fashion">Fashion</a></div>
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <h3>Faixa de Preço</h3>
+
+                <div class="filtro-opcoes filtro-preco">
+                    <div class="preco-inputs">
+                        <input type="number" id="preco-min" placeholder="Min" min="0" value="0">
+                        <span>-</span>
+                        <input type="number" id="preco-max" placeholder="Max" min="0" value="1000">
+                    </div>
+
+                    <input type="range" class="preco-range" id="preco-range" min="0" max="1000" value="1000">
+
+                    <div class="preco-texto">
+                        R$ <span id="preco-atual">0 - 1000</span>
+                    </div>
+
+                    <button id="btn-fechar-filtro" class="botao-fechar">
+                        Fechar Filtros
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="secao-produtos">
+            <div class="cabecalho-secao">
+                <h2><%= typeof titulo !== 'undefined' ? titulo : 'Óculos Esportivos em Destaque' %></h2>
+
+                <div class="ordenacao">
+                    <label for="ordenar">Ordenar por:</label>
+
+                    <select id="ordenar">
+                        <option value="mais-vendidos">Mais Vendidos</option>
+                        <option value="menor-preco">Menor Preço</option>
+                        <option value="maior-preco">Maior Preço</option>
+                        <option value="lancamentos">Lançamentos</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="btn-filtro-mobile" class="botao-filtros">
+                Abrir Filtros
+            </button>
+
+            <div class="grid-produtos">
+                <% if (oculos && oculos.length > 0) { %>
+                    <% oculos.forEach(oculo => { %>
+                        <a href="/compra/<%= oculo.id %>" class="card-produto">
+                            <img
+                                src="/uploads/<%= oculo.imagem %>"
+                                alt="<%= oculo.nome %>"
+                                class="imagem-produto"
+                            >
+
+                            <h4 class="nome-produto">
+                                <%= oculo.nome %>
+                            </h4>
+
+                            <p class="preco-produto">
+                                R$ <%= Number(oculo.preco).toFixed(2).replace('.', ',') %>
+                            </p>
+
+                            <span class="botao-comprar">
+                                Comprar
+                            </span>
+                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <div class="mensagem-vazia">
+                        <%= typeof mensagemVazia !== 'undefined' ? mensagemVazia : 'Nenhum óculos esportivo encontrado.' %>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+</main>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .layout-principal {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px 40px 20px;
+        display: flex;
+        gap: 30px;
+    }
+
+    .barra-lateral {
+        width: 250px;
+        flex-shrink: 0;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        background: var(--branco);
+    }
+
+    .filtro-grupo {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .filtro-grupo:last-child {
+        border-bottom: none;
+    }
+
+    .filtro-grupo h3 {
+        margin-bottom: 15px;
+    }
+
+    .filtro-opcoes a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        padding: 4px 0;
+        margin-bottom: 8px;
+    }
+
+    .filtro-cor {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .cor-bolinha {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        cursor: pointer;
+        transition: border-color 0.3s;
+    }
+
+    .cor-bolinha:hover {
+        border-color: var(--comp);
+    }
+
+    .cor-bolinha.cinza { background-color: #808080; }
+    .cor-bolinha.marrom { background-color: #8b4513; }
+    .cor-bolinha.espelhado {
+        background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a8a8a8);
+        border-color: #888;
+    }
+    .cor-bolinha.azul { background-color: #4169e1; }
+    .cor-bolinha.rosa { background-color: #ff69b4; }
+    .cor-bolinha.preto { background-color: #000000; }
+
+    .filtro-preco {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .preco-inputs {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .preco-inputs input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .preco-range {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .preco-texto {
+        text-align: center;
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .secao-produtos {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cabecalho-secao {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--ana1);
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .cabecalho-secao h2 {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        margin: 0;
+        flex: 1 1 auto;
+        min-width: 200px;
+    }
+
+    .ordenacao {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .ordenacao select {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        min-width: 150px;
+        max-width: 100%;
+    }
+
+    .grid-produtos {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+    }
+
+    .card-produto {
+        background-color: var(--branco);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        max-width: 100%;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card-produto:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .imagem-produto {
+        width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        margin-bottom: 15px;
+        height: auto;
+    }
+
+    .nome-produto,
+    .preco-produto {
+        color: #4169e1;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .botao-comprar {
+        background-color: var(--comp);
+        color: var(--branco);
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+        transition: background 0.3s;
+    }
+
+    .botao-comprar:hover {
+        background-color: #2c5aa0;
+    }
+
+    .botao-filtros {
+        display: none;
+        max-width: 300px;
+        margin: 15px 0;
+        padding: 12px 20px;
+        background-color: var(--comp);
+        color: var(--branco);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .filtro-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+        opacity: 0;
+    }
+
+    .filtro-overlay.ativo {
+        display: block;
+        opacity: 1;
+    }
+
+    .botao-fechar {
+        display: none;
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: var(--comp);
+        color: var(--branco);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .mensagem-vazia {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 820px) {
+        .botao-filtros,
+        .botao-fechar {
+            display: block;
+        }
+
+        .barra-lateral {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            max-width: 85%;
+            height: 100vh;
+            background-color: var(--branco);
+            padding: 20px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+            transition: left 0.3s ease-in-out;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .barra-lateral.aberto {
+            left: 0;
+        }
+
+        .layout-principal {
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 12px 30px 12px;
+        }
+
+        .grid-produtos {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .cabecalho-secao {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .ordenacao,
+        .ordenacao select {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .layout-principal {
+            padding: 0 8px 25px 8px;
+        }
+
+        .grid-produtos {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .card-produto {
+            padding: 12px;
+        }
+
+        .nome-produto,
+        .preco-produto {
+            font-size: 14px;
+        }
+
+        .imagem-produto {
+            max-height: 140px;
+        }
+    }
+</style>
+
+<script>
+    const btnFiltro = document.getElementById("btn-filtro-mobile");
+    const barraLateral = document.querySelector(".barra-lateral");
+    const btnFechar = document.getElementById("btn-fechar-filtro");
+    const overlay = document.getElementById("filtro-overlay");
+
+    function toggleFiltro() {
+        barraLateral.classList.toggle("aberto");
+        overlay.classList.toggle("ativo");
+
+        document.body.style.overflow =
+            barraLateral.classList.contains("aberto") ? "hidden" : "";
+    }
+
+    if (btnFiltro) btnFiltro.addEventListener("click", toggleFiltro);
+    if (btnFechar) btnFechar.addEventListener("click", toggleFiltro);
+    if (overlay) overlay.addEventListener("click", toggleFiltro);
+
+    document.addEventListener("keydown", function (e) {
+        if (
+            e.key === "Escape" &&
+            barraLateral &&
+            barraLateral.classList.contains("aberto")
+        ) {
+            toggleFiltro();
+        }
+    });
+
+    const precoMin = document.getElementById("preco-min");
+    const precoMax = document.getElementById("preco-max");
+    const precoRange = document.getElementById("preco-range");
+    const precoAtual = document.getElementById("preco-atual");
+    const produtos = document.querySelectorAll(".card-produto");
+
+    function extrairPreco(textoPrecoProduto) {
+        const precoLimpo = textoPrecoProduto
+            .replace(/R\$\s?/g, "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+            .trim();
+
+        return parseFloat(precoLimpo) || 0;
+    }
+
+    function detectarPrecoMaximo() {
+        let precoMaximoProduto = 0;
+
+        produtos.forEach(produto => {
+            const elementoPreco = produto.querySelector(".preco-produto");
+
+            if (elementoPreco) {
+                const precoProduto = extrairPreco(elementoPreco.textContent);
+
+                if (precoProduto > precoMaximoProduto) {
+                    precoMaximoProduto = precoProduto;
+                }
+            }
+        });
+
+        return Math.ceil(precoMaximoProduto / 100) * 100 + 100;
+    }
+
+    function mostrarMensagemSemProdutos(quantidade) {
+        let mensagem = document.getElementById("mensagem-sem-produtos");
+
+        if (!mensagem) {
+            mensagem = document.createElement("div");
+            mensagem.id = "mensagem-sem-produtos";
+            mensagem.className = "mensagem-vazia";
+            mensagem.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 15px;">😔</div>
+                <p style="font-weight: 600; color: #333; margin-bottom: 10px;">
+                    Nenhum produto encontrado nesta faixa de preço
+                </p>
+                <p style="font-size: 14px; color: #888;">
+                    Tente ajustar os valores do filtro para ver mais produtos
+                </p>
+            `;
+
+            const gridProdutos = document.querySelector(".grid-produtos");
+            if (gridProdutos) gridProdutos.appendChild(mensagem);
+        }
+
+        mensagem.style.display = quantidade === 0 ? "block" : "none";
+    }
+
+    function filtrarProdutosPorPreco() {
+        const min = parseInt(precoMin.value) || 0;
+        const max = parseInt(precoMax.value) || parseInt(precoRange.max);
+        let produtosVisiveis = 0;
+
+        produtos.forEach(produto => {
+            const elementoPreco = produto.querySelector(".preco-produto");
+
+            if (elementoPreco) {
+                const precoProduto = extrairPreco(elementoPreco.textContent);
+
+                if (precoProduto >= min && precoProduto <= max) {
+                    produto.style.display = "block";
+                    produto.style.opacity = "1";
+                    produto.style.transform = "scale(1)";
+                    produtosVisiveis++;
+                } else {
+                    produto.style.display = "none";
+                    produto.style.opacity = "0";
+                    produto.style.transform = "scale(0.8)";
+                }
+            }
+        });
+
+        precoAtual.textContent = `${min} - ${max}`;
+        mostrarMensagemSemProdutos(produtosVisiveis);
+    }
+
+    function inicializarFiltroPreco() {
+        if (!precoMin || !precoMax || !precoRange) return;
+
+        const precoMaximoDetectado = detectarPrecoMaximo();
+
+        precoRange.max = precoMaximoDetectado;
+        precoRange.value = precoMaximoDetectado;
+        precoMax.max = precoMaximoDetectado;
+        precoMax.value = precoMaximoDetectado;
+        precoMin.max = precoMaximoDetectado;
+
+        precoAtual.textContent = `0 - ${precoMaximoDetectado}`;
+
+        precoMin.addEventListener("input", function () {
+            if (parseInt(this.value) > parseInt(precoMax.value)) {
+                this.value = precoMax.value;
+            }
+
+            precoRange.value = precoMax.value;
+            filtrarProdutosPorPreco();
+        });
+
+        precoMax.addEventListener("input", function () {
+            if (parseInt(this.value) < parseInt(precoMin.value)) {
+                this.value = precoMin.value;
+            }
+
+            precoRange.value = this.value;
+            filtrarProdutosPorPreco();
+        });
+
+        precoRange.addEventListener("input", function () {
+            precoMax.value = this.value;
+            filtrarProdutosPorPreco();
+        });
+
+        filtrarProdutosPorPreco();
+    }
+
+    inicializarFiltroPreco();
+</script>

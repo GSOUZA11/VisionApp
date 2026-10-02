@@ -1,0 +1,217 @@
+<section class="faq-container">
+
+    <div class="faq-header">
+        <h1><strong>Suporte Rápido</strong></h1>
+        <p>Suporte para suas dúvidas mais frequentes</p>
+    </div>
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar pergunta..."
+            autocomplete="off">
+    </div>
+
+    <div class="faq-tabs">
+        <button class="faq-tab active" data-category="all">
+            Todos
+        </button>
+
+        <button class="faq-tab" data-category="pedidos">
+            Pedidos
+        </button>
+
+        <button class="faq-tab" data-category="trocas">
+            Trocas e Devoluções
+        </button>
+
+        <button class="faq-tab" data-category="garantia">
+            Garantia
+        </button>
+
+        <button class="faq-tab" data-category="lentes">
+            Lentes
+        </button>
+    </div>
+
+    <div class="faq-items">
+
+        <div class="faq-item" data-category="pedidos">
+            <button class="faq-question">
+                <span>Como acompanhar meu pedido?</span>
+                <span class="faq-arrow">▼</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Você pode acompanhar seu pedido através do número de rastreamento enviado por email.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="pedidos">
+            <button class="faq-question">
+                <span>Qual é o prazo de entrega?</span>
+                <span class="faq-arrow">▼</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    O prazo varia conforme sua região.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="trocas">
+            <button class="faq-question">
+                <span>Como solicitar uma troca?</span>
+                <span class="faq-arrow">▼</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Acesse sua conta e solicite a troca em "Meus Pedidos".
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="garantia">
+            <button class="faq-question">
+                <span>Qual é o período de garantia?</span>
+                <span class="faq-arrow">▼</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Todos os produtos possuem garantia de 12 meses.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item" data-category="lentes">
+            <button class="faq-question">
+                <span>Vocês trabalham com lentes progressivas?</span>
+                <span class="faq-arrow">▼</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Sim, trabalhamos com lentes progressivas de alta qualidade.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div
+        id="noResults"
+        class="alert alert-warning mt-4"
+        style="display:none">
+
+        Nenhuma pergunta encontrada.
+
+    </div>
+
+</section>
+
+<script>
+
+document.querySelectorAll('.faq-question')
+.forEach(botao => {
+
+    botao.addEventListener('click', () => {
+
+        botao.parentElement
+            .classList.toggle('active')
+
+    })
+
+})
+
+const abas =
+document.querySelectorAll('.faq-tab')
+
+abas.forEach(aba => {
+
+    aba.addEventListener('click', () => {
+
+        abas.forEach(a =>
+            a.classList.remove('active')
+        )
+
+        aba.classList.add('active')
+
+        const categoria =
+            aba.dataset.category
+
+        document
+            .querySelectorAll('.faq-item')
+            .forEach(item => {
+
+                if (
+                    categoria === 'all' ||
+                    item.dataset.category === categoria
+                ) {
+
+                    item.style.display =
+                        'block'
+
+                } else {
+
+                    item.style.display =
+                        'none'
+
+                }
+
+            })
+
+    })
+
+})
+
+document
+.getElementById('searchInput')
+.addEventListener('input', function() {
+
+    const texto =
+        this.value.toLowerCase()
+
+    let encontrados = 0
+
+    document
+        .querySelectorAll('.faq-item')
+        .forEach(item => {
+
+            const conteudo =
+                item.innerText
+                .toLowerCase()
+
+            if (
+                conteudo.includes(texto)
+            ) {
+
+                item.style.display =
+                    'block'
+
+                encontrados++
+
+            } else {
+
+                item.style.display =
+                    'none'
+
+            }
+
+        })
+
+    document
+        .getElementById('noResults')
+        .style.display =
+            encontrados
+            ? 'none'
+            : 'block'
+
+})
+
+</script>

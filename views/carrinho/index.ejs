@@ -1,0 +1,194 @@
+<div class="container py-5">
+
+    <div class="row g-4">
+
+        <!-- Produtos -->
+        <section class="col-lg-8">
+
+            <div class="bg-white rounded shadow-sm p-4">
+
+                <h2 class="mb-4">
+                    Seu Carrinho
+                </h2>
+
+                <% if(carrinho.length === 0){ %>
+
+                    <div class="text-center py-5">
+
+                        <h5>
+                            Seu carrinho está vazio.
+                        </h5>
+
+                    </div>
+
+                <% } %>
+
+                <% carrinho.forEach(item=>{ %>
+
+                    <div class="row align-items-center border-bottom py-4">
+
+                        <div class="col-md-3 text-center">
+
+                            <img
+                                src="/uploads/<%= item.imagem %>"
+                                class="img-fluid rounded"
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <h5>
+
+                                <%= item.nome %>
+
+                            </h5>
+
+                            <p class="mb-1">
+
+                                Cor:
+                                <%= item.cor %>
+
+                            </p>
+
+                            <p class="mb-1">
+
+                                Tamanho:
+                                <%= item.tamanho %>
+
+                            </p>
+
+                            <p class="mb-2">
+
+                                Quantidade:
+                                <%= item.quantidade %>
+
+                            </p>
+
+                            <a
+                                href="/carrinho/remover/<%= item.id %>"
+                                class="text-danger text-decoration-none"
+                            >
+
+                                Remover
+
+                            </a>
+
+                        </div>
+
+                        <div
+                            class="col-md-3
+                                   text-end
+                                   fw-bold">
+
+                            R$
+
+                            <%= item.preco.toFixed(2) %>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        </section>
+
+        <!-- Resumo -->
+
+        <aside class="col-lg-4">
+
+            <div
+                class="bg-white
+                       rounded
+                       shadow-sm
+                       p-4
+                       sticky-top">
+
+                <h2 class="mb-4">
+
+                    Resumo do Pedido
+
+                </h2>
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           mb-3">
+
+                    <span>
+
+                        Subtotal
+
+                    </span>
+
+                    <strong>
+
+                        R$
+                        <%= subtotal.toFixed(2) %>
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           mb-3">
+
+                    <span>
+
+                        Frete
+
+                    </span>
+
+                    <strong>
+
+                        <%= frete == 0
+                            ? "GRÁTIS"
+                            : "R$ " + frete.toFixed(2) %>
+
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <div
+                    class="d-flex
+                           justify-content-between
+                           fs-5
+                           fw-bold
+                           mb-4">
+
+                    <span>
+
+                        Total
+
+                    </span>
+
+                    <span>
+
+                        R$
+                        <%= total.toFixed(2) %>
+
+                    </span>
+
+                </div>
+
+                <a
+                    href="/entrega"
+                    class="btn btn-warning w-100">
+
+                    Finalizar Compra
+
+                </a>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>

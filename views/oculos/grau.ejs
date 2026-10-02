@@ -1,0 +1,97 @@
+<section class="container mt-4">
+
+    <div class="text-center mb-5">
+        <h1>Óculos de Grau</h1>
+        <p>
+            Confira nossa seleção de óculos de grau
+        </p>
+    </div>
+
+    <% if (oculos && oculos.length > 0) { %>
+
+        <div class="row">
+
+            <% oculos.forEach(item => { %>
+
+                <div class="col-md-4 mb-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <% if (item.imagem) { %>
+
+                            <img
+                                src="/uploads/<%= item.imagem %>"
+                                class="card-img-top"
+                                alt="<%= item.nome %>"
+                                style="
+                                    height:250px;
+                                    object-fit:cover;
+                                "
+                            >
+
+                        <% } else { %>
+
+                            <img
+                                src="/img/sem-imagem.png"
+                                class="card-img-top"
+                                alt="Sem imagem"
+                                style="
+                                    height:250px;
+                                    object-fit:cover;
+                                "
+                            >
+
+                        <% } %>
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                <%= item.nome %>
+                            </h5>
+
+                            <p class="card-text">
+                                <strong>Marca:</strong>
+                                <%= item.marca %>
+                            </p>
+
+                            <p class="card-text">
+                                <strong>Cor:</strong>
+                                <%= item.cor || '-' %>
+                            </p>
+
+                            <p class="card-text">
+                                <strong>Material:</strong>
+                                <%= item.material || '-' %>
+                            </p>
+
+                            <p class="card-text">
+                                <strong>Grau:</strong>
+                                <%= item.grau || '-' %>
+                            </p>
+
+                            <h4 class="text-primary">
+                                R$
+                                <%= Number(item.preco).toFixed(2) %>
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } else { %>
+
+        <div class="alert alert-warning text-center">
+
+            Nenhum óculos de grau encontrado.
+
+        </div>
+
+    <% } %>
+
+</section>

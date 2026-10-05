@@ -1,10 +1,11 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
-
+import { garantirAdministrador } from '../middleware/admin.mjs'
 import OculosModelo from '../models/oculosModelo.mjs'
 import oculosControle from '../controllers/oculosControle.mjs'
 import { garantirAutenticacao } from '../middleware/autenticacao.mjs'
+
 
 const rota = express.Router()
 
@@ -82,13 +83,13 @@ rota.get(
 
 rota.get(
     '/novo',
-    garantirAutenticacao,
+    garantirAdministrador,
     oculosControle.novo
 )
 
 rota.post(
     '/novo',
-    garantirAutenticacao,
+    garantirAdministrador,
     upload.single('imagem'),
     oculosControle.criar
 )
@@ -96,20 +97,20 @@ rota.post(
 
 rota.get(
     '/:id/editar',
-    garantirAutenticacao,
+    garantirAdministrador,
     oculosControle.editar
 )
 
 rota.post(
     '/:id/editar',
-    garantirAutenticacao,
+    garantirAdministrador,
     upload.single('imagem'),
     oculosControle.atualizar
 )
 
 rota.post(
     '/:id/excluir',
-    garantirAutenticacao,
+    garantirAdministrador,
     oculosControle.excluir
 )
 

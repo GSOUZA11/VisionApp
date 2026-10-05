@@ -3,38 +3,28 @@ import { conectar } from '../config/db.mjs'
 
 export default class FuncionarioModelo {
 
-    static async autenticar(usuario, senha) {
+   static async autenticar(usuario, senha) {
 
-        await conectar()
+    await conectar()
 
-        const resultado =
-            await new mssql.Request()
-                .input(
-                    'usuario',
-                    mssql.NVarChar,
-                    usuario
-                )
-                .input(
-                    'senha',
-                    mssql.NVarChar,
-                    senha
-                )
-                .query(`
-                    SELECT TOP 1 *
-                    FROM Funcionario
-                    WHERE
-                        (
-                            nomeUsuario = @usuario
-                            OR email = @usuario
-                        )
-                        AND senha = HASHBYTES(
-                            'SHA2_256',
-                            @senha
-                        )
-                `)
+    const resultado =
+        await new mssql.Request()
+            .input('usuario', mssql.NVarChar, usuario)
+            .query(`
+                SELECT TOP 1 *
+                FROM Funcionario
+                WHERE
+                    nomeUsuario = @usuario
+                    OR email = @usuario
+            `)
 
-        return resultado.recordset[0]
-    }
+    const funcionario = resultado.recordset[0]
+
+    console.log('FUNCIONARIO:', funcionario)
+
+    return funcionario
+}
+
 
     static async listar() {
 

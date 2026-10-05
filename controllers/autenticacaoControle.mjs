@@ -10,24 +10,32 @@ const autenticacaoControle = {
         }
 
         return resposta.render(
-            'login/index', {
-            erro: null,
-            mostrarFooter: false
-        })
+            'login/index',
+            {
+                erro: null,
+                mostrarFooter: false
+            }
+        )
     },
 
     async processarLogin(requisicao, resposta) {
 
         const { identificador, senha } = requisicao.body
-        
-        console.log("IDENTIFICADOR:", identificador)
-        console.log("SENHA:", senha)
+
+        console.log('================================')
+        console.log('TENTATIVA DE LOGIN')
+        console.log('IDENTIFICADOR:', identificador)
+        console.log('SENHA:', senha)
+        console.log('================================')
 
         const funcionario =
             await FuncionarioModelo.autenticar(
                 identificador,
                 senha
             )
+
+        console.log('RESULTADO AUTENTICACAO:')
+        console.log(funcionario)
 
         if (!funcionario) {
 
@@ -40,7 +48,7 @@ const autenticacaoControle = {
             )
         }
 
-        await LogModelo.registrar(
+        console.log(
             `Login realizado por ${funcionario.nomeCompleto}`
         )
 
@@ -59,7 +67,7 @@ const autenticacaoControle = {
 
         if (requisicao.session?.usuario) {
 
-            await LogModelo.registrar(
+            console.log(
                 `Logout realizado por ${requisicao.session.usuario.nome}`
             )
         }
@@ -68,6 +76,7 @@ const autenticacaoControle = {
             resposta.redirect('/autenticacao/login')
         })
     }
+
 }
 
 export default autenticacaoControle

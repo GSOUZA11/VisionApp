@@ -11,19 +11,6 @@ export default class OculosModelo {
                 ORDER BY nome
             `);
 
-          
-
-    return resultado.recordset;
-  }
-
-  static async obterTodosOsOculos() {
-    await conectar();
-
-    const resultado = await new mssql.Request().query(`
-                SELECT *
-                FROM Oculos
-            `);
-    
     return resultado.recordset;
   }
 
@@ -41,40 +28,46 @@ export default class OculosModelo {
   }
 
   static async criar(dados) {
-    await conectar();
+
+    await conectar()
 
     await new mssql.Request()
       .input("nome", mssql.NVarChar, dados.nome)
-      .input("marca", mssql.NVarChar, dados.marca)
-      .input("grau", mssql.NVarChar, dados.grau)
+      .input("descricao", mssql.NVarChar, dados.descricao)
+      .input("categoria", mssql.NVarChar, dados.categoria)
       .input("cor", mssql.NVarChar, dados.cor)
-      .input("material", mssql.NVarChar, dados.material)
-      .input("preco", mssql.Decimal(10, 2), dados.preco)
+      .input("tamanho", mssql.NVarChar, dados.tamanho)
+      .input(
+        "preco",
+        mssql.Decimal(10, 2),
+        parseFloat(dados.preco)
+      )
+      .input("estoque", mssql.Int, dados.estoque)
       .input("imagem", mssql.NVarChar, dados.imagem)
-      .input("estoque", mssql.Int, dados.estoque).query(`
-                INSERT INTO Oculos
-                (
-                    nome,
-                    marca,
-                    grau,
-                    cor,
-                    material,
-                    preco,
-                    imagem,
-                    estoque
-                )
-                VALUES
-                (
-                    @nome,
-                    @marca,
-                    @grau,
-                    @cor,
-                    @material,
-                    @preco,
-                    @imagem,
-                    @estoque
-                )
-            `);
+      .query(`
+            INSERT INTO Oculos
+            (
+                nome,
+                descricao,
+                categoria,
+                cor,
+                tamanho,
+                preco,
+                estoque,
+                imagem
+            )
+            VALUES
+            (
+                @nome,
+                @descricao,
+                @categoria,
+                @cor,
+                @tamanho,
+                @preco,
+                @estoque,
+                @imagem
+            )
+        `)
   }
 
   static async atualizar(id, dados) {
@@ -83,7 +76,6 @@ export default class OculosModelo {
     await new mssql.Request()
       .input("id", mssql.Int, id)
       .input("nome", mssql.NVarChar, dados.nome)
-      .input("marca", mssql.NVarChar, dados.marca)
       .input("grau", mssql.NVarChar, dados.grau)
       .input("cor", mssql.NVarChar, dados.cor)
       .input("material", mssql.NVarChar, dados.material)
@@ -93,7 +85,6 @@ export default class OculosModelo {
                 UPDATE Oculos
                  SET
                  nome=@nome,
-                 marca=@marca,
                  grau=@grau,
                  cor=@cor,
                  material=@material,
@@ -176,7 +167,6 @@ export default class OculosModelo {
 
   static async filtrar(filtros) {
     nome;
-    marca;
     cor;
     material;
     grau;

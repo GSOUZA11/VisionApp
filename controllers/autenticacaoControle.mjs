@@ -1,5 +1,6 @@
 import FuncionarioModelo from '../models/funcionarioModelo.mjs'
 import LogModelo from '../models/logModelo.mjs'
+import ClienteModelo from '../models/clienteModelo.mjs'
 
 const autenticacaoControle = {
 
@@ -28,16 +29,25 @@ const autenticacaoControle = {
         console.log('SENHA:', senha)
         console.log('================================')
 
-        const funcionario =
+        let usuario =
             await FuncionarioModelo.autenticar(
                 identificador,
                 senha
             )
 
-        console.log('RESULTADO AUTENTICACAO:')
-        console.log(funcionario)
+        if (!usuario) {
 
-        if (!funcionario) {
+            usuario =
+                await ClienteModelo.autenticar(
+                    identificador,
+                    senha
+                )
+        }
+
+        console.log('RESULTADO AUTENTICACAO:')
+        console.log(usuario)
+
+        if (!usuario) {
 
             return resposta.render(
                 'login/index',
@@ -49,13 +59,13 @@ const autenticacaoControle = {
         }
 
         console.log(
-            `Login realizado por ${funcionario.nomeCompleto}`
+            `Login realizado por ${usuario.nomeCompleto || usuario.nome}`
         )
 
         requisicao.session.usuario = {
-            id: funcionario.id,
-            nome: funcionario.nomeCompleto,
-            cargo: funcionario.cargo
+            id: usuario.id,
+            nome: usuario.nomeCompleto || usuario.nome,
+            cargo: usuario.cargo || 'Cliente'
         }
 
         return requisicao.session.save(() => {

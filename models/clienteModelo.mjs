@@ -40,8 +40,17 @@ export default class ClienteModelo {
     static async criar(
         nome,
         telefone,
-        email
+        email,
+        senha
     ) {
+
+        console.log('CLIENTE MODELO CRIAR EXECUTADO')
+        console.log({
+            nome,
+            telefone,
+            email,
+            senha
+        })
 
         await conectar()
 
@@ -61,20 +70,30 @@ export default class ClienteModelo {
                 mssql.VarChar,
                 email
             )
+            .input(
+                'senha',
+                mssql.VarChar,
+                senha
+            )
             .query(`
-                INSERT INTO Cliente
-                (
-                    nome,
-                    telefone,
-                    email
+            INSERT INTO Cliente
+            (
+                nome,
+                telefone,
+                email,
+                senha
+            )
+            VALUES
+            (
+                @nome,
+                @telefone,
+                @email,
+                HASHBYTES(
+                    'SHA2_256',
+                    @senha
                 )
-                VALUES
-                (
-                    @nome,
-                    @telefone,
-                    @email
-                )
-            `)
+            )
+        `)
     }
 
     static async atualizar(
@@ -132,5 +151,44 @@ export default class ClienteModelo {
                 SET ativo = 0
                 WHERE id=@id
             `)
+    }
+
+    static async autenticar(
+        email,
+        senha
+    ) {
+
+        console.log('AUTENTICANDO CLIENTE')
+        console.log(email)
+        console.log(senha)
+
+        await conectar()
+
+        const resultado =
+            await new mssql.Request()
+                .input(
+                    'email',
+                    mssql.VarChar,
+                    email
+                )
+                .input(
+                    'senha',
+                    mssql.VarChar,
+                    senha
+                )
+                .query(`
+                SELECT TOP 1 *
+                FROM Cliente
+                WHERE
+                    email = @email
+                    AND senha = HASHBYTES(
+                        'SHA2_256',
+                        @senha
+                    )
+                    AND ativo = 1
+            `)
+        console.log(resultado.recordset)
+
+        return resultado.recordset[0]
     }
 }

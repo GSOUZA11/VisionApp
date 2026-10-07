@@ -2,7 +2,7 @@ import mssql from "mssql";
 import { conectar } from "../config/db.mjs";
 
 export default class OculosModelo {
-  static async listar() {
+  static async obterTodosOsOculos() {
     await conectar();
 
     const resultado = await new mssql.Request().query(`
@@ -117,6 +117,7 @@ export default class OculosModelo {
 
     return resultado.recordset;
   }
+
 
   static async listarPorGrau() {
 

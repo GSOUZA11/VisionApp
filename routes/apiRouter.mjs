@@ -17,8 +17,8 @@ apiRouter.get('/oculos',verificarJWT, oculosApiControle.listar)
 apiRouter.get('/oculos/:id', oculosApiControle.buscar)
 
 // Escrita
-apiRouter.post('/oculos', exigirLoginApi, oculosApiControle.criar)
-apiRouter.put('/oculos/:id', exigirLoginApi, oculosApiControle.atualizar)
-apiRouter.delete('/oculos/:id', exigirLoginApi, oculosApiControle.remover)
+apiRouter.post('/oculos',verificarJWT, exigirLoginApi, oculosApiControle.criar)
+apiRouter.put('/oculos/:id',verificarJWT, exigirLoginApi, oculosApiControle.atualizar)
+apiRouter.delete('/oculos/:id',verificarJWT, exigirLoginApi, oculosApiControle.remover)
 
 export default apiRouter

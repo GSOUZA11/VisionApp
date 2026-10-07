@@ -44,14 +44,6 @@ export default class ClienteModelo {
         senha
     ) {
 
-        console.log('CLIENTE MODELO CRIAR EXECUTADO')
-        console.log({
-            nome,
-            telefone,
-            email,
-            senha
-        })
-
         await conectar()
 
         await new mssql.Request()
@@ -158,10 +150,6 @@ export default class ClienteModelo {
         senha
     ) {
 
-        console.log('AUTENTICANDO CLIENTE')
-        console.log(email)
-        console.log(senha)
-
         await conectar()
 
         const resultado =
@@ -187,7 +175,6 @@ export default class ClienteModelo {
                     )
                     AND ativo = 1
             `)
-        console.log(resultado.recordset)
 
         return resultado.recordset[0]
     }

@@ -23,11 +23,6 @@ const autenticacaoControle = {
 
         const { identificador, senha } = requisicao.body
 
-        console.log('================================')
-        console.log('TENTATIVA DE LOGIN')
-        console.log('IDENTIFICADOR:', identificador)
-        console.log('SENHA:', senha)
-        console.log('================================')
 
         let usuario =
             await FuncionarioModelo.autenticar(
@@ -44,8 +39,6 @@ const autenticacaoControle = {
                 )
         }
 
-        console.log('RESULTADO AUTENTICACAO:')
-        console.log(usuario)
 
         if (!usuario) {
 
@@ -58,10 +51,10 @@ const autenticacaoControle = {
             )
         }
 
-        console.log(
+
+        await LogModelo.registrar(
             `Login realizado por ${usuario.nomeCompleto || usuario.nome}`
         )
-
         requisicao.session.usuario = {
             id: usuario.id,
             nome: usuario.nomeCompleto || usuario.nome,
@@ -77,7 +70,7 @@ const autenticacaoControle = {
 
         if (requisicao.session?.usuario) {
 
-            console.log(
+            await LogModelo.registrar(
                 `Logout realizado por ${requisicao.session.usuario.nome}`
             )
         }

@@ -1,20 +1,44 @@
 import mssql from 'mssql'
 import { conectar } from '../config/db.mjs'
 
-export default class LoginModelo {
+export default class LogModelo {
 
-    static async buscarPorEmail(email) {
+    static async registrar(
+        mensagem
+    ) {
 
         await conectar()
 
-        const resultado = await new mssql.Request()
-            .input('email', mssql.NVarChar, email)
+        await new mssql.Request()
+            .input(
+                'mensagem',
+                mssql.NVarChar,
+                mensagem
+            )
             .query(`
-                SELECT *
-                FROM Cliente
-                WHERE email = @email
+                INSERT INTO Log
+                (
+                    mensagem
+                )
+                VALUES
+                (
+                    @mensagem
+                )
             `)
+    }
 
-        return resultado.recordset[0]
+    static async listar() {
+
+        await conectar()
+
+        const resultado =
+            await new mssql.Request()
+                .query(`
+                    SELECT *
+                    FROM Log
+                    ORDER BY dataCriacao DESC
+                `)
+
+        return resultado.recordset
     }
 }

@@ -20,8 +20,6 @@ export default class FuncionarioModelo {
 
     const funcionario = resultado.recordset[0]
 
-    console.log('FUNCIONARIO:', funcionario)
-
     return funcionario
 }
 

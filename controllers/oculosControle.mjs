@@ -138,12 +138,8 @@ const oculosControle = {
                 imagem
             })
 
-            // await LogModelo.registrar(
-            //     `Óculos cadastrado: ${req.body.nome}`
-            // )
-
-            console.log(
-                `Óculos cadastrado: ${req.body.nome}`
+            await LogModelo.registrar(
+                `Óculos atualizado: ${req.params.id}`
             )
 
             return res.redirect('/oculos')
@@ -186,6 +182,7 @@ const oculosControle = {
             req.file
                 ? req.file.filename
                 : existente.imagem
+
 
         await OculosModelo.atualizar(
             req.params.id,

@@ -134,6 +134,7 @@ export default class OculosModelo {
 
     return resultado.recordset
   }
+
   static async contar() {
     await conectar();
 
@@ -172,4 +173,19 @@ export default class OculosModelo {
     material;
     grau;
   }
+
+  static async listar() {
+
+    await conectar()
+
+    const resultado =
+        await new mssql.Request()
+            .query(`
+                SELECT *
+                FROM Oculos
+                ORDER BY id DESC
+            `)
+
+    return resultado.recordset
+}
 }

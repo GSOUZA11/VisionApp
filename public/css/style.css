@@ -1,21 +1,3 @@
-/*cor principal — #4169E1 (Azul Royal)
-Uso: Cabeçalho, títulos de seções, destaques importantes.
-Justificativa: É a cor mais forte da paleta, chama atenção e mantém identidade visual consistente.
-
-Cores análogas - 
-#1E90FF (Azul Dodger): usado em gradientes de fundo (como hero section) ou hover de botões.
-#4B0082 (Índigo): usado em detalhes menores ou títulos secundários, para criar contraste suave sem competir com o azul principal.
-
-Cor complementar — #FF8C00 (Laranja escuro)
-Uso: Botões, links importantes ou chamadas para ação (CTAs).
-Justificativa: Laranja é oposto do azul no círculo cromático, então cria contraste forte e chama atenção sem cansar a vista.
-
-Cor neutra — #F5F5F5 (Cinza muito claro)
-Uso: Fundo principal das seções ou do site.
-Justificativa: Deixa o conteúdo em destaque, não compete com cores vibrantes e garante leitura confortável.
-Alternativa:
-#FFFFFF (branco) → fundo de cards, formulários ou áreas clean.
-#000000 (preto) → texto sobre fundo claro para contraste máximo.*/
 
 :root {
   --principal: #4169e1;
@@ -1472,4 +1454,11 @@ rojeto
 
 .oculos-classico-filtro button:hover {
     background: var(--ana1);
+}
+
+/*Admin*/
+.card-admin {
+    background: var(--branco);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
 }

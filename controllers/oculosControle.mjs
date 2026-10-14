@@ -139,7 +139,7 @@ const oculosControle = {
             })
 
             await LogModelo.registrar(
-                `Óculos atualizado: ${req.params.id}`
+                `Óculos atualizado: ${req.body.nome}`
             )
 
             return res.redirect('/oculos')
@@ -170,7 +170,7 @@ const oculosControle = {
     async atualizar(req, res) {
 
         await LogModelo.registrar(
-            `Óculos atualizado: ${req.params.id}`
+            `Óculos atualizado: ${req.body.nome}`
         )
 
         const existente =
@@ -198,7 +198,7 @@ const oculosControle = {
     async excluir(req, res) {
 
         await LogModelo.registrar(
-            `Óculos removido: ${req.params.id}`
+            `Óculos removido: ${req.body.nome}`
         )
 
         await OculosModelo.remover(
@@ -206,7 +206,23 @@ const oculosControle = {
         )
 
         res.redirect('/oculos')
+    },
+
+    async admin(req, res) {
+
+        const oculos =
+            await OculosModelo.listar()
+
+        return res.render(
+            'oculos/admin',
+            {
+                oculos
+            }
+        )
     }
+
 }
+
+
 
 export default oculosControle

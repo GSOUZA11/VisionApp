@@ -103,6 +103,20 @@ rota.get(
     oculosControle.editar
 )
 
+rota.get(
+    '/admin',
+    somenteAdministrador,
+    oculosControle.admin
+)
+
+rota.get(
+    '/novo',
+    somenteAdministrador,
+    oculosControle.novo
+)
+
+
+
 
 rota.post(
     '/:id/editar',

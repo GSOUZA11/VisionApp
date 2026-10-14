@@ -1,0 +1,219 @@
+<style>
+    .admin-painel {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .admin-header h1 {
+        color: var(--principal);
+        font-size: 2rem;
+    }
+
+    .admin-header p {
+        color: #666;
+        margin-top: 6px;
+    }
+
+    .lista-oculos {
+        background: var(--branco);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, .08);
+    }
+
+    .tabela-admin {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tabela-admin th {
+        background: linear-gradient(90deg,
+                var(--principal),
+                var(--ana1));
+
+        color: white;
+        padding: 18px;
+    }
+
+    .tabela-admin td {
+        text-align: center;
+        padding: 16px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .tabela-admin tr:hover {
+        background: #f8f9ff;
+    }
+
+    .thumb-admin {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .botoes-admin {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-editar {
+        background: var(--ana2);
+    }
+
+    .btn-editar:hover {
+        background: #36005f;
+    }
+
+    .btn-excluir {
+        background: #dc3545;
+    }
+
+    .btn-excluir:hover {
+        background: #bb2d3b;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .55);
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+    }
+
+    .modal-conteudo {
+        background: white;
+        width: 95%;
+        max-width: 700px;
+        border-radius: 20px;
+        padding: 30px;
+    }
+
+    .modal-conteudo h2 {
+        color: var(--principal);
+        margin-bottom: 20px;
+    }
+
+    .modal-acoes {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    @media(max-width:768px) {
+
+        .tabela-admin {
+            font-size: 14px;
+        }
+
+        .thumb-admin {
+            width: 60px;
+            height: 60px;
+        }
+
+        .botoes-admin {
+            flex-direction: column;
+        }
+
+    }
+</style>
+
+<div class="admin-painel">
+
+    <div class="admin-header">
+
+        <div>
+            <h1>Gerenciar Óculos</h1>
+            <p>Painel administrativo VisionApp</p>
+        </div>
+
+        <a href="/oculos/novo">Novo Óculos </a>
+
+    </div>
+
+    <div class="lista-oculos">
+
+        <table class="tabela-admin">
+
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Preço</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <% oculos.forEach(item=> { %>
+
+                    <tr>
+
+                        <td>
+                            <img src="/uploads/<%= item.imagem %>" class="thumb-admin" alt="<%= item.nome %>">
+
+
+                        </td>
+
+                        <td>
+                            <%= item.nome %>
+                        </td>
+
+                        <td>
+                            <%= item.tipo %>
+                        </td>
+
+                        <td>
+                            R$ <%= item.preco %>
+                        </td>
+
+                        <td>
+
+                            <div class="botoes-admin">
+
+                                <a href="/oculos/<%= item.id %>/editar">
+                                    <button class="btn-editar">
+                                        Editar
+                                    </button>
+                                </a>
+
+                                <form action="/oculos/<%= item.id %>/excluir" method="POST"
+                                    onsubmit="return confirmarExclusao()">
+
+                                    <button type="submit" class="btn-excluir">
+                                        Excluir
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <% }) %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

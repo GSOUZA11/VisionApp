@@ -5,34 +5,31 @@ import LogModelo from '../models/logModelo.mjs'
 const TIPOS = {
     esportivo: {
         categoria: 'Esportivo',
-        view: 'oculos/esportivo',
-        titulo: 'Óculos Esportivos em Destaque',
-        mensagemVazia: 'Nenhum óculos esportivo encontrado.'
+        view: 'oculos/index',
+        titulo: 'Óculos Esportivos em Destaque'
     },
     sol: {
         categoria: 'Sol',
-        view: 'oculos/sol',
-        titulo: 'Óculos de Sol em Destaque',
-        mensagemVazia: 'Nenhum óculos de sol encontrado.'
+        view: 'oculos/index',
+        titulo: 'Óculos de Sol em Destaque'
     },
     vintage: {
         categoria: 'Vintage',
-        view: 'oculos/esportivo',
-        titulo: 'Óculos Vintage em Destaque',
-        mensagemVazia: 'Nenhum óculos vintage encontrado.'
+        view: 'oculos/index',
+        titulo: 'Óculos Vintage em Destaque'
     },
     classico: {
         categoria: 'Classico',
-        view: 'oculos_classico/index',
+        view: 'oculos/index',
         titulo: 'Óculos Clássicos'
     },
     fashion: {
         categoria: 'Fashion',
-        view: 'oculos_fashion/index',
+        view: 'oculos/index',
         titulo: 'Óculos Fashion'
     },
     grau: {
-        view: 'oculos/grau',
+        view: 'oculos/index',
         titulo: 'Óculos de Grau'
     }
 }
@@ -56,7 +53,7 @@ const oculosControle = {
             await OculosModelo.listar()
 
         res.render(
-            'oculos/completo',
+            'oculos/index',
             {
                 title: 'Todos os Óculos',
                 pagina: 'catalogo',
@@ -205,7 +202,7 @@ const oculosControle = {
             req.params.id
         )
 
-        res.redirect('/oculos')
+        res.redirect('/oculos/admin')
     },
 
     async admin(req, res) {

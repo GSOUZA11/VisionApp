@@ -204,22 +204,43 @@ const oculosControle = {
 
         res.redirect('/oculos/admin')
     },
+    
+
+    async produto(req, res) {
+        try {
+            const oculos = await OculosModelo.buscarPorId(
+                req.params.id
+            )
+
+            if (!oculos) {
+                return res.status(404).send(
+                    'Produto não encontrado'
+                )
+            }
+
+            return res.render(
+                'oculos/produto',
+                { oculos }
+            )
+
+        } catch (erro) {
+            console.error(erro)
+
+            return res.status(500).send(
+                'Erro ao carregar o produto'
+            )
+        }
+    },
 
     async admin(req, res) {
-
-        const oculos =
-            await OculosModelo.listar()
+        const oculos = await OculosModelo.listar()
 
         return res.render(
             'oculos/admin',
-            {
-                oculos
-            }
+            { oculos }
         )
-    }
-
-}
-
+    }}
+    
 
 
 export default oculosControle

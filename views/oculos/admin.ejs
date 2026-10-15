@@ -1,38 +1,62 @@
 <style>
     .admin-painel {
+        width: calc(100% - 40px);
         max-width: 1400px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 30px 0 40px;
+        box-sizing: border-box;
     }
 
     .admin-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 18px;
+        margin-bottom: 28px;
     }
 
     .admin-header h1 {
         color: var(--principal);
         font-size: 2rem;
+        margin: 0;
     }
 
     .admin-header p {
         color: #666;
-        margin-top: 6px;
+        margin: 8px 0 0;
+        font-size: 15px;
+    }
+
+    .btn-novo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        background: var(--principal);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: opacity .2s, transform .2s;
+    }
+
+    .btn-novo:hover {
+        opacity: .9;
+        transform: translateY(-1px);
     }
 
     .lista-oculos {
+        width: 100%;
         background: var(--branco);
-        border-radius: 16px;
-        overflow: hidden;
+        border-radius: 14px;
+        overflow-x: auto;
         box-shadow: 0 5px 20px rgba(0, 0, 0, .08);
     }
 
     .tabela-admin {
         width: 100%;
+        min-width: 680px;
         border-collapse: collapse;
     }
 
@@ -40,32 +64,72 @@
         background: linear-gradient(90deg,
                 var(--principal),
                 var(--ana1));
-
         color: white;
-        padding: 18px;
+        padding: 16px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: left;
+        white-space: nowrap;
     }
 
     .tabela-admin td {
-        text-align: center;
-        padding: 16px;
+        padding: 14px 20px;
         border-bottom: 1px solid #eee;
+        text-align: left;
+        vertical-align: middle;
+        color: #454b5a;
+        font-size: 14px;
     }
 
-    .tabela-admin tr:hover {
+    .tabela-admin tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabela-admin tbody tr:hover {
         background: #f8f9ff;
     }
 
+    .tabela-admin th:first-child,
+    .tabela-admin td:first-child {
+        width: 110px;
+    }
+
+    .tabela-admin th:last-child,
+    .tabela-admin td:last-child {
+        width: 190px;
+    }
+
     .thumb-admin {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 12px;
+        display: block;
+        width: 76px;
+        height: 68px;
+        object-fit: contain;
+        background: #f7f8fc;
+        border: 1px solid #eee;
+        border-radius: 9px;
     }
 
     .botoes-admin {
         display: flex;
-        justify-content: center;
-        gap: 10px;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .botoes-admin a {
+        text-decoration: none;
+    }
+
+    .botoes-admin button {
+        min-width: 76px;
+        padding: 10px 13px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s;
     }
 
     .btn-editar {
@@ -84,71 +148,97 @@
         background: #bb2d3b;
     }
 
-    .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, .55);
-        justify-content: center;
-        align-items: center;
-        z-index: 3000;
+    .botoes-admin form {
+        margin: 0;
     }
 
-    .modal-conteudo {
-        background: white;
-        width: 95%;
-        max-width: 700px;
-        border-radius: 20px;
-        padding: 30px;
-    }
-
-    .modal-conteudo h2 {
-        color: var(--principal);
-        margin-bottom: 20px;
-    }
-
-    .modal-acoes {
+    .admin-sem-imagem {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
+        width: 76px;
+        height: 68px;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f8;
+        border: 1px solid #eee;
+        border-radius: 9px;
+        color: #777;
+        font-size: 11px;
+        text-align: center;
     }
 
-    @media(max-width:768px) {
+    .admin-vazio {
+        padding: 30px !important;
+        text-align: center !important;
+        color: #777 !important;
+    }
 
-        .tabela-admin {
-            font-size: 14px;
+    @media (max-width: 768px) {
+        .admin-painel {
+            width: calc(100% - 24px);
+            padding: 22px 0 30px;
         }
 
-        .thumb-admin {
+        .admin-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .admin-header {
+            margin-bottom: 22px;
+        }
+
+        .lista-oculos {
+            border-radius: 10px;
+        }
+
+        .tabela-admin th,
+        .tabela-admin td {
+            padding: 12px;
+        }
+
+        .thumb-admin,
+        .admin-sem-imagem {
             width: 60px;
-            height: 60px;
+            height: 56px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .admin-header {
+            align-items: stretch;
         }
 
-        .botoes-admin {
-            flex-direction: column;
+        .btn-novo {
+            width: 100%;
+            box-sizing: border-box;
         }
-
     }
 </style>
 
 <div class="admin-painel">
 
     <div class="admin-header">
-
         <div>
             <h1>Gerenciar Óculos</h1>
             <p>Painel administrativo VisionApp</p>
         </div>
 
-        <a href="/oculos/novo">Novo Óculos </a>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="/oculos/novo" class="btn-novo">
+                + Novo Óculos
+            </a>
 
+
+            <a href="/autenticacao/logout" class="btn-novo" style="background: #dc3545;"
+                onclick="return confirm('Deseja realmente sair da sua conta?')">
+                Sair da conta
+            </a>
+
+        </div>
     </div>
 
+
     <div class="lista-oculos">
-
         <table class="tabela-admin">
-
             <thead>
                 <tr>
                     <th>Imagem</th>
@@ -160,60 +250,72 @@
             </thead>
 
             <tbody>
+                <% if (Array.isArray(oculos) && oculos.length> 0) { %>
 
-                <% oculos.forEach(item=> { %>
+                    <% oculos.forEach(item=> { %>
+                        <tr>
+                            <td>
+                                <% if (item.imagem) { %>
+                                    <img src="/uploads/<%= item.imagem %>" class="thumb-admin" alt="<%= item.nome %>"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="admin-sem-imagem" style="display:none;">
+                                        Sem imagem
+                                    </div>
+                                    <% } else { %>
+                                        <div class="admin-sem-imagem">
+                                            Sem imagem
+                                        </div>
+                                        <% } %>
+                            </td>
 
-                    <tr>
+                            <td>
+                                <%= item.nome %>
+                            </td>
 
-                        <td>
-                            <img src="/uploads/<%= item.imagem %>" class="thumb-admin" alt="<%= item.nome %>">
+                            <td>
+                                <%= item.tipo || '—' %>
+                            </td>
 
+                            <td>
+                                R$ <%= item.preco %>
+                            </td>
 
-                        </td>
+                            <td>
+                                <div class="botoes-admin">
+                                    <a href="/oculos/<%= item.id %>/editar">
+                                        <button type="button" class="btn-editar">
+                                            Editar
+                                        </button>
+                                    </a>
 
-                        <td>
-                            <%= item.nome %>
-                        </td>
+                                    <form action="/oculos/<%= item.id %>/excluir" method="POST"
+                                        onsubmit="return confirmarExclusao()">
+                                        <button type="submit" class="btn-excluir">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
 
-                        <td>
-                            <%= item.tipo %>
-                        </td>
-
-                        <td>
-                            R$ <%= item.preco %>
-                        </td>
-
-                        <td>
-
-                            <div class="botoes-admin">
-
-                                <a href="/oculos/<%= item.id %>/editar">
-                                    <button class="btn-editar">
-                                        Editar
-                                    </button>
-                                </a>
-
-                                <form action="/oculos/<%= item.id %>/excluir" method="POST"
-                                    onsubmit="return confirmarExclusao()">
-
-                                    <button type="submit" class="btn-excluir">
-                                        Excluir
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    <% }) %>
-
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="admin-vazio">
+                                        Nenhum óculos cadastrado.
+                                    </td>
+                                </tr>
+                                <% } %>
             </tbody>
-
         </table>
-
     </div>
 
 </div>
+
+<script>
+    function confirmarExclusao() {
+        return window.confirm(
+            'Tem certeza de que deseja excluir este óculos?'
+        );
+    }
+</script>

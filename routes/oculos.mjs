@@ -73,6 +73,11 @@ rota.get(
 )
 
 rota.get(
+    '/produto/:id',
+    oculosControle.produto
+)
+
+rota.get(
     '/novo',
     somenteAdministrador,
     oculosControle.novo

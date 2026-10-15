@@ -43,10 +43,6 @@
 
       <% if (usuario && usuario.cargo==='Administrador' ) { %>
 
-        <a href="/oculos/admin" id="<%= typeof pagina !=='undefined' && pagina==='admin' ? 'active' : 'paginas' %>">
-          Gerenciar Óculos
-        </a>
-
         <% } %>
 
           <a href="/sobre_nos" class="<%= typeof pagina !=='undefined' && pagina==='sobre' ? 'active' : '' %>">
@@ -60,14 +56,24 @@
 
         <% if (usuario) { %>
           <div class="usuario-logado">
-            <span>Olá, <%= usuario.nome %></span>
-            <a href="/autenticacao/logout" class="sair-link">Sair</a>
           </div>
           <% } else { %>
             <button type="button" class="btn-icone" onclick="toggleLogin()">
               <img src="/uploads/user.png" width="35" height="35" alt="Usuário" />
             </button>
             <% } %>
+
+            
+<% if (usuario && usuario.cargo === 'Administrador') { %>
+    <a href="/oculos/admin"
+       title="Gerenciar Óculos"
+       aria-label="Gerenciar Óculos">
+        <img src="/uploads/user.png"
+             width="35"
+             height="35"
+             alt="Gerenciar Óculos">
+    </a>
+<% } %>
 
               <a href="/carrinho">
                 <img src="/uploads/carrinho.png" width="35" height="35" alt="Carrinho" />

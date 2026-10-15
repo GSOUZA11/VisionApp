@@ -76,7 +76,7 @@ const autenticacaoControle = {
         }
 
         return requisicao.session.destroy(() => {
-            resposta.redirect('/autenticacao/login')
+            resposta.redirect('/')
         })
     }
 

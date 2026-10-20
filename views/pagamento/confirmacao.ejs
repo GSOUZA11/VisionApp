@@ -1,0 +1,134 @@
+ 
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-4 p-md-5">
+
+                    <div class="mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-10"
+                             style="width: 90px; height: 90px;">
+                            <span class="text-success fs-1" aria-hidden="true">✓</span>
+                        </div>
+                    </div>
+
+                    <h2 class="fw-bold mb-3">Compra registrada!</h2>
+
+                    <p class="text-muted mb-4">
+                        Seu pedido foi registrado no VisionApp.
+                        Confira os detalhes da sua compra.
+                    </p>
+
+                    <div class="bg-light rounded p-4 text-start mb-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Número do pedido</span>
+                            <strong>#<%= confirmacao.pedidoId %></strong>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Forma de pagamento</span>
+                            <strong>
+                                <% if (confirmacao.metodo === 'cartao') { %>
+                                    Cartão
+                                <% } else if (confirmacao.metodo === 'pix') { %>
+                                    Pix
+                                <% } else if (confirmacao.metodo === 'boleto') { %>
+                                    Boleto
+                                <% } else { %>
+                                    <%= confirmacao.metodo %>
+                                <% } %>
+                            </strong>
+                        </div>
+
+                        <% if (confirmacao.metodo === 'cartao') { %>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Parcelas</span>
+                                <strong><%= confirmacao.parcelas || 1 %>x</strong>
+                            </div>
+                        <% } %>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Status do pedido</span>
+                            <span class="badge text-bg-success">Registrado</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Subtotal</span>
+                            <strong><%= formatarMoeda(confirmacao.subtotal) %></strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Frete</span>
+                            <strong>
+                                <%= Number(confirmacao.frete) === 0
+                                    ? 'Grátis'
+                                    : formatarMoeda(confirmacao.frete) %>
+                            </strong>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold">Total</span>
+                            <strong class="fs-4">
+                                <%= formatarMoeda(confirmacao.total) %>
+                            </strong>
+                        </div>
+                    </div>
+
+                    <% if (confirmacao.produtos && confirmacao.produtos.length > 0) { %>
+                        <div class="text-start mb-4">
+                            <h5 class="fw-bold mb-3">Óculos comprados</h5>
+
+                            <% confirmacao.produtos.forEach(produto => { %>
+                                <div class="d-flex align-items-center mb-3">
+                                    <img
+                                        src="/uploads/<%= produto.imagem %>"
+                                        alt="<%= produto.nome %>"
+                                        class="rounded border"
+                                        style="width: 72px; height: 72px; object-fit: contain;"
+                                        onerror="this.style.display='none'">
+
+                                    <div class="ms-3">
+                                        <strong><%= produto.nome %></strong>
+                                        <div class="text-muted small">
+                                            Quantidade: <%= produto.quantidade %>
+                                        </div>
+                                        <div class="small">
+                                            <%= formatarMoeda(
+                                                Number(produto.preco) *
+                                                Number(produto.quantidade)
+                                            ) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+                        <a href="/pedidos" class="btn btn-warning btn-lg">
+                            Ver meus pedidos
+                        </a>
+
+                        <a href="/oculos/completo" class="btn btn-outline-secondary btn-lg">
+                            Continuar comprando
+                        </a>
+                    </div>
+
+                    <p class="small text-muted mt-4 mb-0">
+                        Obrigado por comprar no VisionApp!
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

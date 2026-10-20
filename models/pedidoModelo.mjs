@@ -1,430 +1,466 @@
-import mssql from 'mssql'
-import { conectar } from '../config/db.mjs'
-import MovimentacaoEstoqueModelo
-    from './movimentacaoEstoqueModelo.mjs'
+import mssql from 'mssql';
+import { conectar } from '../config/db.mjs';
+import MovimentacaoEstoqueModelo from './movimentacaoEstoqueModelo.mjs';
 
 export default class PedidoModelo {
 
+    // Lista os pedidos para a administração.
     static async listar() {
+        await conectar();
 
-        await conectar()
+        const resultado = await new mssql.Request().query(`
+            SELECT
+                P.*,
+                C.nome AS cliente,
+                F.nomeCompleto AS funcionario
+            FROM dbo.Pedido P
+            INNER JOIN dbo.Cliente C
+                ON C.id = P.clienteID
+            LEFT JOIN dbo.Funcionario F
+                ON F.id = P.funcionarioID
+            ORDER BY P.dataPedido DESC
+        `);
 
-        const resultado =
-            await new mssql.Request()
-                .query(`
-                SELECT
-                    P.*,
-                    C.nome cliente
-                FROM Pedido P
-                INNER JOIN Cliente C
-                    ON C.id=P.clienteID
-            `)
-
-        return resultado.recordset
+        return resultado.recordset;
     }
 
-    static async criar(
-        clienteID,
-        funcionarioID,
-        itens
-    ) {
-        if (
-            !Array.isArray(itens) ||
-            itens.length === 0
-        ) {
-            throw new Error(
-                'O pedido deve possuir pelo menos um item.'
-            )
+    // Lista somente os pedidos de um cliente.
+    static async listarPorCliente(clienteID) {
+        await conectar();
+
+        const idCliente = Number(clienteID);
+
+        if (!Number.isInteger(idCliente) || idCliente <= 0) {
+            return [];
+        }
+
+        const resultado = await new mssql.Request()
+            .input('clienteID', mssql.Int, idCliente)
+            .query(`
+                SELECT
+                    P.*,
+                    C.nome AS cliente,
+                    F.nomeCompleto AS funcionario
+                FROM dbo.Pedido P
+                INNER JOIN dbo.Cliente C
+                    ON C.id = P.clienteID
+                LEFT JOIN dbo.Funcionario F
+                    ON F.id = P.funcionarioID
+                WHERE P.clienteID = @clienteID
+                ORDER BY P.dataPedido DESC
+            `);
+
+        return resultado.recordset;
+    }
+
+    static async criar(clienteID, funcionarioID, itens) {
+        if (!Array.isArray(itens) || itens.length === 0) {
+            throw new Error('O pedido deve possuir pelo menos um item.');
         }
 
         for (const item of itens) {
-
-            if (!item.oculosID) {
-                throw new Error(
-                    'Óculos inválido.'
-                )
+            if (!Number.isInteger(Number(item.oculosID)) ||
+                Number(item.oculosID) <= 0) {
+                throw new Error('Óculos inválido.');
             }
 
-            if (
-                !item.quantidade ||
-                item.quantidade <= 0
-            ) {
-                throw new Error(
-                    'Quantidade inválida.'
-                )
+            if (!Number.isInteger(Number(item.quantidade)) ||
+                Number(item.quantidade) <= 0) {
+                throw new Error('Quantidade inválida.');
             }
 
             if (
                 item.precoUnitario == null ||
-                item.precoUnitario < 0
+                !Number.isFinite(Number(item.precoUnitario)) ||
+                Number(item.precoUnitario) < 0
             ) {
-                throw new Error(
-                    'Preço inválido.'
-                )
+                throw new Error('Preço inválido.');
             }
         }
 
-        await conectar()
+        const idCliente = Number(clienteID);
+        const idFuncionario =
+            funcionarioID == null || funcionarioID === ''
+                ? null
+                : Number(funcionarioID);
 
-        const transaction =
-            new mssql.Transaction()
+        if (!Number.isInteger(idCliente) || idCliente <= 0) {
+            throw new Error('Cliente inválido.');
+        }
 
-        await transaction.begin()
+        if (
+            idFuncionario !== null &&
+            (!Number.isInteger(idFuncionario) || idFuncionario <= 0)
+        ) {
+            throw new Error('Funcionário inválido.');
+        }
+
+        await conectar();
+
+        const transaction = new mssql.Transaction();
+        await transaction.begin();
 
         try {
+            const pedidoReq = new mssql.Request(transaction);
 
-            const pedidoReq =
-                new mssql.Request(
-                    transaction
-                )
-
-            pedidoReq.input(
-                'clienteID',
-                mssql.Int,
-                clienteID
-            )
-
+            pedidoReq.input('clienteID', mssql.Int, idCliente);
             pedidoReq.input(
                 'funcionarioID',
                 mssql.Int,
-                funcionarioID
-            )
+                idFuncionario
+            );
 
-            const pedido =
-                await pedidoReq.query(`
-                    INSERT INTO Pedido
-                    (
-                        clienteID,
-                        funcionarioID
-                    )
-                    OUTPUT INSERTED.id
-                    VALUES
-                    (
-                        @clienteID,
-                        @funcionarioID
-                    )
-                `)
+            const pedido = await pedidoReq.query(`
+                INSERT INTO dbo.Pedido
+                (
+                    clienteID,
+                    funcionarioID,
+                    dataPedido,
+                    status,
+                    total,
+                    subtotal,
+                    frete
+                )
+                OUTPUT INSERTED.id
+                VALUES
+                (
+                    @clienteID,
+                    @funcionarioID,
+                    GETDATE(),
+                    N'finalizado',
+                    0,
+                    0,
+                    0
+                )
+            `);
 
-            const pedidoID =
-                pedido.recordset[0].id
+            const pedidoID = pedido.recordset[0].id;
+            let totalPedido = 0;
 
             for (const item of itens) {
+                const oculosID = Number(item.oculosID);
+                const quantidade = Number(item.quantidade);
+                const precoUnitario = Number(item.precoUnitario);
 
-                // Verifica estoque
-                const consultaEstoque =
+                // Verifica e baixa o estoque atomicamente.
+                const atualizacaoEstoque =
                     await new mssql.Request(transaction)
-                        .input(
-                            'id',
-                            mssql.Int,
-                            item.oculosID
-                        )
+                        .input('id', mssql.Int, oculosID)
+                        .input('quantidade', mssql.Int, quantidade)
                         .query(`
-                SELECT estoque
-                FROM Oculos
-                WHERE id=@id
-            `)
+                            UPDATE dbo.Oculos
+                            SET estoque = estoque - @quantidade
+                            WHERE id = @id
+                              AND ativo = 1
+                              AND estoque >= @quantidade;
 
-                const estoqueAtual =
-                    consultaEstoque.recordset[0].estoque
+                            SELECT @@ROWCOUNT AS afetados;
+                        `);
 
-                if (estoqueAtual < item.quantidade) {
+                if (atualizacaoEstoque.recordset[0].afetados !== 1) {
                     throw new Error(
-                        'Estoque insuficiente.'
-                    )
+                        'Estoque insuficiente ou óculos indisponível.'
+                    );
                 }
 
-                // Baixa estoque
-                await new mssql.Request(transaction)
-                    .input(
-                        'id',
-                        mssql.Int,
-                        item.oculosID
-                    )
-                    .input(
-                        'quantidade',
-                        mssql.Int,
-                        item.quantidade
-                    )
-                    .query(`
-            UPDATE Oculos
-            SET estoque = estoque - @quantidade
-            WHERE id=@id
-        `)
+                await MovimentacaoEstoqueModelo.registrar(
+                    oculosID,
+                    'SAIDA',
+                    quantidade,
+                    transaction
+                );
 
-                // Registra movimentação
-                  await MovimentacaoEstoqueModelo.registrar(
-                  item.oculosID,
-                  'SAIDA',
-                  item.quantidade,
-                  transaction
-                  )
-
-                // Insere item do pedido
+                // Mantém os pedidos administrativos em ItemPedido.
                 await new mssql.Request(transaction)
-                    .input(
-                        'pedidoID',
-                        mssql.Int,
-                        pedidoID
-                    )
-                    .input(
-                        'oculosID',
-                        mssql.Int,
-                        item.oculosID
-                    )
-                    .input(
-                        'quantidade',
-                        mssql.Int,
-                        item.quantidade
-                    )
+                    .input('pedidoID', mssql.Int, pedidoID)
+                    .input('oculosID', mssql.Int, oculosID)
+                    .input('quantidade', mssql.Int, quantidade)
                     .input(
                         'precoUnitario',
                         mssql.Decimal(10, 2),
-                        item.precoUnitario
+                        precoUnitario
                     )
                     .query(`
-            INSERT INTO ItemPedido
-            (
-                pedidoID,
-                oculosID,
-                quantidade,
-                precoUnitario
-            )
-            VALUES
-            (
-                @pedidoID,
-                @oculosID,
-                @quantidade,
-                @precoUnitario
-            )
-        `)
+                        INSERT INTO dbo.ItemPedido
+                        (
+                            pedidoID,
+                            oculosID,
+                            quantidade,
+                            precoUnitario
+                        )
+                        VALUES
+                        (
+                            @pedidoID,
+                            @oculosID,
+                            @quantidade,
+                            @precoUnitario
+                        )
+                    `);
+
+                totalPedido += quantidade * precoUnitario;
             }
 
-            await transaction.commit()
+            await new mssql.Request(transaction)
+                .input('pedidoID', mssql.Int, pedidoID)
+                .input(
+                    'total',
+                    mssql.Decimal(10, 2),
+                    totalPedido
+                )
+                .input(
+                    'subtotal',
+                    mssql.Decimal(10, 2),
+                    totalPedido
+                )
+                .query(`
+                    UPDATE dbo.Pedido
+                    SET total = @total,
+                        subtotal = @subtotal
+                    WHERE id = @pedidoID
+                `);
+
+            await transaction.commit();
+
+            return pedidoID;
 
         } catch (erro) {
-
-            await transaction.rollback()
-            throw erro
+            await transaction.rollback();
+            throw erro;
         }
     }
 
-    static async buscarPorId(id) {
+    // Busca os detalhes de um pedido.
+    // O segundo parâmetro, quando informado, restringe o acesso ao cliente.
+    static async buscarPorId(id, clienteID = null) {
+        await conectar();
 
-        await conectar()
+        const pedidoID = Number(id);
 
-        const pedido =
-            await new mssql.Request()
-                .input('id', mssql.Int, id)
-                .query(`
+        if (!Number.isInteger(pedidoID) || pedidoID <= 0) {
+            return null;
+        }
+
+        const requisicao = new mssql.Request()
+            .input('id', mssql.Int, pedidoID);
+
+        let filtroCliente = '';
+
+        if (clienteID !== null && clienteID !== undefined) {
+            const idCliente = Number(clienteID);
+
+            if (!Number.isInteger(idCliente) || idCliente <= 0) {
+                return null;
+            }
+
+            requisicao.input('clienteID', mssql.Int, idCliente);
+            filtroCliente = ' AND P.clienteID = @clienteID';
+        }
+
+        const resultadoPedido = await requisicao.query(`
             SELECT
                 P.*,
-                C.nome cliente,
-                F.nomeCompleto funcionario
-            FROM Pedido P
-            INNER JOIN Cliente C
-                ON C.id=P.clienteID
-            INNER JOIN Funcionario F
-                ON F.id=P.funcionarioID
-            WHERE P.id=@id
-        `)
+                C.nome AS cliente,
+                F.nomeCompleto AS funcionario
+            FROM dbo.Pedido P
+            INNER JOIN dbo.Cliente C
+                ON C.id = P.clienteID
+            LEFT JOIN dbo.Funcionario F
+                ON F.id = P.funcionarioID
+            WHERE P.id = @id
+            ${filtroCliente}
+        `);
 
-        const itens =
-            await new mssql.Request()
-                .input('id', mssql.Int, id)
-                .query(`
-            SELECT
-                I.*,
-                O.nome oculos
-            FROM ItemPedido I
-            INNER JOIN Oculos O
-                ON O.id=I.oculosID
-            WHERE I.pedidoID=@id
-        `)
-
-        return {
-            ...pedido.recordset[0],
-            itens: itens.recordset
+        if (resultadoPedido.recordset.length === 0) {
+            return null;
         }
+
+        const pedido = resultadoPedido.recordset[0];
+
+        // Primeiro consulta os itens do checkout atual.
+        const resultadoCheckout = await new mssql.Request()
+            .input('id', mssql.Int, pedidoID)
+            .query(`
+                SELECT
+                    I.id,
+                    I.pedido_id AS pedidoID,
+                    I.oculos_id AS oculosID,
+                    I.nome AS oculos,
+                    I.imagem,
+                    I.preco AS precoUnitario,
+                    I.quantidade
+                FROM dbo.pedido_itens I
+                WHERE I.pedido_id = @id
+                ORDER BY I.id
+            `);
+
+        pedido.itens = resultadoCheckout.recordset;
+
+        // Se não houver itens do checkout, consulta o modelo antigo.
+        if (pedido.itens.length === 0) {
+            const resultadoAntigo = await new mssql.Request()
+                .input('id', mssql.Int, pedidoID)
+                .query(`
+                    SELECT
+                        I.id,
+                        I.pedidoID,
+                        I.oculosID,
+                        O.nome AS oculos,
+                        O.imagem,
+                        I.precoUnitario,
+                        I.quantidade
+                    FROM dbo.ItemPedido I
+                    INNER JOIN dbo.Oculos O
+                        ON O.id = I.oculosID
+                    WHERE I.pedidoID = @id
+                    ORDER BY I.id
+                `);
+
+            pedido.itens = resultadoAntigo.recordset;
+        }
+
+        return pedido;
     }
 
     static async excluir(id) {
+        await conectar();
 
-        await conectar()
+        const pedidoID = Number(id);
 
-        const transaction =
-            new mssql.Transaction()
+        if (!Number.isInteger(pedidoID) || pedidoID <= 0) {
+            throw new Error('Pedido inválido.');
+        }
 
-        await transaction.begin()
+        const transaction = new mssql.Transaction();
+        await transaction.begin();
 
         try {
+            // Remove os itens gravados pelo checkout.
+            await new mssql.Request(transaction)
+                .input('id', mssql.Int, pedidoID)
+                .query(`
+                    DELETE FROM dbo.pedido_itens
+                    WHERE pedido_id = @id
+                `);
+
+            // Remove os itens do fluxo administrativo antigo.
+            await new mssql.Request(transaction)
+                .input('id', mssql.Int, pedidoID)
+                .query(`
+                    DELETE FROM dbo.ItemPedido
+                    WHERE pedidoID = @id
+                `);
+
+            // Remove os pagamentos relacionados.
+            await new mssql.Request(transaction)
+                .input('id', mssql.Int, pedidoID)
+                .query(`
+                    DELETE FROM dbo.pagamentos
+                    WHERE pedido_id = @id
+                `);
 
             await new mssql.Request(transaction)
-                .input('id', mssql.Int, id)
+                .input('id', mssql.Int, pedidoID)
                 .query(`
-            DELETE FROM ItemPedido
-            WHERE pedidoID=@id
-        `)
+                    DELETE FROM dbo.Pedido
+                    WHERE id = @id
+                `);
 
-            await new mssql.Request(transaction)
-                .input('id', mssql.Int, id)
-                .query(`
-            DELETE FROM Pedido
-            WHERE id=@id
-        `)
-
-            await transaction.commit()
+            await transaction.commit();
 
         } catch (erro) {
-
-            await transaction.rollback()
-
-            throw erro
+            await transaction.rollback();
+            throw erro;
         }
     }
 
     static async contar() {
+        await conectar();
 
-        await conectar()
+        const resultado = await new mssql.Request().query(`
+            SELECT COUNT(*) AS total
+            FROM dbo.Pedido
+        `);
 
-        const resultado =
-            await new mssql.Request()
-                .query(`
-            SELECT
-                COUNT(*) total
-            FROM Pedido
-        `)
-
-        return resultado.recordset[0].total
+        return resultado.recordset[0].total;
     }
 
     static async relatorio() {
+        await conectar();
 
-        await conectar()
-
-        const resultado =
-            await new mssql.Request()
-                .query(`
+        const resultado = await new mssql.Request().query(`
             SELECT
-
                 P.id,
                 P.dataPedido,
-
-                C.nome cliente,
-
-                SUM(
-                    I.quantidade *
-                    I.precoUnitario
-                ) total
-
-            FROM Pedido P
-
-            INNER JOIN Cliente C
-                ON C.id=P.clienteID
-
-            INNER JOIN ItemPedido I
-                ON I.pedidoID=P.id
-
+                C.nome AS cliente,
+                SUM(I.quantidade * I.precoUnitario) AS total
+            FROM dbo.Pedido P
+            INNER JOIN dbo.Cliente C
+                ON C.id = P.clienteID
+            INNER JOIN dbo.ItemPedido I
+                ON I.pedidoID = P.id
             GROUP BY
-
                 P.id,
                 P.dataPedido,
                 C.nome
+            ORDER BY P.dataPedido DESC
+        `);
 
-            ORDER BY
-                P.dataPedido DESC
-        `)
-
-
-        return resultado.recordset
+        return resultado.recordset;
     }
+
     static async produtosMaisVendidos() {
+        await conectar();
 
-        await conectar()
-
-        const resultado =
-            await new mssql.Request()
-                .query(`
+        const resultado = await new mssql.Request().query(`
             SELECT TOP 10
-
                 O.nome,
-
-                SUM(
-                    I.quantidade
-                ) vendidos
-
-            FROM ItemPedido I
-
-            INNER JOIN Oculos O
-                ON O.id=I.oculosID
-
+                SUM(I.quantidade) AS vendidos
+            FROM dbo.ItemPedido I
+            INNER JOIN dbo.Oculos O
+                ON O.id = I.oculosID
             GROUP BY O.nome
-
             ORDER BY vendidos DESC
-        `)
+        `);
 
-        return resultado.recordset
+        return resultado.recordset;
     }
 
     static async melhoresClientes() {
+        await conectar();
 
-        await conectar()
-
-        const resultado =
-            await new mssql.Request()
-                .query(`
+        const resultado = await new mssql.Request().query(`
             SELECT TOP 10
-
                 C.nome,
-
-                COUNT(*) pedidos
-
-            FROM Pedido P
-
-            INNER JOIN Cliente C
-                ON C.id=P.clienteID
-
-            GROUP BY C.nome
-
+                COUNT(*) AS pedidos
+            FROM dbo.Pedido P
+            INNER JOIN dbo.Cliente C
+                ON C.id = P.clienteID
+            GROUP BY C.id, C.nome
             ORDER BY pedidos DESC
-        `)
+        `);
 
-        return resultado.recordset
+        return resultado.recordset;
     }
 
     static async faturamentoMensal() {
+        await conectar();
 
-        await conectar()
-
-        const resultado =
-            await new mssql.Request()
-                .query(`
+        const resultado = await new mssql.Request().query(`
             SELECT
-
-                YEAR(P.dataPedido) ano,
-
-                MONTH(P.dataPedido) mes,
-
-                SUM(
-                    I.quantidade *
-                    I.precoUnitario
-                ) total
-
-            FROM Pedido P
-
-            INNER JOIN ItemPedido I
-                ON I.pedidoID=P.id
-
+                YEAR(P.dataPedido) AS ano,
+                MONTH(P.dataPedido) AS mes,
+                SUM(I.quantidade * I.precoUnitario) AS total
+            FROM dbo.Pedido P
+            INNER JOIN dbo.ItemPedido I
+                ON I.pedidoID = P.id
             GROUP BY
-
                 YEAR(P.dataPedido),
                 MONTH(P.dataPedido)
-
             ORDER BY
-
                 ano DESC,
                 mes DESC
-        `)
+        `);
 
-        return resultado.recordset
+        return resultado.recordset;
     }
 }

@@ -1,68 +1,62 @@
 <section class="container py-5">
 
-  <h2 class="text-center mb-4">Produtos em Destaque</h2>
+    <h2 class="text-center mb-4">Produtos em Destaque</h2>
 
-  <div class="row g-4">
+    <div class="row g-4">
 
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-classico-1.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Óculos Dourado</h5>
-          <p>R$ 269,90</p>
-        </div>
-      </div>
+        <% if (destaques && destaques.length > 0) { %>
+
+            <% destaques.forEach(produto => { %>
+
+                <div class="col-md-4">
+                    <a href="/oculos/produto/<%= produto.id %>"
+                       class="text-decoration-none text-reset">
+
+                        <div class="card h-100">
+
+                            <img
+                                src="<%= produto.imagem
+                                    ? (/^https?:\/\//i.test(produto.imagem) || produto.imagem.startsWith('/')
+                                        ? produto.imagem
+                                        : '/uploads/' + produto.imagem)
+                                    : '/uploads/oculos1.png' %>"
+                                class="card-img-top"
+                                alt="<%= produto.nome %>"
+                                onerror="this.onerror=null; this.src='/uploads/oculos1.png';">
+
+                            <div class="card-body">
+
+                                <h5>
+                                    <%= produto.nome %>
+                                </h5>
+
+                                <p>
+                                    <%= Number(produto.preco || 0).toLocaleString(
+                                        'pt-BR',
+                                        {
+                                            style: 'currency',
+                                            currency: 'BRL'
+                                        }
+                                    ) %>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+                </div>
+
+            <% }) %>
+
+        <% } else { %>
+
+            <div class="col-12 text-center">
+                <p>Nenhum produto disponível no momento.</p>
+            </div>
+
+        <% } %>
+
     </div>
-
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-de-grau-1.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Golden Classic</h5>
-          <p>R$ 219,90</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-vintage-1.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Vintage Style</h5>
-          <p>R$ 299,90</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-de-sol-6.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Titan Silver Vision</h5>
-          <p>R$ 99,99</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-esportivos-6.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Aurora Gold</h5>
-          <p>R$ 109,90</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card">
-        <img src="/uploads/oculos-fashion-1.png" class="card-img-top">
-        <div class="card-body">
-          <h5>Emerald Feline</h5>
-          <p>R$ 269,90</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </section>

@@ -1,175 +1,205 @@
-import carrinhoModelo from '../models/carrinhoModelo.mjs'
-import pagamentoModelo from '../models/pagamentoModelo.mjs'
+
+import carrinhoModelo from '../models/carrinhoModelo.mjs';
+import pagamentoModelo from '../models/pagamentoModelo.mjs';
 
 function formatarMoeda(valor) {
-
-    return Number(valor).toLocaleString(
-        'pt-BR',
-        {
-            style: 'currency',
-            currency: 'BRL'
-        }
-    )
-
+    return Number(valor).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
 }
 
 class PagamentoControle {
-
     async index(req, res) {
-
         try {
+            const usuario = req.session?.usuario;
 
-            const produtos =
-                await carrinhoModelo.listar()
-
-            if (!produtos || produtos.length === 0) {
-
-                return res.redirect('/carrinho')
-
+            if (!usuario) {
+                return res.redirect('/autenticacao/login');
             }
 
-            const subtotal =
-                produtos.reduce(
-                    (total, item) =>
-                        total + item.preco * item.quantidade,
-                    0
-                )
+            const clienteId = Number(usuario.id);
 
-            const frete = 0
+            if (!Number.isInteger(clienteId) || clienteId <= 0) {
+                return res.status(400).send('ID do cliente inválido.');
+            }
 
-            const total =
-                subtotal + frete
+            const entrega = req.session.entrega;
 
-            const parcelas =
-                Array.from(
-                    { length: 6 },
-                    (_, indice) => {
+            // A entrega precisa ser preenchida antes do pagamento.
+            if (!entrega || Number(entrega.cliente_id) !== clienteId) {
+                return res.redirect('/entrega');
+            }
 
-                        const numero =
-                            indice + 1
+            const produtos = await carrinhoModelo.listar(clienteId);
 
-                        return {
-                            numero,
-                            valor: total / numero,
-                            valorFormatado:
-                                formatarMoeda(total / numero)
-                        }
+            if (!produtos || produtos.length === 0) {
+                return res.redirect('/carrinho');
+            }
 
-                    }
-                )
+            const subtotal = produtos.reduce(
+                (total, item) =>
+                    total + Number(item.preco) * Number(item.quantidade),
+                0
+            );
+
+            const frete = subtotal >= 300 ? 0 : 25;
+            const total = subtotal + frete;
+
+            // Mantém os valores atualizados na sessão de entrega.
+            req.session.entrega.subtotal = subtotal;
+            req.session.entrega.frete = frete;
+            req.session.entrega.total = total;
+
+            const parcelas = Array.from({ length: 6 }, (_, indice) => {
+                const numero = indice + 1;
+                const valor = total / numero;
+
+                return {
+                    numero,
+                    valor,
+                    valorFormatado: formatarMoeda(valor)
+                };
+            });
 
             const codigoBoleto =
-                '23790001266000000000123456789012199900000099000'
+                '23790001266000000000123456789012199900000099000';
 
             const codigoPix =
-                '00020126580014br.gov.bcb.pix0136a1b2c3d4-e5f6-7890-abcd-ef1234567890520400005303986540599.005802BR5925LOJA ONLINE OCULOS SA6014SAO PAULO62070503***63041D3A'
+                '00020126580014br.gov.bcb.pix0136a1b2c3d4-e5f6-7890-abcd-ef1234567890520400005303986540599.005802BR5925LOJA ONLINE OCULOS SA6014SAO PAULO62070503***63041D3A';
 
-            const barrasBoleto =
-                [
-                    3, 2, 4, 2, 3, 5, 2, 3, 2, 4,
-                    3, 2, 5, 2, 3, 4, 2, 3, 2, 4,
-                    3, 2, 5, 2, 3, 4, 2, 3, 5, 2,
-                    4, 3, 2, 3, 4, 2, 5, 3, 2, 4
-                ]
+            const barrasBoleto = [
+                3, 2, 4, 2, 3, 5, 2, 3, 2, 4,
+                3, 2, 5, 2, 3, 4, 2, 3, 2, 4,
+                3, 2, 5, 2, 3, 4, 2, 3, 5, 2,
+                4, 3, 2, 3, 4, 2, 5, 3, 2, 4
+            ];
 
-            res.render(
-                'pagamento/index',
-                {
-                    titulo: 'Pagamento',
-                    produtos,
-                    subtotal,
-                    frete,
-                    total,
-                    parcelas,
-                    codigoBoleto,
-                    codigoPix,
-                    barrasBoleto,
-                    formatarMoeda
-                }
-            )
-
+            return res.render('pagamento/index', {
+                titulo: 'Pagamento',
+                produtos,
+                subtotal,
+                frete,
+                total,
+                parcelas,
+                codigoBoleto,
+                codigoPix,
+                barrasBoleto,
+                formatarMoeda,
+                entrega
+            });
         } catch (erro) {
+            console.error('Erro ao carregar página de pagamento:', erro);
 
-            console.error(erro)
-
-            res.status(500).render('erro', {
-                mensagem: 'Erro ao carregar página de pagamento.',
-                erro
-            })
-
+            return res.status(500).render('erro', {
+                mensagem: 'Erro ao carregar página de pagamento.'
+            });
         }
-
     }
 
     async finalizar(req, res) {
-
         try {
+            const usuario = req.session?.usuario;
 
-            const produtos =
-                await carrinhoModelo.listar()
-
-            if (!produtos || produtos.length === 0) {
-
-                return res.redirect('/carrinho')
-
+            if (!usuario) {
+                return res.redirect('/autenticacao/login');
             }
 
-            const subtotal =
-                produtos.reduce(
-                    (total, item) =>
-                        total + item.preco * item.quantidade,
-                    0
-                )
+            const clienteId = Number(usuario.id);
+            const entrega = req.session.entrega;
 
-            const frete = 0
+            if (!Number.isInteger(clienteId) || clienteId <= 0) {
+                return res.status(400).send('ID do cliente inválido.');
+            }
 
-            const total =
-                subtotal + frete
+            if (!entrega || Number(entrega.cliente_id) !== clienteId) {
+                return res.redirect('/entrega');
+            }
 
-            const metodo =
-                req.body.metodo || 'cartao'
+            const produtos = await carrinhoModelo.listar(clienteId);
 
-            const parcelas =
-                Number(req.body.parcelas || 1)
+            if (!produtos || produtos.length === 0) {
+                return res.redirect('/carrinho');
+            }
+
+            const subtotal = produtos.reduce(
+                (total, item) =>
+                    total + Number(item.preco) * Number(item.quantidade),
+                0
+            );
+
+            const frete = subtotal >= 300 ? 0 : 25;
+            const total = subtotal + frete;
+
+            const metodo = req.body.metodo || 'cartao';
+            const parcelas = Number(req.body.parcelas || 1);
+
+            const metodosPermitidos = ['cartao', 'pix', 'boleto'];
+
+            if (!metodosPermitidos.includes(metodo)) {
+                return res.status(400).send('Método de pagamento inválido.');
+            }
+
+            if (
+                !Number.isInteger(parcelas) ||
+                parcelas < 1 ||
+                parcelas > 6
+            ) {
+                return res.status(400).send('Quantidade de parcelas inválida.');
+            }
 
             const codigo_referencia =
-                metodo === 'pix'
-                    ? 'PIX-' + Date.now()
-                    : metodo === 'boleto'
-                        ? 'BOL-' + Date.now()
-                        : 'CARD-' + Date.now()
+                `${metodo.toUpperCase()}-${Date.now()}`;
 
-            await pagamentoModelo.finalizar(
-                {
-                    cliente_id: 1,
-                    produtos,
-                    subtotal,
-                    frete,
-                    total,
-                    metodo,
-                    parcelas,
-                    codigo_referencia
-                }
-            )
+            const pedidoId = await pagamentoModelo.finalizar({
+                cliente_id: clienteId,
+                produtos,
+                subtotal,
+                frete,
+                total,
+                metodo,
+                parcelas: metodo === 'cartao' ? parcelas : 1,
+                codigo_referencia
+            });
 
-            res.redirect('/')
+            // Guarda os dados para exibir a confirmação após limpar o carrinho.
+            req.session.confirmacaoCompra = {
+                pedidoId,
+                entrega: { ...entrega },
+                subtotal,
+                frete,
+                total,
+                metodo,
+                parcelas: metodo === 'cartao' ? parcelas : 1,
+                codigo_referencia,
+                produtos: produtos.map(item => ({ ...item }))
+            };
 
+            delete req.session.entrega;
+
+            return res.redirect('/pagamento/confirmacao');
         } catch (erro) {
+            console.error('Erro ao finalizar pagamento:', erro);
 
-            console.error(erro)
-
-            res.status(500).render(
-                'erro',
-                {
-                    mensagem:
-                        'Erro ao finalizar pagamento.'
-                }
-            )
-
+            return res.status(500).render('erro', {
+                mensagem: 'Erro ao finalizar pagamento. Verifique os dados e tente novamente.'
+            });
         }
-
     }
 
+    async confirmacao(req, res) {
+        const confirmacao = req.session?.confirmacaoCompra;
+
+        if (!confirmacao) {
+            return res.redirect('/carrinho');
+        }
+
+        return res.render('pagamento/confirmacao', {
+            titulo: 'Compra confirmada',
+            confirmacao,
+            formatarMoeda
+        });
+    }
 }
 
-export default new PagamentoControle()
+export default new PagamentoControle();

@@ -1,377 +1,484 @@
-<form action="/pagamento" method="POST" id="formPagamento">
 
+<form action="/pagamento" method="POST" id="formPagamento">
     <input type="hidden" name="metodo" id="metodoSelecionado" value="cartao">
 
     <div class="container py-5">
 
+        <!-- CABEÇALHO -->
         <div class="row mb-4">
-
             <div class="col-12">
+                <h2 class="fw-bold">Pagamento</h2>
 
-                <h2 class="fw-bold">
-                    Pagamento
-                </h2>
-
-                <nav class="mt-3" style="--bs-breadcrumb-divider:'>'">
-
-                    <ol class="breadcrumb">
-
-                        <li class="breadcrumb-item">
-
-                            Entrega
-
-                        </li>
-
-                        <li class="breadcrumb-item active fw-bold">
-
-                            Pagamento
-
-                        </li>
-
-                    </ol>
-
-                </nav>
-
+                <div class="d-flex gap-4 mt-3 mb-4">
+                    <div><strong>1</strong> ENTREGA</div>
+                    <div id="active"><strong>2</strong> PAGAMENTO</div>
+                </div>
             </div>
-
         </div>
 
         <div class="row g-4">
 
-            <!-- ESQUERDA -->
-
+            <!-- FORMAS DE PAGAMENTO -->
             <div class="col-lg-8">
-
                 <div class="card shadow-sm border-0">
-
                     <div class="card-body p-4">
 
-                        <h4 class="mb-4">
-
-                            Método de Pagamento
-
-                        </h4>
+                        <h4 class="mb-4">Método de Pagamento</h4>
 
                         <ul class="nav nav-pills mb-4" id="metodos">
-
                             <li class="nav-item">
-
-                                <button type="button" class="nav-link active" data-bs-target="#cartao"
+                                <button type="button"
+                                    class="nav-link active"
+                                    data-bs-target="#cartao"
                                     data-metodo="cartao">
-
                                     💳 Cartão
-
                                 </button>
-
                             </li>
 
                             <li class="nav-item ms-2">
-
-                                <button type="button" class="nav-link" data-bs-target="#pix" data-metodo="pix">
-
+                                <button type="button"
+                                    class="nav-link"
+                                    data-bs-target="#pix"
+                                    data-metodo="pix">
                                     📱 Pix
-
                                 </button>
-
                             </li>
 
                             <li class="nav-item ms-2">
-
-                                <button type="button" class="nav-link" data-bs-target="#boleto" data-metodo="boleto">
-
+                                <button type="button"
+                                    class="nav-link"
+                                    data-bs-target="#boleto"
+                                    data-metodo="boleto">
                                     🏦 Boleto
-
                                 </button>
-
                             </li>
-
                         </ul>
 
                         <!-- CARTÃO -->
-
                         <div id="cartao">
 
+                            <div class="alert alert-light border">
+                                <strong>Pagamento com cartão</strong>
+                                <p class="text-muted small mb-0">
+                                    Tela demonstrativa de pagamento.
+                                </p>
+                            </div>
+
                             <div class="row">
-
                                 <div class="col-md-12 mb-3">
-
-                                    <label class="form-label">
-
+                                    <label for="numeroCartao" class="form-label">
                                         Número do cartão
-
                                     </label>
 
-                                    <input class="form-control" placeholder="0000 0000 0000 0000">
-
+                                    <input type="text"
+                                        class="form-control"
+                                        id="numeroCartao"
+                                        placeholder="0000 0000 0000 0000"
+                                        inputmode="numeric"
+                                        autocomplete="cc-number"
+                                        maxlength="19">
                                 </div>
 
                                 <div class="col-md-8 mb-3">
-
-                                    <label class="form-label">
-
+                                    <label for="nomeCartao" class="form-label">
                                         Nome impresso
-
                                     </label>
 
-                                    <input class="form-control" placeholder="Nome no cartão">
-
+                                    <input type="text"
+                                        class="form-control"
+                                        id="nomeCartao"
+                                        placeholder="Nome no cartão"
+                                        autocomplete="cc-name">
                                 </div>
 
                                 <div class="col-md-2 mb-3">
-
-                                    <label class="form-label">
-
+                                    <label for="validadeCartao" class="form-label">
                                         Validade
-
                                     </label>
 
-                                    <input class="form-control" placeholder="MM/AA">
-
+                                    <input type="text"
+                                        class="form-control"
+                                        id="validadeCartao"
+                                        placeholder="MM/AA"
+                                        autocomplete="cc-exp"
+                                        maxlength="5">
                                 </div>
 
                                 <div class="col-md-2 mb-3">
-
-                                    <label class="form-label">
-
+                                    <label for="cvvCartao" class="form-label">
                                         CVV
-
                                     </label>
 
-                                    <input class="form-control" placeholder="123">
-
+                                    <input type="password"
+                                        class="form-control"
+                                        id="cvvCartao"
+                                        placeholder="CVV"
+                                        inputmode="numeric"
+                                        autocomplete="cc-csc"
+                                        maxlength="4">
                                 </div>
 
                                 <div class="col-md-12">
-
-                                    <label class="form-label">
-
+                                    <label for="parcelas" class="form-label">
                                         Parcelas
-
                                     </label>
 
-                                    <select class="form-select" name="parcelas">
-
-                                        <% parcelas.forEach(parcela=>{ %>
-
+                                    <select class="form-select" id="parcelas" name="parcelas">
+                                        <% parcelas.forEach(parcela => { %>
                                             <option value="<%= parcela.numero %>">
-
                                                 <%= parcela.numero %>x de
-                                                    <%= parcela.valorFormatado %>
-                                                        sem juros
-
+                                                <%= parcela.valorFormatado %> sem juros
                                             </option>
-
-                                            <% }) %>
-
+                                        <% }) %>
                                     </select>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         <!-- PIX -->
-
                         <div id="pix" class="d-none">
 
-                            <div class="alert alert-success">
+                            <div class="text-center border rounded p-4">
 
-                                <h5>
+                                <div class="mb-3">
+                                    <span class="badge text-bg-success">
+                                        PIX
+                                    </span>
+                                </div>
 
-                                    Pagamento via PIX
+                                <h5 class="fw-bold">Pague com Pix</h5>
 
-                                </h5>
-
-                                <p>
-
-                                    Copie o código abaixo:
-
+                                <p class="text-muted">
+                                    Escaneie o QR Code com o aplicativo do seu banco.
                                 </p>
 
-                                <textarea class="form-control" rows="5" readonly><%= codigoPix %></textarea>
+                                <!-- QR CODE ILUSTRATIVO -->
+                                <div class="d-inline-block bg-white border rounded p-3 mb-3">
+                                    <svg viewBox="0 0 210 210"
+                                        width="210"
+                                        height="210"
+                                        role="img"
+                                        aria-label="QR Code ilustrativo, não escaneável">
+
+                                        <rect width="210" height="210" fill="white"/>
+
+                                        <g fill="#111">
+                                            <!-- Marcador superior esquerdo -->
+                                            <path d="M10 10h60v60H10z M20 20v40h40V20z" fill-rule="evenodd"/>
+                                            <path d="M30 30h20v20H30z"/>
+
+                                            <!-- Marcador superior direito -->
+                                            <path d="M140 10h60v60h-60z M150 20v40h40V20z" fill-rule="evenodd"/>
+                                            <path d="M160 30h20v20h-20z"/>
+
+                                            <!-- Marcador inferior esquerdo -->
+                                            <path d="M10 140h60v60H10z M20 150v40h40v-40z" fill-rule="evenodd"/>
+                                            <path d="M30 160h20v20H30z"/>
+
+                                            <!-- Módulos decorativos -->
+                                            <path d="
+                                                M80 10h10v10H80z M100 10h10v10h-10z
+                                                M80 30h20v10H80z M110 30h10v20h-10z
+                                                M80 50h10v20H80z M100 50h10v10h-10z
+                                                M80 80h10v10H80z M100 80h20v10h-20z
+                                                M130 80h10v20h-10z M150 80h20v10h-20z
+                                                M180 80h20v10h-20z M10 80h10v20H10z
+                                                M30 80h20v10H30z M60 80h10v20H60z
+                                                M20 110h10v10H20z M40 100h20v10H40z
+                                                M80 100h10v20H80z M100 110h10v10h-10z
+                                                M120 110h20v10h-20z M160 100h10v20h-10z
+                                                M190 100h10v20h-10z M10 120h20v10H10z
+                                                M50 120h10v10H50z M100 130h20v10h-20z
+                                                M130 130h10v20h-10z M150 130h10v10h-10z
+                                                M180 130h20v10h-20z M80 150h10v10H80z
+                                                M100 150h10v20h-10z M120 160h10v10h-10z
+                                                M150 150h20v10h-20z M180 160h10v20h-10z
+                                                M80 180h10v20H80z M100 190h20v10h-20z
+                                                M140 180h10v20h-10z M160 190h20v10h-20z
+                                                M190 190h10v10h-10z
+                                            "/>
+                                        </g>
+                                    </svg>
+
+                                    <div class="small text-muted mt-2">
+                                        QR Code ilustrativo — não escaneável
+                                    </div>
+                                </div>
+
+                                <p class="text-muted small">
+                                    Este QR Code é apenas visual. Para pagamentos
+                                    reais, é necessária uma cobrança Pix válida.
+                                </p>
+
+                                <label for="codigoPix" class="form-label fw-semibold">
+                                    Código Pix demonstrativo
+                                </label>
+
+                                <textarea id="codigoPix"
+                                    class="form-control"
+                                    rows="4"
+                                    readonly><%= codigoPix %></textarea>
+
+                                <button type="button"
+                                    class="btn btn-outline-success mt-3"
+                                    id="copiarPix">
+                                    <span class="me-1">📋</span> Copiar código Pix
+                                </button>
 
                             </div>
-
                         </div>
 
                         <!-- BOLETO -->
-
                         <div id="boleto" class="d-none">
 
-                            <div class="alert alert-warning">
+                            <div class="text-center border rounded p-4">
 
-                                <h5>
+                                <div class="mb-3">
+                                    <span class="badge text-bg-warning">
+                                        BOLETO
+                                    </span>
+                                </div>
 
-                                    Pagamento via Boleto
+                                <h5 class="fw-bold">Pagamento via boleto</h5>
 
-                                </h5>
-
-                                <p>
-
-                                    Código:
-
+                                <p class="text-muted">
+                                    Utilize o código abaixo na área de pagamentos
+                                    do seu banco.
                                 </p>
 
-                                <textarea class="form-control" rows="4" readonly><%= codigoBoleto %></textarea>
+                                <!-- CÓDIGO DE BARRAS ILUSTRATIVO -->
+                                <div class="bg-white border rounded p-3 mb-3">
+                                    <svg viewBox="0 0 320 100"
+                                        width="100%"
+                                        role="img"
+                                        aria-label="Código de barras ilustrativo, não válido para pagamento"
+                                        xmlns="http://www.w3.org/2000/svg">
+
+                                        <rect width="320" height="100" fill="white"/>
+
+                                        <g fill="#111">
+                                            <path d="
+                                                M8 8h3v70H8z M14 8h1v70h-1z
+                                                M19 8h4v70h-4z M27 8h2v70h-2z
+                                                M33 8h1v70h-1z M38 8h5v70h-5z
+                                                M47 8h2v70h-2z M53 8h4v70h-4z
+                                                M61 8h1v70h-1z M66 8h3v70h-3z
+                                                M73 8h2v70h-2z M79 8h5v70h-5z
+                                                M88 8h1v70h-1z M93 8h3v70h-3z
+                                                M100 8h5v70h-5z M109 8h2v70h-2z
+                                                M115 8h1v70h-1z M120 8h4v70h-4z
+                                                M128 8h2v70h-2z M134 8h5v70h-5z
+                                                M143 8h1v70h-1z M148 8h3v70h-3z
+                                                M155 8h2v70h-2z M161 8h5v70h-5z
+                                                M170 8h1v70h-1z M175 8h4v70h-4z
+                                                M183 8h2v70h-2z M189 8h1v70h-1z
+                                                M194 8h5v70h-5z M203 8h2v70h-2z
+                                                M209 8h4v70h-4z M217 8h1v70h-1z
+                                                M222 8h3v70h-3z M229 8h5v70h-5z
+                                                M238 8h2v70h-2z M244 8h1v70h-1z
+                                                M249 8h4v70h-4z M257 8h2v70h-2z
+                                                M263 8h5v70h-5z M272 8h1v70h-1z
+                                                M277 8h3v70h-3z M284 8h2v70h-2z
+                                                M290 8h5v70h-5z M299 8h2v70h-2z
+                                                M305 8h4v70h-4z
+                                            "/>
+                                        </g>
+
+                                        <text x="160" y="94"
+                                            font-size="9"
+                                            text-anchor="middle"
+                                            fill="#666">
+                                            ILUSTRATIVO — NÃO PAGÁVEL
+                                        </text>
+                                    </svg>
+
+                                    <div class="small text-muted mt-2">
+                                        Código de barras ilustrativo
+                                    </div>
+                                </div>
+
+                                <div class="text-start">
+                                    <label for="codigoBoleto" class="form-label fw-semibold">
+                                        Linha digitável demonstrativa
+                                    </label>
+
+                                    <textarea id="codigoBoleto"
+                                        class="form-control"
+                                        rows="3"
+                                        readonly><%= codigoBoleto %></textarea>
+                                </div>
+
+                                <p class="text-muted small mt-3">
+                                    O código exibido não corresponde a um boleto
+                                    bancário válido.
+                                </p>
+
+                                <button type="button"
+                                    class="btn btn-outline-dark mt-2"
+                                    id="copiarBoleto">
+                                    📋 Copiar código
+                                </button>
 
                             </div>
-
                         </div>
 
                     </div>
-
                 </div>
-
             </div>
-            <!-- DIREITA -->
 
+            <!-- RESUMO DO PEDIDO -->
             <div class="col-lg-4">
-
-                <div class="card shadow-sm border-0 sticky-top">
-
+                <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
 
-                        <h4 class="mb-4">
-                            Resumo do Pedido
-                        </h4>
+                        <h4 class="mb-4">Resumo do Pedido</h4>
 
-                        <% produtos.forEach(produto=> { %>
+                        <% if (produtos && produtos.length > 0) { %>
 
-                            <div class="d-flex mb-3">
+                            <% produtos.forEach(produto => { %>
+                                <div class="d-flex mb-3">
 
-                                <img src="/uploads/<%= produto.imagem %>" class="rounded border"
-                                    style="width:80px;height:80px;object-fit:contain;">
+                                    <img
+                                        src="/uploads/<%= produto.imagem %>"
+                                        alt="<%= produto.nome %>"
+                                        class="rounded border"
+                                        style="width:80px;height:80px;object-fit:contain;"
+                                        onerror="this.style.display='none'">
 
-                                <div class="ms-3">
+                                    <div class="ms-3">
+                                        <strong><%= produto.nome %></strong>
 
-                                    <strong>
-                                        <%= produto.nome %>
-                                    </strong>
+                                        <% if (produto.cor) { %>
+                                            <div class="text-muted small">
+                                                Cor: <%= produto.cor %>
+                                            </div>
+                                        <% } %>
 
-                                    <div class="text-muted small">
-                                        Cor:
-                                        <%= produto.cor %>
+                                        <% if (produto.tamanho) { %>
+                                            <div class="text-muted small">
+                                                Tamanho: <%= produto.tamanho %>
+                                            </div>
+                                        <% } %>
+
+                                        <div class="text-muted small">
+                                            Quantidade: <%= produto.quantidade %>
+                                        </div>
+
+                                        <div class="mt-1">
+                                            <%= formatarMoeda(
+                                                Number(produto.preco) *
+                                                Number(produto.quantidade)
+                                            ) %>
+                                        </div>
                                     </div>
-
-                                    <div class="text-muted small">
-                                        Tamanho:
-                                        <%= produto.tamanho %>
-                                    </div>
-
-                                    <div class="small">
-                                        Quantidade:
-                                        <%= produto.quantidade %>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <hr>
-
-                            <% }) %>
-
-                                <div class="d-flex justify-content-between">
-
-                                    <span>Subtotal</span>
-
-                                    <strong>
-                                        <%= formatarMoeda(subtotal) %>
-                                    </strong>
-
-                                </div>
-
-                                <div class="d-flex justify-content-between my-3">
-
-                                    <span>Frete</span>
-
-                                    <strong>
-
-                                        <%= frete==0 ? "Grátis" : formatarMoeda(frete) %>
-
-                                    </strong>
-
                                 </div>
 
                                 <hr>
+                            <% }) %>
 
-                                <div class="d-flex justify-content-between fs-4 fw-bold">
+                        <% } else { %>
+                            <p class="text-muted">
+                                Nenhum produto encontrado no carrinho.
+                            </p>
+                        <% } %>
 
-                                    <span>Total</span>
+                        <div class="d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <strong><%= formatarMoeda(subtotal) %></strong>
+                        </div>
 
-                                    <span>
+                        <div class="d-flex justify-content-between my-3">
+                            <span>Frete</span>
+                            <strong>
+                                <%= Number(frete) === 0
+                                    ? "Grátis"
+                                    : formatarMoeda(frete) %>
+                            </strong>
+                        </div>
 
-                                        <%= formatarMoeda(total) %>
+                        <hr>
 
-                                    </span>
+                        <div class="d-flex justify-content-between fs-4 fw-bold">
+                            <span>Total</span>
+                            <span><%= formatarMoeda(total) %></span>
+                        </div>
 
-                                </div>
+                        <button
+                            class="btn btn-warning btn-lg w-100 mt-4"
+                            type="submit"
+                            <%= (!produtos || produtos.length === 0)
+                                ? 'disabled'
+                                : '' %>>
+                            Finalizar Pagamento
+                        </button>
 
-                                <button class="btn btn-warning btn-lg w-100 mt-4" type="submit">
-
-                                    Finalizar Pagamento
-
-                                </button>
-
-                                <div class="text-center mt-3 text-muted small">
-
-                                    🔒 Compra 100% segura
-
-                                </div>
+                        <div class="text-center mt-3 text-muted small">
+                            🔒 Ambiente demonstrativo de compra
+                        </div>
 
                     </div>
-
                 </div>
-
             </div>
 
         </div>
-
     </div>
-
 </form>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const botoes = document.querySelectorAll("#metodos [data-metodo]");
+    const metodoSelecionado = document.getElementById("metodoSelecionado");
 
-    const tabs =
-        document.querySelectorAll(".nav-link");
+    const paineis = {
+        cartao: document.getElementById("cartao"),
+        pix: document.getElementById("pix"),
+        boleto: document.getElementById("boleto")
+    };
 
-    const cartao =
-        document.getElementById("cartao");
-
-    const pix =
-        document.getElementById("pix");
-
-    const boleto =
-        document.getElementById("boleto");
-
-    const metodo =
-        document.getElementById("metodoSelecionado");
-
-    tabs.forEach(botao => {
-
+    // Alterna entre cartão, Pix e boleto.
+    botoes.forEach(botao => {
         botao.addEventListener("click", () => {
+            const metodo = botao.dataset.metodo;
 
-            tabs.forEach(t => t.classList.remove("active"));
+            if (!paineis[metodo]) return;
 
+            botoes.forEach(item => item.classList.remove("active"));
             botao.classList.add("active");
 
-            cartao.classList.add("d-none");
+            Object.values(paineis).forEach(painel => {
+                painel.classList.add("d-none");
+            });
 
-            pix.classList.add("d-none");
-
-            boleto.classList.add("d-none");
-
-            metodo.value =
-                botao.dataset.metodo;
-
-            document
-                .querySelector(botao.dataset.bsTarget)
-                .classList.remove("d-none");
-
+            paineis[metodo].classList.remove("d-none");
+            metodoSelecionado.value = metodo;
         });
-
     });
 
+    // Copia um código para a área de transferência.
+    async function copiarCodigo(campoId, botaoId) {
+        const campo = document.getElementById(campoId);
+        const botao = document.getElementById(botaoId);
+
+        try {
+            await navigator.clipboard.writeText(campo.value);
+            botao.textContent = "Código copiado!";
+        } catch (erro) {
+            campo.focus();
+            campo.select();
+
+            const copiado = document.execCommand("copy");
+            botao.textContent = copiado
+                ? "Código copiado!"
+                : "Selecione e copie o código";
+        }
+    }
+
+    document.getElementById("copiarPix").addEventListener("click", () => {
+        copiarCodigo("codigoPix", "copiarPix");
+    });
+
+    document.getElementById("copiarBoleto").addEventListener("click", () => {
+        copiarCodigo("codigoBoleto", "copiarBoleto");
+    });
+});
 </script>

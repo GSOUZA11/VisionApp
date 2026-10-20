@@ -1,19 +1,17 @@
 // controllers/homeControle.mjs
 
+import OculosModelo from "../models/oculosModelo.mjs";
+
 const homeControle = {
+    async index(req, res) {
+        const oculos = await OculosModelo.listar();
 
-    index(req, res) {
-
-        res.render(
-            'home/index',
-            {
-                title: 'Vision',
-                pagina: 'home'
-            }
-        )
-
+        res.render("home/index", {
+            title: "Vision",
+            pagina: "home",
+            destaques: oculos.slice(0, 6)
+        });
     }
+};
 
-}
-
-export default homeControle
+export default homeControle;

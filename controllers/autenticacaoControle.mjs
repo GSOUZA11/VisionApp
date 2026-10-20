@@ -55,10 +55,13 @@ const autenticacaoControle = {
         await LogModelo.registrar(
             `Login realizado por ${usuario.nomeCompleto || usuario.nome}`
         )
+
         requisicao.session.usuario = {
             id: usuario.id,
             nome: usuario.nomeCompleto || usuario.nome,
+            email: usuario.email,
             cargo: usuario.cargo || 'Cliente'
+
         }
 
         return requisicao.session.save(() => {
@@ -76,6 +79,7 @@ const autenticacaoControle = {
         }
 
         return requisicao.session.destroy(() => {
+
             resposta.redirect('/')
         })
     }

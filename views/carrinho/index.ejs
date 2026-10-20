@@ -1,194 +1,186 @@
-<div class="container py-5">
 
+<div class="container py-5">
     <div class="row g-4">
 
-        <!-- Produtos -->
+        <!-- Produtos do carrinho -->
         <section class="col-lg-8">
-
             <div class="bg-white rounded shadow-sm p-4">
+                <h2 class="mb-4">Seu Carrinho</h2>
 
-                <h2 class="mb-4">
-                    Seu Carrinho
-                </h2>
-
-                <% if(carrinho.length === 0){ %>
+                <% if (carrinho.length === 0) { %>
 
                     <div class="text-center py-5">
-
-                        <h5>
-                            Seu carrinho está vazio.
-                        </h5>
-
+                        <h5 class="mb-3">Seu carrinho está vazio.</h5>
+                        <p class="text-muted">
+                            Que tal escolher um óculos para você?
+                        </p>
                     </div>
+
+                <% } else { %>
+
+                    <% carrinho.forEach(item => { %>
+
+                        <div class="row align-items-center border-bottom py-4">
+
+                            <!-- Imagem -->
+                            <div class="col-4 col-md-3 text-center">
+                                <% if (item.imagem) { %>
+                                    <img
+                                        src="<%= /^https?:\/\//i.test(item.imagem) || String(item.imagem).startsWith('/') ? item.imagem : '/uploads/' + item.imagem %>"
+                                        alt="<%= item.nome %>"
+                                        class="img-fluid rounded"
+                                        style="max-height: 140px; object-fit: contain;"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                    >
+
+                                    <div
+                                        class="align-items-center justify-content-center bg-light rounded text-muted"
+                                        style="height: 120px; display: none;"
+                                    >
+                                        Imagem indisponível
+                                    </div>
+                                <% } else { %>
+                                    <div
+                                        class="d-flex align-items-center justify-content-center bg-light rounded text-muted"
+                                        style="height: 120px;"
+                                    >
+                                        Sem imagem
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <!-- Informações do produto -->
+                            <div class="col-8 col-md-6">
+                                <h5 class="mb-2"><%= item.nome %></h5>
+
+                                <% if (item.cor) { %>
+                                    <p class="mb-1 text-muted">
+                                        Cor: <%= item.cor %>
+                                    </p>
+                                <% } %>
+
+                                <% if (item.tamanho) { %>
+                                    <p class="mb-2 text-muted">
+                                        Tamanho: <%= item.tamanho %>
+                                    </p>
+                                <% } %>
+
+                                <p class="mb-2">
+                                    Preço unitário:
+                                    <strong>
+                                        <%= Number(item.preco).toLocaleString('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL'
+                                        }) %>
+                                    </strong>
+                                </p>
+
+                                <!-- Controle de quantidade -->
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="text-muted">Quantidade:</span>
+
+                                    <a
+                                        href="/carrinho/menos/<%= item.id %>"
+                                        class="btn btn-outline-secondary btn-sm"
+                                        aria-label="Diminuir quantidade"
+                                    >−</a>
+
+                                    <span class="fw-bold"><%= item.quantidade %></span>
+
+                                    <a
+                                        href="/carrinho/mais/<%= item.id %>"
+                                        class="btn btn-outline-secondary btn-sm"
+                                        aria-label="Aumentar quantidade"
+                                    >+</a>
+                                </div>
+
+                                <!-- Remover produto -->
+                                <a
+                                    href="/carrinho/remover/<%= item.id %>"
+                                    class="text-danger text-decoration-none"
+                                    onclick="return confirm('Deseja remover este produto do carrinho?');"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                    Remover
+                                </a>
+                            </div>
+
+                            <!-- Subtotal do item -->
+                            <div class="col-12 col-md-3 text-md-end mt-3 mt-md-0">
+                                <small class="text-muted d-block">Subtotal do item</small>
+
+                                <strong class="fs-6">
+                                    <%= (Number(item.preco) * Number(item.quantidade)).toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                    }) %>
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    <% }) %>
 
                 <% } %>
-
-                <% carrinho.forEach(item=>{ %>
-
-                    <div class="row align-items-center border-bottom py-4">
-
-                        <div class="col-md-3 text-center">
-
-                            <img
-                                src="/uploads/<%= item.imagem %>"
-                                class="img-fluid rounded"
-                            >
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <h5>
-
-                                <%= item.nome %>
-
-                            </h5>
-
-                            <p class="mb-1">
-
-                                Cor:
-                                <%= item.cor %>
-
-                            </p>
-
-                            <p class="mb-1">
-
-                                Tamanho:
-                                <%= item.tamanho %>
-
-                            </p>
-
-                            <p class="mb-2">
-
-                                Quantidade:
-                                <%= item.quantidade %>
-
-                            </p>
-
-                            <a
-                                href="/carrinho/remover/<%= item.id %>"
-                                class="text-danger text-decoration-none"
-                            >
-
-                                Remover
-
-                            </a>
-
-                        </div>
-
-                        <div
-                            class="col-md-3
-                                   text-end
-                                   fw-bold">
-
-                            R$
-
-                            <%= item.preco.toFixed(2) %>
-
-                        </div>
-
-                    </div>
-
-                <% }) %>
-
             </div>
-
         </section>
 
-        <!-- Resumo -->
-
+        <!-- Resumo do pedido -->
         <aside class="col-lg-4">
+            <div class="bg-white rounded shadow-sm p-4 sticky-top" style="top: 20px;">
+                <h2 class="mb-4">Resumo do Pedido</h2>
 
-            <div
-                class="bg-white
-                       rounded
-                       shadow-sm
-                       p-4
-                       sticky-top">
-
-                <h2 class="mb-4">
-
-                    Resumo do Pedido
-
-                </h2>
-
-                <div
-                    class="d-flex
-                           justify-content-between
-                           mb-3">
-
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Subtotal</span>
                     <span>
-
-                        Subtotal
-
+                        <%= Number(subtotal).toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }) %>
                     </span>
-
-                    <strong>
-
-                        R$
-                        <%= subtotal.toFixed(2) %>
-
-                    </strong>
-
                 </div>
 
-                <div
-                    class="d-flex
-                           justify-content-between
-                           mb-3">
-
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Frete</span>
                     <span>
-
-                        Frete
-
+                        <% if (Number(frete) === 0) { %>
+                            <span class="text-success fw-bold">GRÁTIS</span>
+                        <% } else { %>
+                            <%= Number(frete).toLocaleString('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }) %>
+                        <% } %>
                     </span>
-
-                    <strong>
-
-                        <%= frete == 0
-                            ? "GRÁTIS"
-                            : "R$ " + frete.toFixed(2) %>
-
-                    </strong>
-
                 </div>
 
                 <hr>
 
-                <div
-                    class="d-flex
-                           justify-content-between
-                           fs-5
-                           fw-bold
-                           mb-4">
-
-                    <span>
-
-                        Total
-
-                    </span>
-
-                    <span>
-
-                        R$
-                        <%= total.toFixed(2) %>
-
-                    </span>
-
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <strong class="fs-5">Total</strong>
+                    <strong class="fs-5 text-success">
+                        <%= Number(total).toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }) %>
+                    </strong>
                 </div>
 
-                <a
-                    href="/entrega"
-                    class="btn btn-warning w-100">
+                <% if (carrinho.length > 0) { %>
+                    <a href="/entrega" class="btn btn-warning w-100 py-2 fw-bold">
+                        Finalizar Compra
+                    </a>
+                <% } else { %>
+                    <button class="btn btn-warning w-100 py-2" disabled>
+                        Finalizar Compra
+                    </button>
+                <% } %>
 
-                    Finalizar Compra
-
-                </a>
-
+                <p class="text-muted small text-center mt-3 mb-0">
+                    O frete é grátis para compras a partir de R$ 300,00.
+                </p>
             </div>
-
         </aside>
 
     </div>
-
 </div>

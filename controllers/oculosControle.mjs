@@ -192,19 +192,45 @@ const oculosControle = {
         res.redirect('/oculos')
     },
 
-    async excluir(req, res) {
+   async excluir(req, res) {
+    try {
+
+        const oculos = await OculosModelo.buscarPorId(
+            req.params.id
+        )
 
         await LogModelo.registrar(
-            `Óculos removido: ${req.body.nome}`
+            `Óculos removido: ${oculos?.nome || req.params.id}`
         )
 
         await OculosModelo.remover(
             req.params.id
         )
 
-        res.redirect('/oculos/admin')
-    },
-    
+        return res.redirect('/oculos/admin')
+
+    } catch (erro) {
+
+        console.error(erro)
+
+        if (erro.message === 'OCULOS_VINCULADO') {
+
+            return res.send(`
+                <script>
+                    alert('Este óculos possui pedidos vinculados e não pode ser excluído.');
+                    window.location.href = '/oculos/admin';
+                </script>
+            `)
+        }
+
+        return res.send(`
+            <script>
+                alert('Erro ao excluir o óculos.');
+                window.location.href = '/oculos/admin';
+            </script>
+        `)
+    }
+},
 
     async produto(req, res) {
         try {

@@ -5,6 +5,7 @@ import authApiControleJWT from '../controllers/api/authApiControle.mjs'
 import verificarJWT from '../middleware/verificarJWT.mjs'
 
 const apiRouter = Router()
+
 // Auth JWTgit config --global --list
 apiRouter.post(
     '/login',
@@ -12,13 +13,20 @@ apiRouter.post(
 )
 
 // Perfil
-apiRouter.get('/perfil', (req, res) => {
-    res.json({
-        nome: "Gabriel",
-        email: "gabriel@email.com",
-        telefone: "11999999999"
-    })
-})
+apiRouter.get(
+    '/perfil',
+    verificarJWT,
+    (req, res) => {
+
+        res.json({
+            id: req.usuario.id,
+            nome: req.usuario.nome,
+            email: req.usuario.email,
+            telefone: ""
+        })
+
+    }
+)
 
 // Leitura
 apiRouter.get('/oculos',verificarJWT, oculosApiControle.listar)

@@ -1,35 +1,28 @@
 import OculosModelo from '../models/oculosModelo.mjs'
 import LogModelo from '../models/logModelo.mjs'
 
-// tipo (query string) -> categoria no banco + view + título
 const TIPOS = {
     esportivo: {
         categoria: 'Esportivo',
-        view: 'oculos/index',
         titulo: 'Óculos Esportivos em Destaque'
     },
     sol: {
         categoria: 'Sol',
-        view: 'oculos/index',
         titulo: 'Óculos de Sol em Destaque'
     },
     vintage: {
         categoria: 'Vintage',
-        view: 'oculos/index',
         titulo: 'Óculos Vintage em Destaque'
     },
     classico: {
         categoria: 'Classico',
-        view: 'oculos/index',
         titulo: 'Óculos Clássicos'
     },
     fashion: {
         categoria: 'Fashion',
-        view: 'oculos/index',
         titulo: 'Óculos Fashion'
     },
     grau: {
-        view: 'oculos/index',
         titulo: 'Óculos de Grau'
     }
 }
@@ -37,71 +30,52 @@ const TIPOS = {
 const oculosControle = {
 
     async index(req, res) {
+        const oculos = await OculosModelo.listar()
 
-        const oculos =
-            await OculosModelo.listar()
-
-        return res.render(
-            'oculos/index',
-            { oculos }
-        )
+        return res.render('oculos/index', {
+            oculos,
+            titulo: 'Todos os Óculos'
+        })
     },
 
     async completo(req, res) {
+        const oculos = await OculosModelo.listar()
 
-        const oculos =
-            await OculosModelo.listar()
-
-        res.render(
-            'oculos/index',
-            {
-                title: 'Todos os Óculos',
-                pagina: 'catalogo',
-                oculos
-            }
-        )
+        return res.render('oculos/index', {
+            oculos,
+            titulo: 'Todos os Óculos',
+            pagina: 'catalogo'
+        })
     },
 
-    // GET /oculos?tipo=esportivo
     async tipo(req, res) {
 
-        const chave =
-            String(req.query.tipo || '')
-                .toLowerCase()
+        const chave = String(req.query.tipo || '').toLowerCase()
 
         const config = TIPOS[chave]
 
         if (!config) {
-            return res
-                .status(404)
-                .send('Tipo de óculos inválido')
+            return res.status(404).send('Tipo de óculos inválido')
         }
 
-        const oculos =
-            chave === 'grau'
-                ? await OculosModelo.listarPorGrau()
-                : await OculosModelo.listarPorTipo(
-                    config.categoria
-                )
+        let oculos = []
 
-        return res.render(
-            config.view,
-            {
-                title: config.titulo,
-                titulo: config.titulo,
-                mensagemVazia: config.mensagemVazia,
-                pagina: 'catalogo',
-                oculos,
-                produtos: oculos
-            }
-        )
+        if (chave === 'grau') {
+            oculos = await OculosModelo.listarPorGrau()
+        } else {
+            oculos = await OculosModelo.listarPorTipo(config.categoria)
+        }
+
+        return res.render('oculos/index', {
+            title: config.titulo,
+            titulo: config.titulo,
+            pagina: 'catalogo',
+            oculos
+        })
     },
 
     async novo(req, res) {
-
-        return res.render(
-            'oculos/novo'
-        )
+        return res.render('oculos/novo')
     },
 
     async criar(req, res) {
@@ -113,18 +87,14 @@ const oculosControle = {
                 !req.body.preco ||
                 Number(req.body.preco) <= 0
             ) {
-                return res
-                    .status(400)
-                    .send('Dados inválidos')
+                return res.status(400).send('Dados inválidos')
             }
 
-            const imagem =
-                req.file
-                    ? req.file.filename
-                    : null
+            const imagem = req.file
+                ? req.file.filename
+                : null
 
             await OculosModelo.criar({
-
                 nome: req.body.nome,
                 descricao: req.body.descricao,
                 categoria: req.body.categoria,
@@ -136,7 +106,7 @@ const oculosControle = {
             })
 
             await LogModelo.registrar(
-                `Óculos atualizado: ${req.body.nome}`
+                `Óculos criado: ${req.body.nome}`
             )
 
             return res.redirect('/oculos')
@@ -153,12 +123,11 @@ const oculosControle = {
 
     async editar(req, res) {
 
-        const oculos =
-            await OculosModelo.buscarPorId(
-                req.params.id
-            )
+        const oculos = await OculosModelo.buscarPorId(
+            req.params.id
+        )
 
-        res.render(
+        return res.render(
             'oculos/editar',
             { oculos }
         )
@@ -170,16 +139,13 @@ const oculosControle = {
             `Óculos atualizado: ${req.body.nome}`
         )
 
-        const existente =
-            await OculosModelo.buscarPorId(
-                req.params.id
-            )
+        const existente = await OculosModelo.buscarPorId(
+            req.params.id
+        )
 
-        const imagem =
-            req.file
-                ? req.file.filename
-                : existente.imagem
-
+        const imagem = req.file
+            ? req.file.filename
+            : existente.imagem
 
         await OculosModelo.atualizar(
             req.params.id,
@@ -189,59 +155,62 @@ const oculosControle = {
             }
         )
 
-        res.redirect('/oculos')
+        return res.redirect('/oculos')
     },
 
-   async excluir(req, res) {
-    try {
+    async excluir(req, res) {
 
-        const oculos = await OculosModelo.buscarPorId(
-            req.params.id
-        )
+        try {
 
-        await LogModelo.registrar(
-            `Óculos removido: ${oculos?.nome || req.params.id}`
-        )
+            const oculos = await OculosModelo.buscarPorId(
+                req.params.id
+            )
 
-        await OculosModelo.remover(
-            req.params.id
-        )
+            await LogModelo.registrar(
+                `Óculos removido: ${oculos?.nome || req.params.id}`
+            )
 
-        return res.redirect('/oculos/admin')
+            await OculosModelo.remover(
+                req.params.id
+            )
 
-    } catch (erro) {
+            return res.redirect('/oculos/admin')
 
-        console.error(erro)
+        } catch (erro) {
 
-        if (erro.message === 'OCULOS_VINCULADO') {
+            console.error(erro)
+
+            if (erro.message === 'OCULOS_VINCULADO') {
+
+                return res.send(`
+                    <script>
+                        alert('Este óculos possui pedidos vinculados e não pode ser excluído.');
+                        window.location.href = '/oculos/admin';
+                    </script>
+                `)
+            }
 
             return res.send(`
                 <script>
-                    alert('Este óculos possui pedidos vinculados e não pode ser excluído.');
+                    alert('Erro ao excluir o óculos.');
                     window.location.href = '/oculos/admin';
                 </script>
             `)
         }
-
-        return res.send(`
-            <script>
-                alert('Erro ao excluir o óculos.');
-                window.location.href = '/oculos/admin';
-            </script>
-        `)
-    }
-},
+    },
 
     async produto(req, res) {
+
         try {
+
             const oculos = await OculosModelo.buscarPorId(
                 req.params.id
             )
 
             if (!oculos) {
-                return res.status(404).send(
-                    'Produto não encontrado'
-                )
+                return res
+                    .status(404)
+                    .send('Produto não encontrado')
             }
 
             return res.render(
@@ -250,23 +219,24 @@ const oculosControle = {
             )
 
         } catch (erro) {
+
             console.error(erro)
 
-            return res.status(500).send(
-                'Erro ao carregar o produto'
-            )
+            return res
+                .status(500)
+                .send('Erro ao carregar o produto')
         }
     },
 
     async admin(req, res) {
+
         const oculos = await OculosModelo.listar()
 
         return res.render(
             'oculos/admin',
             { oculos }
         )
-    }}
-    
-
+    }
+}
 
 export default oculosControle

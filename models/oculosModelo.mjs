@@ -142,9 +142,9 @@ export default class OculosModelo {
         .query(`
                 SELECT *
                 FROM Oculos
+                WHERE categoria = 'Grau'
+                ORDER BY nome
             `)
-
-    console.log(resultado.recordset)
 
     return resultado.recordset
   }

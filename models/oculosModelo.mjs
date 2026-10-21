@@ -98,10 +98,24 @@ export default class OculosModelo {
   static async remover(id) {
     await conectar();
 
-    await new mssql.Request().input("id", mssql.Int, id).query(`
-                DELETE FROM Oculos
-                WHERE id=@id
-            `);
+    const vinculados = await new mssql.Request()
+      .input("id", mssql.Int, id)
+      .query(`
+            SELECT COUNT(*) AS total
+            FROM pedido_itens
+            WHERE oculos_id = @id
+        `);
+
+    if (vinculados.recordset[0].total > 0) {
+      throw new Error("OCULOS_VINCULADO");
+    }
+
+    await new mssql.Request()
+      .input("id", mssql.Int, id)
+      .query(`
+            DELETE FROM Oculos
+            WHERE id = @id
+        `);
   }
   static async listarPorTipo(categoria) {
     await conectar();
@@ -179,13 +193,13 @@ export default class OculosModelo {
     await conectar()
 
     const resultado =
-        await new mssql.Request()
-            .query(`
+      await new mssql.Request()
+        .query(`
                 SELECT *
                 FROM Oculos
                 ORDER BY id DESC
             `)
 
     return resultado.recordset
-}
+  }
 }

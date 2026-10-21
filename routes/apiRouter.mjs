@@ -5,7 +5,6 @@ import authApiControleJWT from '../controllers/api/authApiControle.mjs'
 import verificarJWT from '../middleware/verificarJWT.mjs'
 
 const apiRouter = Router()
-git add .
 // Auth JWTgit config --global --list
 apiRouter.post(
     '/login',

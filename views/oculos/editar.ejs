@@ -1,0 +1,27 @@
+<div class="container py-5">
+  <div class="card shadow-sm border-0 mx-auto" style="max-width:900px">
+    <div class="card-body p-4">
+      <h1 class="mb-4">Editar produto</h1>
+      <form action="/oculos/<%= oculos.id %>/editar" method="POST" enctype="multipart/form-data">
+        <div class="row g-3">
+          <div class="col-md-8"><label class="form-label">Nome</label><input class="form-control" name="nome" value="<%= oculos.nome %>" required></div>
+          <div class="col-md-4"><label class="form-label">Preço</label><input class="form-control" type="number" step="0.01" min="0" name="preco" value="<%= oculos.preco %>" required></div>
+          <div class="col-12"><label class="form-label">Descrição</label><textarea class="form-control" name="descricao" rows="3"><%= oculos.descricao || "" %></textarea></div>
+          <div class="col-md-4"><label class="form-label">Categoria</label><select class="form-select" name="categoria">
+            <% ["Grau","Sol","Esportivo","Classico","Vintage","Fashion"].forEach(c => { %><option <%= oculos.categoria===c?"selected":"" %>><%= c %></option><% }) %>
+          </select></div>
+          <div class="col-md-4"><label class="form-label">Cor</label><input class="form-control" name="cor" value="<%= oculos.cor || "" %>"></div>
+          <div class="col-md-4"><label class="form-label">Tamanho</label><input class="form-control" name="tamanho" value="<%= oculos.tamanho || "" %>"></div>
+          <div class="col-md-4"><label class="form-label">Marca</label><input class="form-control" name="marca" value="<%= oculos.marca || "Vision" %>"></div>
+          <div class="col-md-4"><label class="form-label">Material</label><input class="form-control" name="material" value="<%= oculos.material || "" %>"></div>
+          <div class="col-md-4"><label class="form-label">Estoque</label><input class="form-control" type="number" min="0" name="estoque" value="<%= oculos.estoque %>"></div>
+          <div class="col-12"><label class="form-label">Nova imagem</label><input class="form-control" type="file" name="imagem" accept=".jpg,.jpeg,.png,.webp"></div>
+        </div>
+        <div class="d-flex gap-2 justify-content-end mt-4">
+          <a href="/oculos" class="btn btn-light">Cancelar</a>
+          <button class="btn btn-warning">Salvar alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

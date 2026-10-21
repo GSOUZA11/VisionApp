@@ -1,0 +1,121 @@
+
+<div class="container py-5">
+    <div class="mb-4">
+        <h1 class="h3 mb-2">Minha conta</h1>
+        <p class="text-muted mb-0">
+            Consulte seus dados e acompanhe suas compras na Vision.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Dados do usuário -->
+        <div class="col-12 col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div
+                            class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                            style="width: 64px; height: 64px;"
+                        >
+                            <i class="bi bi-person fs-2"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="h5 mb-1">
+                                Olá, <%= usuario.nome %>!
+                            </h2>
+                            <p class="text-muted mb-0">
+                                Seus dados pessoais
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">
+                            Nome completo
+                        </label>
+                        <p class="fw-semibold mb-0">
+                            <%= usuario.nome || 'Não informado' %>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">
+                            E-mail
+                        </label>
+                        <p class="fw-semibold mb-0">
+                            <%= usuario.email || 'Não informado' %>
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted">
+                            Telefone
+                        </label>
+                        <p class="fw-semibold mb-0">
+                            <%= usuario.telefone || 'Não informado' %>
+                        </p>
+                    </div>
+
+                    <a
+                        href="/clientes/editar"
+                        class="btn btn-dark"
+                    >
+                        <i class="bi bi-pencil me-2"></i>
+                        Editar meus dados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Atalhos da conta -->
+        <div class="col-12 col-lg-5">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-bag-check fs-3"></i>
+
+                        <div>
+                            <h2 class="h5">Meus pedidos</h2>
+                            <p class="text-muted">
+                                Consulte suas compras de óculos e acompanhe
+                                os detalhes dos seus pedidos.
+                            </p>
+
+                            <a
+                                href="/pedido"
+                                class="btn btn-outline-dark"
+                            >
+                                Ver meus pedidos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-eyeglasses fs-3"></i>
+
+                        <div>
+                            <h2 class="h5">Continuar comprando</h2>
+                            <p class="text-muted">
+                                Explore os modelos disponíveis no catálogo.
+                            </p>
+
+                            <a
+                                href="/oculos/completo"
+                                class="btn btn-outline-dark"
+                            >
+                                Ver óculos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

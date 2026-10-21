@@ -340,6 +340,7 @@ button:hover {
   margin-top: 5px;
 }
 
+
 /*================ Media do popup e menu hamburger ================*/
 @media (max-width: 1200px) {
   .hamburger-label {
@@ -362,6 +363,37 @@ button:hover {
     transform: translateX(-50%);
   }
 }
+/* Alinhamento dos campos do popup de login */
+#loginPopup form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+#loginPopup input {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#loginPopup button {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin: 0;
+  box-sizing: border-box;
+}
+#loginPopup > button.close {
+  display: block;
+  width: 100%;
+  margin: 8px auto 0;
+  box-sizing: border-box;
+}
+
 
 /*============= pesquisa-barra =============== */
 

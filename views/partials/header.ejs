@@ -4,6 +4,9 @@
     border: none;
     padding: 0;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .usuario-logado {
@@ -23,66 +26,204 @@
   .sair-link:hover {
     text-decoration: underline;
   }
+
+  .organizacao {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .organizacao img {
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Popup da conta */
+  .popup-conta {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 45px;
+    z-index: 1000;
+    width: 270px;
+    padding: 18px;
+    background: #fff;
+    color: #222;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .popup-conta[hidden] {
+    display: none;
+  }
+
+  .popup-conta-email {
+    margin: 0 0 15px;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .popup-conta-configuracoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    color: #222;
+    text-decoration: none;
+    border-radius: 6px;
+  }
+
+  .popup-conta-configuracoes:hover {
+    background: #f2f2f2;
+  }
 </style>
 
 <header>
   <div class="container-header">
+
+    <!-- Logo -->
     <a href="/" id="logo">
-      <img src="/uploads/logo-vision.png" alt="Vision Logo" class="logo-img" />
+      <img
+        src="/uploads/logo-vision.png"
+        alt="Vision Logo"
+        class="logo-img"
+      />
     </a>
 
+    <!-- Links principais -->
     <div class="links-href">
 
-      <a href="/" id="<%= typeof pagina !=='undefined' && pagina==='home' ? 'active' : 'paginas' %>">
+      <a
+        href="/"
+        id="<%= typeof pagina !== 'undefined' && pagina === 'home' ? 'active' : 'paginas' %>"
+      >
         Início
       </a>
 
-      <a href="/oculos/completo" id="<%= typeof pagina !=='undefined' && pagina==='catalogo' ? 'active' : 'paginas' %>">
+      <a
+        href="/oculos"
+        id="<%= typeof pagina !== 'undefined' && pagina === 'catalogo' ? 'active' : 'paginas' %>"
+      >
         Todos os Óculos
       </a>
 
-      <% if (usuario && usuario.cargo==='Administrador' ) { %>
-
-        <a href="/oculos/admin" id="<%= typeof pagina !=='undefined' && pagina==='admin' ? 'active' : 'paginas' %>">
-          Gerenciar Óculos
-        </a>
-
-        <% } %>
-
-          <a href="/sobre_nos" class="<%= typeof pagina !=='undefined' && pagina==='sobre' ? 'active' : '' %>">
-            Sobre Nós
-          </a>
+      <a
+        href="/sobre_nos"
+        class="<%= typeof pagina !== 'undefined' && pagina === 'sobre' ? 'active' : '' %>"
+      >
+        Sobre Nós
+      </a>
 
     </div>
 
     <nav class="menu">
+
+      <!-- Ícone do usuário e carrinho -->
       <div class="organizacao">
 
-        <% if (usuario) { %>
-          <div class="usuario-logado">
-            <span>Olá, <%= usuario.nome %></span>
-            <a href="/autenticacao/logout" class="sair-link">Sair</a>
-          </div>
-          <% } else { %>
-            <button type="button" class="btn-icone" onclick="toggleLogin()">
-              <img src="/uploads/user.png" width="35" height="35" alt="Usuário" />
-            </button>
-            <% } %>
+        <% if (typeof usuario !== 'undefined' && usuario) { %>
 
-              <a href="/carrinho">
-                <img src="/uploads/carrinho.png" width="35" height="35" alt="Carrinho" />
-              </a>
+          <!-- Usuário conectado: abre o popup da conta -->
+          <button
+            type="button"
+            class="btn-icone"
+            id="botaoPopupUsuario"
+            aria-label="Abrir opções da conta"
+            aria-expanded="false"
+            aria-controls="popupConta"
+            title="Minha conta"
+          >
+            <img
+              src="/uploads/user.png"
+              width="35"
+              height="35"
+              alt="Minha conta"
+            />
+          </button>
+
+          <!-- Popup da conta -->
+          <div class="popup-conta" id="popupConta" hidden>
+
+            <p class="popup-conta-email">
+              <%= usuario.email || 'E-mail não informado' %>
+            </p>
+
+            <a
+              href="<%= usuario.cargo === 'Administrador' ? '/oculos/admin' : '/clientes' %>"
+              class="popup-conta-configuracoes"
+            >
+              <span aria-hidden="true">⚙</span>
+              Configurações
+            </a>
+
+            <a
+              href="/autenticacao/logout"
+              class="popup-conta-configuracoes"
+            >
+              <span aria-hidden="true">↪</span>
+              Sair da conta
+            </a>
+
+          </div>
+
+        <% } else { %>
+
+          <!-- Visitante: abre o popup de login -->
+          <button
+            type="button"
+            class="btn-icone"
+            onclick="toggleLogin()"
+            title="Entrar"
+            aria-label="Entrar"
+          >
+            <img
+              src="/uploads/user.png"
+              width="35"
+              height="35"
+              alt="Entrar"
+            />
+          </button>
+
+        <% } %>
+
+        <!-- Carrinho -->
+        <a
+          href="/carrinho"
+          title="Carrinho"
+          aria-label="Carrinho"
+        >
+          <img
+            src="/uploads/carrinho.png"
+            width="35"
+            height="35"
+            alt="Carrinho"
+          />
+        </a>
 
       </div>
 
+      <!-- Popup de login para visitantes -->
       <div class="popup" id="loginPopup">
+
         <h2>Login</h2>
 
         <form action="/autenticacao/login" method="POST">
 
-          <input type="email" name="identificador" placeholder="E-mail" required>
+          <input
+            type="email"
+            name="identificador"
+            placeholder="E-mail"
+            required
+          >
 
-          <input type="password" name="senha" placeholder="Senha" required>
+          <input
+            type="password"
+            name="senha"
+            placeholder="Senha"
+            required
+          >
 
           <button type="submit">
             Entrar
@@ -90,52 +231,109 @@
 
         </form>
 
-        <button type="button" class="close" onclick="toggleLogin()">
+        <button
+          type="button"
+          class="close"
+          onclick="toggleLogin()"
+        >
           Fechar
         </button>
 
         <div class="links">
-          <a href="/esqueceu_senha"> Esqueceu a senha? </a>
-
-          <a href="/cadastro"> Criar conta </a>
+          <a href="/esqueceu_senha">Esqueceu a senha?</a>
+          <a href="/cadastro">Criar conta</a>
         </div>
+
       </div>
 
-      <input type="checkbox" id="hamburger" class="hamburger" />
+      <!-- Menu hambúrguer original -->
+      <input
+        type="checkbox"
+        id="hamburger"
+        class="hamburger"
+      />
 
       <label for="hamburger" class="hamburger-label">
-        <img src="/img/Menu Hamburguer.png" width="35" alt="Menu" />
+        <img
+          src="/img/Menu Hamburguer.png"
+          width="35"
+          alt="Menu"
+        />
       </label>
 
       <div class="nav-links">
         <a href="/">Home</a>
-
-        <a href="/oculos/completo"> Todos os Óculos </a>
-
-        <a href="/sobre"> Sobre Nós </a>
+        <a href="/oculos">Todos os Óculos</a>
+        <a href="/sobre">Sobre Nós</a>
       </div>
+
     </nav>
   </div>
 </header>
 
 <script>
+  // Abre e fecha o popup de login.
   function toggleLogin() {
     const popup = document.getElementById("loginPopup");
 
-    popup.style.display = popup.style.display === "block" ? "none" : "block";
+    if (!popup) {
+      return;
+    }
+
+    popup.style.display =
+      popup.style.display === "block" ? "none" : "block";
   }
 
-  document.addEventListener("click", function (event) {
-    const popup = document.getElementById("loginPopup");
+  document.addEventListener("DOMContentLoaded", function () {
+    const popupLogin = document.getElementById("loginPopup");
+    const botaoUsuario = document.getElementById("botaoPopupUsuario");
+    const popupConta = document.getElementById("popupConta");
+    const organizacao = document.querySelector(".organizacao");
 
-    const userIcon = document.querySelector(".organizacao");
+    // Popup da conta para quem já está conectado.
+    if (botaoUsuario && popupConta) {
+      botaoUsuario.addEventListener("click", function () {
+        const vaiAbrir = popupConta.hidden;
 
-    if (
-      popup.style.display === "block" &&
-      !popup.contains(event.target) &&
-      !userIcon.contains(event.target)
-    ) {
-      popup.style.display = "none";
+        popupConta.hidden = !vaiAbrir;
+        botaoUsuario.setAttribute("aria-expanded", String(vaiAbrir));
+      });
     }
+
+    // Fecha os popups ao clicar fora deles.
+    document.addEventListener("click", function (event) {
+      if (
+        popupLogin &&
+        organizacao &&
+        popupLogin.style.display === "block" &&
+        !popupLogin.contains(event.target) &&
+        !organizacao.contains(event.target)
+      ) {
+        popupLogin.style.display = "none";
+      }
+
+      if (
+        popupConta &&
+        botaoUsuario &&
+        !popupConta.hidden &&
+        !popupConta.contains(event.target) &&
+        !botaoUsuario.contains(event.target)
+      ) {
+        popupConta.hidden = true;
+        botaoUsuario.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    // Fecha o popup da conta com a tecla Esc.
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && popupConta && botaoUsuario) {
+        popupConta.hidden = true;
+        botaoUsuario.setAttribute("aria-expanded", "false");
+      }
+
+      if (event.key === "Escape" && popupLogin) {
+        popupLogin.style.display = "none";
+      }
+    });
   });
 </script>

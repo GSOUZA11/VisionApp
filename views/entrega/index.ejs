@@ -1,226 +1,270 @@
+
 <div class="container py-5">
+
+    <!-- CABEÇALHO -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Entrega</h2>
+
+            <div class="d-flex gap-4 mt-3 mb-4">
+                <div id="active">
+                    <strong>1</strong> ENTREGA
+                </div>
+
+                <div>
+                    <strong>2</strong> PAGAMENTO
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row g-4">
 
-        <!-- Dados da Entrega -->
-
+        <!-- DADOS DA ENTREGA -->
         <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
 
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h2 class="mb-3">Entrega</h2>
-
-                    <div class="d-flex gap-4 mb-4">
-
-                        <div id="active">
-                            <strong>1</strong> ENTREGA
-                        </div>
-
-                        <div>
-                            <strong>2</strong> PAGAMENTO
-                        </div>
-
-                    </div>
-
-                    <h4 class="mb-4">
-                        Dados de Entrega
-                    </h4>
+                    <h4 class="mb-4">Dados de Entrega</h4>
 
                     <form id="formEntrega" action="/entrega" method="POST">
-
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Nome
-                                </label>
-
-                                <input type="text" class="form-control" name="nome" required>
-
+                                <label for="nome" class="form-label">Nome</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="nome"
+                                    name="nome"
+                                    autocomplete="given-name"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Sobrenome
-                                </label>
-
-                                <input type="text" class="form-control" name="sobrenome" required>
-
-                            </div>
-
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Email
-                                </label>
-
-                                <input type="email" class="form-control" name="email" required>
-
+                                <label for="sobrenome" class="form-label">Sobrenome</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="sobrenome"
+                                    name="sobrenome"
+                                    autocomplete="family-name"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Telefone
-                                </label>
-
-                                <input type="text" class="form-control" name="telefone" required>
-
+                                <label for="email" class="form-label">E-mail</label>
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    autocomplete="email"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input
+                                    type="tel"
+                                    class="form-control"
+                                    id="telefone"
+                                    name="telefone"
+                                    autocomplete="tel"
+                                    placeholder="(11) 99999-9999"
+                                    required>
+                            </div>
 
-                                <label class="form-label">
-                                    CEP
-                                </label>
-
-                                <input type="text" class="form-control" name="cep" required>
-
+                            <div class="col-md-6 mb-3">
+                                <label for="cep" class="form-label">CEP</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="cep"
+                                    name="cep"
+                                    autocomplete="postal-code"
+                                    placeholder="00000-000"
+                                    maxlength="9"
+                                    required>
                             </div>
 
                             <div class="col-12 mb-3">
-
-                                <label class="form-label">
-                                    Endereço
-                                </label>
-
-                                <input type="text" class="form-control" name="endereco" required>
-
+                                <label for="endereco" class="form-label">Endereço</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="endereco"
+                                    name="endereco"
+                                    autocomplete="street-address"
+                                    placeholder="Rua, número e complemento"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Cidade
-                                </label>
-
-                                <input type="text" class="form-control" name="cidade" required>
-
+                                <label for="cidade" class="form-label">Cidade</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="cidade"
+                                    name="cidade"
+                                    autocomplete="address-level2"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Estado
-                                </label>
-
-                                <input type="text" class="form-control" name="estado" required>
-
+                                <label for="estado" class="form-label">Estado (UF)</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="estado"
+                                    name="estado"
+                                    autocomplete="address-level1"
+                                    placeholder="SP"
+                                    maxlength="2"
+                                    required>
                             </div>
 
                         </div>
 
+                        <div class="alert alert-light border mb-0">
+                            <small class="text-muted">
+                                Confira seus dados antes de continuar para o pagamento.
+                            </small>
+                        </div>
                     </form>
 
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Resumo -->
-
+        <!-- RESUMO DO PEDIDO -->
         <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
 
-            <div class="card shadow-sm">
+                    <h4 class="mb-4">Resumo do Pedido</h4>
 
-                <div class="card-body">
+                    <% if (produtos && produtos.length > 0) { %>
 
-                    <h4 class="mb-4">
-                        Resumo do Pedido
-                    </h4>
+                        <% produtos.forEach(produto => { %>
 
-                    <% produtos.forEach(produto=> { %>
+                            <div class="d-flex mb-3">
 
-                        <div class="d-flex mb-3">
+                                <img
+                                    src="/uploads/<%= produto.imagem %>"
+                                    alt="<%= produto.nome %>"
+                                    class="rounded border"
+                                    style="width:80px;height:80px;object-fit:contain;"
+                                    onerror="this.style.display='none'">
 
-                            <img src="/uploads/<%= produto.imagem %>" class="img-fluid rounded"
-                                style="width:90px;height:90px;object-fit:contain;">
+                                <div class="ms-3">
 
-                            <div class="ms-3">
+                                    <strong><%= produto.nome %></strong>
 
-                                <strong>
+                                    <% if (produto.cor) { %>
+                                        <div class="text-muted small">
+                                            Cor: <%= produto.cor %>
+                                        </div>
+                                    <% } %>
 
-                                    <%= produto.nome %>
+                                    <% if (produto.tamanho) { %>
+                                        <div class="text-muted small">
+                                            Tamanho: <%= produto.tamanho %>
+                                        </div>
+                                    <% } %>
 
-                                </strong>
+                                    <div class="text-muted small">
+                                        Quantidade: <%= produto.quantidade %>
+                                    </div>
 
-                                <div>
-
-                                    Cor: <%= produto.cor %><br>
-                                        Tamanho: <%= produto.tamanho %>
+                                    <div class="mt-1">
+                                        R$ <%= (
+                                            Number(produto.preco) *
+                                            Number(produto.quantidade)
+                                        ).toLocaleString('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }) %>
+                                    </div>
 
                                 </div>
-
                             </div>
 
-                        </div>
+                            <hr>
 
                         <% }) %>
 
-                            <hr>
+                    <% } else { %>
 
-                            <div class="d-flex justify-content-between">
+                        <p class="text-muted">
+                            Nenhum produto no carrinho.
+                        </p>
 
-                                <span>Subtotal</span>
+                    <% } %>
 
-                                <span>
+                    <!-- SUBTOTAL -->
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <strong>
+                            R$ <%= Number(subtotal || 0).toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) %>
+                        </strong>
+                    </div>
 
-                                    R$
-                                    <%= subtotal.toFixed(2) %>
+                    <!-- FRETE -->
+                    <div class="d-flex justify-content-between my-3">
+                        <span>Frete</span>
 
-                                </span>
+                        <strong>
+                            <% if (Number(frete || 0) === 0) { %>
+                                Grátis
+                            <% } else { %>
+                                R$ <%= Number(frete).toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) %>
+                            <% } %>
+                        </strong>
+                    </div>
 
-                            </div>
+                    <hr>
 
-                            <div class="d-flex justify-content-between my-3">
+                    <!-- TOTAL -->
+                    <div class="d-flex justify-content-between fs-4 fw-bold">
+                        <span>Total</span>
 
-                                <span>Frete</span>
+                        <span>
+                            R$ <%= (
+                                Number(subtotal || 0) +
+                                Number(frete || 0)
+                            ).toLocaleString('pt-BR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) %>
+                        </span>
+                    </div>
 
-                                <span>Grátis</span>
+                    <!-- BOTÃO -->
+                    <button
+                        type="submit"
+                        class="btn btn-warning btn-lg w-100 mt-4"
+                        form="formEntrega"
+                        id="btnContinuar"
+                        <%= (!produtos || produtos.length === 0) ? 'disabled' : '' %>>
+                        Continuar para pagamento
+                    </button>
 
-                            </div>
-
-                            <hr>
-
-                            <div class="d-flex justify-content-between fs-5 fw-bold">
-
-                                <span>Total</span>
-
-                                <span>
-
-                                    R$
-                                    <%= subtotal.toFixed(2) %>
-
-                                </span>
-
-                            </div>
-
-                            <div class="mt-4">
-
-                                <button class="btn btn-primary w-100" form="formEntrega" id="btnContinuar">
-
-                                    Próxima Etapa
-
-                                </button>
-
-                            </div>
+                    <div class="text-center mt-3 text-muted small">
+                        Confira os dados antes de avançar.
+                    </div>
 
                 </div>
-
             </div>
-
         </div>
 
     </div>
-
 </div>
 
-<script src="/js/entrega.js"></script><div class="container py-5">
-
-   
+<script src="/js/entrega.js"></script>

@@ -1,0 +1,330 @@
+<style>
+    .produto-rayban {
+        --azul: #4b63df;
+        --laranja: #ff9028;
+        --texto: #202b3c;
+        --cinza: #737b89;
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 35px 24px 70px;
+        color: var(--texto);
+    }
+
+    .produto-rayban * {
+        box-sizing: border-box;
+    }
+
+    .produto-voltar {
+        display: inline-block;
+        margin-bottom: 28px;
+        color: var(--azul);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .produto-voltar:hover {
+        text-decoration: underline;
+    }
+
+    .produto-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 60px;
+        align-items: start;
+    }
+
+    .produto-foto {
+        min-height: 490px;
+        padding: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f6f7fa;
+        border: 1px solid #eceef3;
+        border-radius: 16px;
+    }
+
+    .produto-foto img {
+        display: block;
+        width: 100%;
+        height: 420px;
+        object-fit: contain;
+    }
+
+    .produto-sem-foto {
+        color: var(--cinza);
+        text-align: center;
+    }
+
+    .produto-info {
+        padding-top: 12px;
+    }
+
+    .produto-marca {
+        color: var(--azul);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .produto-info h1 {
+        margin: 14px 0;
+        font-size: clamp(28px, 3vw, 40px);
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .produto-descricao {
+        color: var(--cinza);
+        font-size: 15px;
+        line-height: 1.8;
+        white-space: pre-line;
+    }
+
+    .produto-linha {
+        height: 1px;
+        margin: 25px 0;
+        border: 0;
+        background: #e8eaf0;
+    }
+
+    .produto-preco-legenda {
+        margin-bottom: 5px;
+        color: var(--cinza);
+        font-size: 13px;
+    }
+
+    .produto-preco {
+        margin: 0;
+        font-size: 34px;
+        font-weight: 800;
+    }
+
+    .produto-caracteristicas {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 25px 0;
+    }
+
+    .produto-caracteristica {
+        padding: 14px;
+        border: 1px solid #e8eaf0;
+        border-radius: 10px;
+        min-width: 0;
+    }
+
+    .produto-caracteristica span {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--cinza);
+        font-size: 12px;
+    }
+
+    .produto-caracteristica strong {
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .produto-estoque {
+        margin: 20px 0;
+        color: #21834b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .produto-estoque.indisponivel {
+        color: #c62828;
+    }
+
+    .produto-compra label {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .produto-quantidade {
+        width: 110px;
+        height: 46px;
+        padding: 8px 12px;
+        border: 1px solid #d9dce5;
+        border-radius: 8px;
+        background: white;
+        font-size: 15px;
+    }
+
+    .produto-adicionar {
+        width: 100%;
+        min-height: 54px;
+        margin-top: 18px;
+        padding: 14px 20px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--laranja);
+        color: white;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .produto-adicionar:hover {
+        background: #ed7b15;
+        transform: translateY(-1px);
+    }
+
+    .produto-adicionar:disabled {
+        background: #aeb3bd;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .produto-continuar {
+        display: block;
+        margin-top: 16px;
+        padding: 14px;
+        border: 1px solid #dfe3f0;
+        border-radius: 8px;
+        color: var(--azul);
+        text-align: center;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .produto-continuar:hover {
+        background: #f5f6ff;
+    }
+
+    .produto-aviso {
+        margin-top: 18px;
+        color: var(--cinza);
+        font-size: 12px;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    @media (max-width: 800px) {
+        .produto-rayban {
+            padding: 22px 16px 45px;
+        }
+
+        .produto-grid {
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+
+        .produto-foto {
+            min-height: 300px;
+        }
+
+        .produto-foto img {
+            height: 280px;
+        }
+
+        .produto-info {
+            padding-top: 0;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .produto-caracteristicas {
+            gap: 8px;
+        }
+
+        .produto-caracteristica {
+            padding: 11px;
+        }
+    }
+</style>
+
+<main class="produto-rayban">
+    <a href="/oculos/completo" class="produto-voltar">← Voltar para todos os óculos</a>
+
+    <% if (oculos) { %>
+        <div class="produto-grid">
+            <section>
+                <div class="produto-foto">
+                    <% if (oculos.imagem) { %>
+                        <img src="<%= /^https?:\/\//i.test(oculos.imagem) || String(oculos.imagem).startsWith('/') ? oculos.imagem : '/uploads/' + oculos.imagem %>"
+                            alt="<%= oculos.nome %>"
+                            onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<p class=&quot;produto-sem-foto&quot;>Imagem não disponível</p>';">
+                        <% } else { %>
+                            <p class="produto-sem-foto">Imagem não disponível</p>
+                            <% } %>
+                </div>
+            </section>
+
+            <section class="produto-info">
+                <span class="produto-marca">VISION COLLECTION</span>
+                <h1>
+                    <%= oculos.nome %>
+                </h1>
+
+                <p class="produto-descricao">
+                    <%= oculos.descricao
+                        || 'Conheça este modelo da coleção VisionApp e encontre o estilo ideal para você.' %>
+                </p>
+
+                <hr class="produto-linha">
+
+                <p class="produto-preco-legenda">Preço</p>
+                <p class="produto-preco">
+                    <%= Number(oculos.preco || 0).toLocaleString('pt-BR', { style: 'currency' , currency: 'BRL' }) %>
+                </p>
+
+                <div class="produto-caracteristicas">
+                    <div class="produto-caracteristica">
+                        <span>Categoria</span>
+                        <strong>
+                            <%= oculos.categoria || oculos.tipo || 'Não informada' %>
+                        </strong>
+                    </div>
+                    <div class="produto-caracteristica">
+                        <span>Cor</span>
+                        <strong>
+                            <%= oculos.cor || 'Não informada' %>
+                        </strong>
+                    </div>
+                    <div class="produto-caracteristica">
+                        <span>Tamanho</span>
+                        <strong>
+                            <%= oculos.tamanho || 'Não informado' %>
+                        </strong>
+                    </div>
+                    <div class="produto-caracteristica">
+                        <span>Disponibilidade</span>
+                        <strong>
+                            <% if (oculos.estoque==null) { %>
+                                Consulte a loja
+                                <% } else if (Number(oculos.estoque)> 0) { %>
+                                    Em estoque
+                                    <% } else { %>
+                                        Esgotado
+                                        <% } %>
+                        </strong>
+                    </div>
+                </div>
+
+                <% if (oculos.estoque==null || Number(oculos.estoque)> 0) { %>
+                    <form class="produto-compra" action="/carrinho/adicionar/<%= oculos.id %>" method="POST">
+                        <label for="quantidade">Quantidade</label>
+                        <input class="produto-quantidade" type="number" id="quantidade" name="quantidade" value="1"
+                            min="1" max="<%= oculos.estoque == null ? 99 : Number(oculos.estoque) %>" required>
+                        <button class="produto-adicionar" type="submit">Adicionar ao carrinho</button>
+                    </form>
+                    <% } else { %>
+                        <p class="produto-estoque indisponivel">Este produto está indisponível no momento.</p>
+                        <button class="produto-adicionar" type="button" disabled>Produto esgotado</button>
+                        <% } %>
+
+            </section>
+        </section>
+        <% } else { %>
+            <h1>Produto não encontrado</h1>
+            <p>Este óculos não está disponível no catálogo.</p>
+            <a href="/oculos/completo" class="produto-continuar">Voltar para a coleção</a>
+            <% } %>
+</main>

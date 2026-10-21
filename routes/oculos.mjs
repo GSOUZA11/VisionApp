@@ -60,8 +60,6 @@ const upload = multer({
     }
 })
 
-// /oculos?tipo=esportivo  -> público (vitrine por tipo)
-// /oculos                 -> listagem administrativa (exige login)
 rota.get(
     '/',
     (req, res, next) => {
@@ -70,17 +68,13 @@ rota.get(
             return oculosControle.tipo(req, res, next)
         }
 
-        return garantirAutenticacao(
-            req,
-            res,
-            () => oculosControle.index(req, res, next)
-        )
+        return oculosControle.index(req, res, next)
     }
 )
 
 rota.get(
-    '/completo',
-    oculosControle.completo
+    '/produto/:id',
+    oculosControle.produto
 )
 
 rota.get(

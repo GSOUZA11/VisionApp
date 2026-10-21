@@ -1,4 +1,5 @@
-<main>
+<% const listaOculos = oculos || []; const limitePrecoCatalogo = Math.max(600, Math.ceil(Math.max(0, ...listaOculos.map(produto => Number(produto.preco) || 0)) / 100) * 100 + 100); %>
+<div>
     <div id="filtro-overlay" class="filtro-overlay"></div>
 
     <div class="layout-principal">
@@ -6,13 +7,13 @@
             <div class="filtro-grupo">
                 <h3>Cor da Lente</h3>
 
-                <div class="filtro-opcoes filtro-cor">
-                    <div class="cor-bolinha cinza" title="Cinza"></div>
-                    <div class="cor-bolinha marrom" title="Marrom"></div>
-                    <div class="cor-bolinha espelhado" title="Espelhado"></div>
-                    <div class="cor-bolinha azul" title="Azul"></div>
-                    <div class="cor-bolinha rosa" title="Rosa"></div>
-                    <div class="cor-bolinha preto" title="Preto"></div>
+                <div class="filtro-opcoes filtro-cor" role="group" aria-label="Filtrar por cor da lente">
+                    <button type="button" class="cor-bolinha cinza" data-cor="cinza" aria-label="Cinza" aria-pressed="false" title="Cinza"></button>
+                    <button type="button" class="cor-bolinha marrom" data-cor="marrom" aria-label="Marrom" aria-pressed="false" title="Marrom"></button>
+                    <button type="button" class="cor-bolinha espelhado" data-cor="espelhado" aria-label="Espelhado" aria-pressed="false" title="Espelhado"></button>
+                    <button type="button" class="cor-bolinha azul" data-cor="azul" aria-label="Azul" aria-pressed="false" title="Azul"></button>
+                    <button type="button" class="cor-bolinha rosa" data-cor="rosa" aria-label="Rosa" aria-pressed="false" title="Rosa"></button>
+                    <button type="button" class="cor-bolinha preto" data-cor="preto" aria-label="Preto" aria-pressed="false" title="Preto"></button>
                 </div>
             </div>
 
@@ -20,6 +21,7 @@
                 <h3>Modelos</h3>
 
                 <div class="filtro-opcoes">
+                    <div><a href="/oculos">Todos os Óculos</a></div>
                     <div><a href="/oculos?tipo=classico">Classico</a></div>
                     <div><a href="/oculos?tipo=esportivo">Esportivos</a></div>
                     <div><a href="/oculos?tipo=grau">Grau</a></div>
@@ -36,13 +38,13 @@
                     <div class="preco-inputs">
                         <input type="number" id="preco-min" placeholder="Min" min="0" value="0">
                         <span>-</span>
-                        <input type="number" id="preco-max" placeholder="Max" min="0" value="1000">
+                        <input type="number" id="preco-max" placeholder="Max" min="0" value="<%= limitePrecoCatalogo %>">
                     </div>
 
-                    <input type="range" class="preco-range" id="preco-range" min="0" max="1000" value="1000">
+                    <input type="range" class="preco-range" id="preco-range" min="0" max="<%= limitePrecoCatalogo %>" value="<%= limitePrecoCatalogo %>">
 
                     <div class="preco-texto">
-                        R$ <span id="preco-atual">0 - 1000</span>
+                        R$ <span id="preco-atual">0 - <%= limitePrecoCatalogo %></span>
                     </div>
 
                     <button id="btn-fechar-filtro" class="botao-fechar">
@@ -63,7 +65,7 @@
                         <option value="mais-vendidos">Mais Vendidos</option>
                         <option value="menor-preco">Menor Preço</option>
                         <option value="maior-preco">Maior Preço</option>
-                        <option value="lancamentos">Lançamentos</option>
+                            <option value="lancamentos">Lançamentos</option>
                     </select>
                 </div>
             </div>
@@ -72,12 +74,14 @@
                 Abrir Filtros
             </button>
 
+            <p id="contagem-catalogo" class="small text-muted" aria-live="polite"></p>
             <div class="grid-produtos">
                 <% if (oculos && oculos.length > 0) { %>
                     <% oculos.forEach(oculo => { %>
-                        <a href="/compra/<%= oculo.id %>" class="card-produto">
+                        <% const corProduto = String(oculo.cor || oculo.cor_lente || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); %>
+                        <a href="/oculos/produto/<%= oculo.id %>" class="card-produto" data-preco="<%= Number(oculo.preco) || 0 %>" data-nome="<%= oculo.nome %>" data-cor="<%= corProduto %>">
                             <img
-                                src="/uploads/<%= oculo.imagem %>"
+                                src="<%= oculo.imagem?.startsWith('/') ? oculo.imagem : '/uploads/' + (oculo.imagem || 'oculos1.png') %>"
                                 alt="<%= oculo.nome %>"
                                 class="imagem-produto"
                             >
@@ -103,7 +107,7 @@
             </div>
         </section>
     </div>
-</main>
+</div>
 
 <style>
     * {
@@ -157,13 +161,23 @@
     }
 
     .cor-bolinha {
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
+        appearance: none;
+        display: block;
+        flex: 0 0 26px;
+        width: 26px;
+        min-width: 26px;
+        max-width: 26px;
+        height: 26px;
+        min-height: 26px;
+        max-height: 26px;
+        border-radius: 50% !important;
         border: 2px solid #ccc;
+        padding: 0;
         cursor: pointer;
         transition: border-color 0.3s;
     }
+
+    .cor-bolinha[aria-pressed="true"] { outline: 2px solid #4169e1; outline-offset: 2px; }
 
     .cor-bolinha:hover {
         border-color: var(--comp);
@@ -252,11 +266,18 @@
 
     .grid-produtos {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
         gap: 30px;
+        align-items: stretch;
     }
 
     .card-produto {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        min-height: 270px;
         background-color: var(--branco);
         border-radius: 8px;
         padding: 20px;
@@ -279,7 +300,9 @@
         max-height: 200px;
         object-fit: contain;
         margin-bottom: 15px;
-        height: auto;
+        height: 150px;
+        display: block;
+        background: #f8f9fa;
     }
 
     .nome-produto,
@@ -297,7 +320,8 @@
         border-radius: 5px;
         text-decoration: none;
         display: inline-block;
-        margin-top: 10px;
+        margin-top: auto;
+        margin-bottom: 0;
         transition: background 0.3s;
     }
 
@@ -579,4 +603,61 @@
     }
 
     inicializarFiltroPreco();
+</script>
+
+<script>
+(() => {
+    const grid = document.querySelector('.grid-produtos');
+    const cards = [...grid.querySelectorAll('.card-produto')];
+    const min = document.getElementById('preco-min');
+    const max = document.getElementById('preco-max');
+    const range = document.getElementById('preco-range');
+    const label = document.getElementById('preco-atual');
+    const sort = document.getElementById('ordenar');
+    const count = document.getElementById('contagem-catalogo');
+    const colors = [...document.querySelectorAll('.cor-bolinha')];
+    const original = new Map(cards.map((card, index) => [card, index]));
+    let selectedColor = '';
+    const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    function update() {
+        const low = Math.max(0, Number(min.value) || 0);
+        const high = Math.max(low, Number(max.value) || Number(range.max));
+        min.value = low;
+        max.value = high;
+        range.value = Math.min(Number(range.max), high);
+        label.textContent = `${low.toLocaleString('pt-BR')} - ${high.toLocaleString('pt-BR')}`;
+        let shown = 0;
+        cards.forEach(card => {
+            const visible = Number(card.dataset.preco) >= low && Number(card.dataset.preco) <= high &&
+                (!selectedColor || normalize(card.dataset.cor).includes(selectedColor));
+            card.style.display = visible ? 'block' : 'none';
+            if (visible) shown += 1;
+        });
+        count.textContent = `${shown} ${shown === 1 ? 'produto encontrado' : 'produtos encontrados'}`;
+        const emptyMessage = document.getElementById('mensagem-sem-produtos');
+        if (emptyMessage) emptyMessage.style.display = shown === 0 ? 'block' : 'none';
+    }
+
+    function sortCards() {
+        [...cards].sort((a, b) => {
+            if (sort.value === 'menor-preco') return Number(a.dataset.preco) - Number(b.dataset.preco);
+            if (sort.value === 'maior-preco') return Number(b.dataset.preco) - Number(a.dataset.preco);
+            if (sort.value === 'lancamentos') return original.get(b) - original.get(a);
+            if (sort.value === 'mais-vendidos') return original.get(a) - original.get(b);
+            return original.get(a) - original.get(b);
+        }).forEach(card => grid.append(card));
+    }
+
+    min.addEventListener('input', update);
+    max.addEventListener('input', update);
+    range.addEventListener('input', () => { max.value = range.value; update(); });
+    sort.addEventListener('change', sortCards);
+    colors.forEach(button => button.addEventListener('click', () => {
+        selectedColor = selectedColor === button.dataset.cor ? '' : button.dataset.cor;
+        colors.forEach(color => color.setAttribute('aria-pressed', String(color.dataset.cor === selectedColor)));
+        update();
+    }));
+    update();
+})();
 </script>

@@ -1,0 +1,70 @@
+
+<div class="container py-4">
+
+    <h1>Pedido #<%= pedido.id %></h1>
+
+    <p>
+        <strong>Cliente:</strong>
+        <%= pedido.cliente || 'Cliente' %>
+    </p>
+
+    <p>
+        <strong>Data:</strong>
+        <%= pedido.dataPedido
+            ? new Date(pedido.dataPedido).toLocaleDateString('pt-BR')
+            : '-' %>
+    </p>
+
+    <h2 class="h4 mt-4">Produtos do pedido</h2>
+
+    <% if (pedido.itens && pedido.itens.length > 0) { %>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço unitário</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% pedido.itens.forEach(item => { %>
+                        <tr>
+                            <td><%= item.oculos || 'Óculos' %></td>
+                            <td><%= item.quantidade %></td>
+                            <td>
+                                <%= Number(item.precoUnitario || 0).toLocaleString(
+                                    'pt-BR',
+                                    { style: 'currency', currency: 'BRL' }
+                                ) %>
+                            </td>
+                            <td>
+                                <%= (
+                                    Number(item.precoUnitario || 0) *
+                                    Number(item.quantidade || 0)
+                                ).toLocaleString(
+                                    'pt-BR',
+                                    { style: 'currency', currency: 'BRL' }
+                                ) %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <p class="text-muted">
+            Nenhum produto foi encontrado neste pedido.
+        </p>
+    <% } %>
+
+    <h3 class="h5 mt-3">
+        Total:
+        <%= Number(pedido.total || 0).toLocaleString(
+            'pt-BR',
+            { style: 'currency', currency: 'BRL' }
+        ) %>
+    </h3>
+</div>

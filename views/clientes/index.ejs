@@ -1,5 +1,7 @@
 
 <div class="container py-5">
+
+    <!-- Cabeçalho da página -->
     <div class="mb-4">
         <h1 class="h3 mb-2">Minha conta</h1>
         <p class="text-muted mb-0">
@@ -8,13 +10,15 @@
     </div>
 
     <div class="row g-4">
+
         <!-- Dados do usuário -->
         <div class="col-12 col-lg-7">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-4">
+
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <div
-                            class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                            class="rounded-circle bg-light d-flex align-items-center justify-content-center flex-shrink-0"
                             style="width: 64px; height: 64px;"
                         >
                             <i class="bi bi-person fs-2"></i>
@@ -22,7 +26,7 @@
 
                         <div>
                             <h2 class="h5 mb-1">
-                                Olá, <%= usuario.nome %>!
+                                Olá, <%= usuario.nome || 'Cliente' %>!
                             </h2>
                             <p class="text-muted mb-0">
                                 Seus dados pessoais
@@ -59,26 +63,34 @@
                         </p>
                     </div>
 
-                    <a
-                        href="/clientes/editar"
+                    <!-- Abre o popup de edição -->
+                    <button
+                        type="button"
                         class="btn btn-dark"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditarDados"
                     >
                         <i class="bi bi-pencil me-2"></i>
                         Editar meus dados
-                    </a>
+                    </button>
+
                 </div>
             </div>
         </div>
 
         <!-- Atalhos da conta -->
         <div class="col-12 col-lg-5">
+
+            <!-- Meus pedidos -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
+
                     <div class="d-flex align-items-start gap-3">
                         <i class="bi bi-bag-check fs-3"></i>
 
                         <div>
                             <h2 class="h5">Meus pedidos</h2>
+
                             <p class="text-muted">
                                 Consulte suas compras de óculos e acompanhe
                                 os detalhes dos seus pedidos.
@@ -88,20 +100,25 @@
                                 href="/pedido"
                                 class="btn btn-outline-dark"
                             >
+                                <i class="bi bi-bag me-2"></i>
                                 Ver meus pedidos
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
 
+            <!-- Continuar comprando -->
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
+
                     <div class="d-flex align-items-start gap-3">
                         <i class="bi bi-eyeglasses fs-3"></i>
 
                         <div>
                             <h2 class="h5">Continuar comprando</h2>
+
                             <p class="text-muted">
                                 Explore os modelos disponíveis no catálogo.
                             </p>
@@ -110,12 +127,174 @@
                                 href="/oculos/completo"
                                 class="btn btn-outline-dark"
                             >
+                                <i class="bi bi-shop me-2"></i>
                                 Ver óculos
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========================================
+     POPUP: EDITAR MEUS DADOS
+========================================= -->
+
+<div
+    class="modal fade"
+    id="modalEditarDados"
+    tabindex="-1"
+    aria-labelledby="tituloModalEditarDados"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <!-- Cabeçalho do popup -->
+            <div class="modal-header px-4 py-3">
+                <div>
+                    <h2
+                        class="modal-title h5 mb-1"
+                        id="tituloModalEditarDados"
+                    >
+                        Editar meus dados
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Atualize suas informações pessoais.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar"
+                ></button>
+            </div>
+
+            <!-- Formulário de edição -->
+            <form action="/clientes/editar" method="POST">
+
+                <div class="modal-body p-4">
+
+                    <!-- Nome -->
+                    <div class="mb-3">
+                        <label
+                            for="editarNome"
+                            class="form-label fw-semibold"
+                        >
+                            Nome completo
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-person"></i>
+                            </span>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="editarNome"
+                                name="nome"
+                                value="<%= usuario.nome || '' %>"
+                                placeholder="Digite seu nome completo"
+                                maxlength="150"
+                                autocomplete="name"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- E-mail -->
+                    <div class="mb-3">
+                        <label
+                            for="editarEmail"
+                            class="form-label fw-semibold"
+                        >
+                            E-mail
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="editarEmail"
+                                name="email"
+                                value="<%= usuario.email || '' %>"
+                                placeholder="Digite seu e-mail"
+                                maxlength="255"
+                                autocomplete="email"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Telefone -->
+                    <div class="mb-0">
+                        <label
+                            for="editarTelefone"
+                            class="form-label fw-semibold"
+                        >
+                            Telefone
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+
+                            <input
+                                type="tel"
+                                class="form-control"
+                                id="editarTelefone"
+                                name="telefone"
+                                value="<%= usuario.telefone || '' %>"
+                                placeholder="Digite seu telefone"
+                                maxlength="20"
+                                autocomplete="tel"
+                            >
+                        </div>
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0">
+                        Confira os dados antes de salvar suas alterações.
+                    </p>
+
+                </div>
+
+                <!-- Botões do popup -->
+                <div class="modal-footer px-4 py-3">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-dark"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark"
+                    >
+                        <i class="bi bi-check-lg me-2"></i>
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
     </div>
 </div>

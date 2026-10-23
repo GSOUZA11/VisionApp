@@ -1,4 +1,3 @@
-
 <div class="container py-5">
 
     <!-- Cabeçalho da página -->
@@ -16,22 +15,14 @@
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-4">
 
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <div
-                            class="rounded-circle bg-light d-flex align-items-center justify-content-center flex-shrink-0"
-                            style="width: 64px; height: 64px;"
-                        >
-                            <i class="bi bi-person fs-2"></i>
-                        </div>
+                    <div class="mb-4">
+                        <h2 class="h5 mb-1">
+                            Olá, <%= usuario.nome || 'Cliente' %>!
+                        </h2>
 
-                        <div>
-                            <h2 class="h5 mb-1">
-                                Olá, <%= usuario.nome || 'Cliente' %>!
-                            </h2>
-                            <p class="text-muted mb-0">
-                                Seus dados pessoais
-                            </p>
-                        </div>
+                        <p class="text-muted mb-0">
+                            Seus dados pessoais
+                        </p>
                     </div>
 
                     <hr>
@@ -64,12 +55,8 @@
                     </div>
 
                     <!-- Abre o popup de edição -->
-                    <button
-                        type="button"
-                        class="btn btn-dark"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditarDados"
-                    >
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                        data-bs-target="#modalEditarDados">
                         <i class="bi bi-pencil me-2"></i>
                         Editar meus dados
                     </button>
@@ -96,10 +83,7 @@
                                 os detalhes dos seus pedidos.
                             </p>
 
-                            <a
-                                href="/pedido"
-                                class="btn btn-outline-dark"
-                            >
+                            <a href="/pedido" class="btn btn-outline-dark">
                                 <i class="bi bi-bag me-2"></i>
                                 Ver meus pedidos
                             </a>
@@ -123,10 +107,7 @@
                                 Explore os modelos disponíveis no catálogo.
                             </p>
 
-                            <a
-                                href="/oculos/completo"
-                                class="btn btn-outline-dark"
-                            >
+                            <a href="/oculos/completo" class="btn btn-outline-dark">
                                 <i class="bi bi-shop me-2"></i>
                                 Ver óculos
                             </a>
@@ -145,23 +126,14 @@
      POPUP: EDITAR MEUS DADOS
 ========================================= -->
 
-<div
-    class="modal fade"
-    id="modalEditarDados"
-    tabindex="-1"
-    aria-labelledby="tituloModalEditarDados"
-    aria-hidden="true"
->
+<div class="modal fade" id="modalEditarDados" tabindex="-1" aria-labelledby="tituloModalEditarDados" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
 
             <!-- Cabeçalho do popup -->
             <div class="modal-header px-4 py-3">
                 <div>
-                    <h2
-                        class="modal-title h5 mb-1"
-                        id="tituloModalEditarDados"
-                    >
+                    <h2 class="modal-title h5 mb-1" id="tituloModalEditarDados">
                         Editar meus dados
                     </h2>
 
@@ -170,12 +142,7 @@
                     </p>
                 </div>
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Fechar"
-                ></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
 
             <!-- Formulário de edição -->
@@ -185,10 +152,7 @@
 
                     <!-- Nome -->
                     <div class="mb-3">
-                        <label
-                            for="editarNome"
-                            class="form-label fw-semibold"
-                        >
+                        <label for="editarNome" class="form-label fw-semibold">
                             Nome completo
                         </label>
 
@@ -197,26 +161,15 @@
                                 <i class="bi bi-person"></i>
                             </span>
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="editarNome"
-                                name="nome"
-                                value="<%= usuario.nome || '' %>"
-                                placeholder="Digite seu nome completo"
-                                maxlength="150"
-                                autocomplete="name"
-                                required
-                            >
+                            <input type="text" class="form-control" id="editarNome" name="nome"
+                                value="<%= usuario.nome || '' %>" placeholder="Digite seu nome completo" maxlength="150"
+                                autocomplete="name" required>
                         </div>
                     </div>
 
                     <!-- E-mail -->
                     <div class="mb-3">
-                        <label
-                            for="editarEmail"
-                            class="form-label fw-semibold"
-                        >
+                        <label for="editarEmail" class="form-label fw-semibold">
                             E-mail
                         </label>
 
@@ -225,26 +178,15 @@
                                 <i class="bi bi-envelope"></i>
                             </span>
 
-                            <input
-                                type="email"
-                                class="form-control"
-                                id="editarEmail"
-                                name="email"
-                                value="<%= usuario.email || '' %>"
-                                placeholder="Digite seu e-mail"
-                                maxlength="255"
-                                autocomplete="email"
-                                required
-                            >
+                            <input type="email" class="form-control" id="editarEmail" name="email"
+                                value="<%= usuario.email || '' %>" placeholder="Digite seu e-mail" maxlength="255"
+                                autocomplete="email" required>
                         </div>
                     </div>
 
                     <!-- Telefone -->
                     <div class="mb-0">
-                        <label
-                            for="editarTelefone"
-                            class="form-label fw-semibold"
-                        >
+                        <label for="editarTelefone" class="form-label fw-semibold">
                             Telefone
                         </label>
 
@@ -253,16 +195,9 @@
                                 <i class="bi bi-telephone"></i>
                             </span>
 
-                            <input
-                                type="tel"
-                                class="form-control"
-                                id="editarTelefone"
-                                name="telefone"
-                                value="<%= usuario.telefone || '' %>"
-                                placeholder="Digite seu telefone"
-                                maxlength="20"
-                                autocomplete="tel"
-                            >
+                            <input type="tel" class="form-control" id="editarTelefone" name="telefone"
+                                value="<%= usuario.telefone || '' %>" placeholder="Digite seu telefone" maxlength="20"
+                                autocomplete="tel">
                         </div>
                     </div>
 
@@ -275,18 +210,11 @@
                 <!-- Botões do popup -->
                 <div class="modal-footer px-4 py-3">
 
-                    <button
-                        type="button"
-                        class="btn btn-outline-dark"
-                        data-bs-dismiss="modal"
-                    >
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                         Cancelar
                     </button>
 
-                    <button
-                        type="submit"
-                        class="btn btn-dark"
-                    >
+                    <button type="submit" class="btn btn-dark">
                         <i class="bi bi-check-lg me-2"></i>
                         Salvar alterações
                     </button>

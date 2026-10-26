@@ -1,148 +1,221 @@
 
 import CarrinhoModelo from "../models/carrinhoModelo.mjs";
 
+function requisicaoAjax(req) {
+    return (
+        req.get("X-Requested-With") === "XMLHttpRequest" ||
+        (req.get("Accept") || "").includes("application/json")
+    );
+}
+
+async function obterDadosFormulario(req) {
+    if (req.body && Object.keys(req.body).length > 0) {
+        return req.body;
+    }
+
+    const contentType = req.get("Content-Type") || "";
+
+    if (!contentType.includes("application/x-www-form-urlencoded")) {
+        return {};
+    }
+
+    let corpo = "";
+
+    for await (const parte of req) {
+        corpo += parte.toString();
+    }
+
+    return Object.fromEntries(new URLSearchParams(corpo));
+}
+
+function responderErro(req, res, status, mensagem, extras = {}) {
+    if (requisicaoAjax(req)) {
+        return res.status(status).json({
+            success: false,
+            erro: mensagem,
+            ...extras
+        });
+    }
+
+    return res.status(status).send(mensagem);
+}
+
 class CarrinhoControle {
 
-  // Exibir carrinho
-  async index(req, res) {
-    try {
-      const usuario = req.session?.usuario;
+    async index(req, res) {
+        try {
+            const usuario = req.session?.usuario;
 
-      if (!usuario) {
-        return res.redirect("/autenticacao/login");
-      }
+            if (!usuario) {
+                return res.redirect("/autenticacao/login");
+            }
 
-      const clienteId = Number(usuario.id);
+            const clienteId = Number(usuario.id);
 
-      if (!Number.isInteger(clienteId) || clienteId <= 0) {
-        return res.status(400).send("ID do cliente inválido.");
-      }
+            if (!Number.isInteger(clienteId) || clienteId <= 0) {
+                return res.status(400).send("ID do cliente inválido.");
+            }
 
-      const carrinho = await CarrinhoModelo.listar(clienteId);
+            const carrinho = await CarrinhoModelo.listar(clienteId);
 
-      let subtotal = 0;
+            const subtotal = carrinho.reduce((total, item) => {
+                return total + Number(item.preco) * Number(item.quantidade);
+            }, 0);
 
-      carrinho.forEach(item => {
-        subtotal += Number(item.preco) * Number(item.quantidade);
-      });
+            const frete = subtotal >= 300 ? 0 : 25;
+            const total = subtotal + frete;
 
-      const frete = subtotal >= 300 ? 0 : 25;
-      const total = subtotal + frete;
+            return res.render("carrinho/index", {
+                carrinho,
+                subtotal,
+                frete,
+                total
+            });
 
-      return res.render("carrinho/index", {
-        carrinho,
-        subtotal,
-        frete,
-        total
-      });
-    } catch (erro) {
-      console.error(erro);
-      return res.status(500).send("Erro ao carregar o carrinho.");
+        } catch (erro) {
+            console.error("Erro ao carregar carrinho:", erro);
+            return res.status(500).send("Erro ao carregar o carrinho.");
+        }
     }
-  }
 
-  // Adicionar produto
-  async adicionar(req, res) {
-    try {
-      const usuario = req.session?.usuario;
+    async adicionar(req, res) {
+        try {
+            const usuario = req.session?.usuario;
 
-      if (!usuario) {
-        return res.redirect("/autenticacao/login");
-      }
+            if (!usuario) {
+                if (requisicaoAjax(req)) {
+                    return responderErro(
+                        req,
+                        res,
+                        401,
+                        "Você precisa entrar na sua conta para adicionar produtos.",
+                        { loginUrl: "/autenticacao/login" }
+                    );
+                }
 
-      if (usuario.cargo !== "Cliente") {
-        return res.status(403).send(
-          "Somente clientes podem adicionar produtos ao carrinho."
-        );
-      }
+                return res.redirect("/autenticacao/login");
+            }
 
-      const clienteId = Number(usuario.id);
-      const oculosId = Number(req.params.id);
-      const quantidade = Number(req.body.quantidade);
+            if (usuario.cargo !== "Cliente") {
+                return responderErro(
+                    req,
+                    res,
+                    403,
+                    "Somente clientes podem adicionar produtos ao carrinho."
+                );
+            }
 
-      if (
-        !Number.isInteger(clienteId) || clienteId <= 0 ||
-        !Number.isInteger(oculosId) || oculosId <= 0 ||
-        !Number.isInteger(quantidade) || quantidade < 1
-      ) {
-        return res.status(400).send("Dados do produto inválidos.");
-      }
+            const dados = await obterDadosFormulario(req);
 
-      await CarrinhoModelo.adicionar(
-        clienteId,
-        oculosId,
-        quantidade
-      );
+            const clienteId = Number(usuario.id);
+            const oculosId = Number(req.params.id);
+            const quantidade = Number(dados.quantidade);
 
-      return res.redirect("/carrinho");
-    } catch (erro) {
-      console.error(erro);
-      return res.status(400).send(erro.message);
+            if (
+                !Number.isInteger(clienteId) || clienteId <= 0 ||
+                !Number.isInteger(oculosId) || oculosId <= 0 ||
+                !Number.isInteger(quantidade) || quantidade < 1
+            ) {
+                return responderErro(
+                    req,
+                    res,
+                    400,
+                    "Dados do produto inválidos. Confira a quantidade e tente novamente."
+                );
+            }
+
+            await CarrinhoModelo.adicionar(
+                clienteId,
+                oculosId,
+                quantidade
+            );
+
+            if (requisicaoAjax(req)) {
+                return res.status(200).json({
+                    success: true,
+                    mensagem: "Produto adicionado ao carrinho!",
+                    redirectUrl: "/carrinho",
+                    oculosId,
+                    quantidade
+                });
+            }
+
+            return res.redirect("/carrinho");
+
+        } catch (erro) {
+            console.error("Erro ao adicionar produto ao carrinho:", erro);
+
+            return responderErro(
+                req,
+                res,
+                400,
+                erro.message || "Não foi possível adicionar o produto ao carrinho."
+            );
+        }
     }
-  }
 
-  // Aumentar quantidade
-  async aumentar(req, res) {
-    try {
-      const usuario = req.session?.usuario;
+    async aumentar(req, res) {
+        try {
+            const usuario = req.session?.usuario;
 
-      if (!usuario) {
-        return res.redirect("/autenticacao/login");
-      }
+            if (!usuario) {
+                return res.redirect("/autenticacao/login");
+            }
 
-      await CarrinhoModelo.aumentar(
-        Number(usuario.id),
-        Number(req.params.id)
-      );
+            await CarrinhoModelo.aumentar(
+                Number(usuario.id),
+                Number(req.params.id)
+            );
 
-      return res.redirect("/carrinho");
-    } catch (erro) {
-      console.error(erro);
-      return res.status(500).send("Erro ao aumentar a quantidade.");
+            return res.redirect("/carrinho");
+
+        } catch (erro) {
+            console.error("Erro ao aumentar quantidade:", erro);
+            return res.status(500).send("Erro ao aumentar a quantidade.");
+        }
     }
-  }
 
-  // Diminuir quantidade
-  async diminuir(req, res) {
-    try {
-      const usuario = req.session?.usuario;
+    async diminuir(req, res) {
+        try {
+            const usuario = req.session?.usuario;
 
-      if (!usuario) {
-        return res.redirect("/autenticacao/login");
-      }
+            if (!usuario) {
+                return res.redirect("/autenticacao/login");
+            }
 
-      await CarrinhoModelo.diminuir(
-        Number(usuario.id),
-        Number(req.params.id)
-      );
+            await CarrinhoModelo.diminuir(
+                Number(usuario.id),
+                Number(req.params.id)
+            );
 
-      return res.redirect("/carrinho");
-    } catch (erro) {
-      console.error(erro);
-      return res.status(500).send("Erro ao diminuir a quantidade.");
+            return res.redirect("/carrinho");
+
+        } catch (erro) {
+            console.error("Erro ao diminuir quantidade:", erro);
+            return res.status(500).send("Erro ao diminuir a quantidade.");
+        }
     }
-  }
 
-  // Remover item
-  async remover(req, res) {
-    try {
-      const usuario = req.session?.usuario;
+    async remover(req, res) {
+        try {
+            const usuario = req.session?.usuario;
 
-      if (!usuario) {
-        return res.redirect("/autenticacao/login");
-      }
+            if (!usuario) {
+                return res.redirect("/autenticacao/login");
+            }
 
-      await CarrinhoModelo.remover(
-        Number(usuario.id),
-        Number(req.params.id)
-      );
+            await CarrinhoModelo.remover(
+                Number(usuario.id),
+                Number(req.params.id)
+            );
 
-      return res.redirect("/carrinho");
-    } catch (erro) {
-      console.error(erro);
-      return res.status(500).send("Erro ao remover o item.");
+            return res.redirect("/carrinho");
+
+        } catch (erro) {
+            console.error("Erro ao remover item:", erro);
+            return res.status(500).send("Erro ao remover o item.");
+        }
     }
-  }
 }
 
 export default new CarrinhoControle();

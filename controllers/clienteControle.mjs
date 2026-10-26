@@ -1,8 +1,8 @@
 
 import ClienteModelo from '../models/clienteModelo.mjs';
+import PedidoModelo from '../models/PedidoModelo.mjs';
 
 const clienteControle = {
-    // Exibe a área pessoal do cliente autenticado.
     async index(req, res) {
         try {
             const usuarioSessao = req.session?.usuario;
@@ -21,7 +21,6 @@ const clienteControle = {
                 });
             }
 
-            // Não envia a senha para a página.
             const usuario = {
                 id: cliente.id,
                 nome: cliente.nome,
@@ -29,10 +28,26 @@ const clienteControle = {
                 telefone: cliente.telefone
             };
 
+            // Garante que a área de pedidos tenha o ID do cliente.
+            req.session.usuario.clienteID = cliente.id;
+
+            // Busca somente os pedidos deste cliente.
+            const pedidos = await PedidoModelo.listarPorCliente(
+                cliente.id
+            );
+
+            const resumo = {
+                quantidadePedidos: pedidos.length,
+                valorTotal: pedidos.reduce((total, pedido) => {
+                    return total + (Number(pedido.total) || 0);
+                }, 0)
+            };
+
             return res.render('clientes/index', {
                 titulo: 'Minha conta',
                 pagina: 'conta',
-                usuario
+                usuario,
+                resumo
             });
         } catch (erro) {
             console.error('Erro ao carregar minha conta:', erro);
@@ -43,7 +58,6 @@ const clienteControle = {
         }
     },
 
-    // Abre o formulário para editar os próprios dados.
     async editarFormulario(req, res) {
         try {
             const usuarioSessao = req.session?.usuario;
@@ -85,7 +99,6 @@ const clienteControle = {
         }
     },
 
-    // Atualiza somente a conta do usuário autenticado.
     async atualizar(req, res) {
         try {
             const usuarioSessao = req.session?.usuario;
@@ -95,9 +108,14 @@ const clienteControle = {
             }
 
             const id = Number(usuarioSessao.id);
-            const { nome, telefone, email } = req.body;
+            const nome = req.body.nome?.trim();
+            const telefone = req.body.telefone?.trim() || '';
 
-            if (!nome?.trim() || !email?.trim()) {
+            // Se o formulário não enviar e-mail, preserva o atual.
+            const clienteAtual = await ClienteModelo.buscarPorId(id);
+            const email = req.body.email?.trim() || clienteAtual?.email;
+
+            if (!nome || !email) {
                 return res.status(400).send(
                     'Nome e e-mail são obrigatórios.'
                 );
@@ -105,14 +123,13 @@ const clienteControle = {
 
             await ClienteModelo.atualizar(
                 id,
-                nome.trim(),
-                telefone?.trim() || '',
-                email.trim()
+                nome,
+                telefone,
+                email
             );
 
-            // Mantém os dados da sessão atualizados.
-            req.session.usuario.nome = nome.trim();
-            req.session.usuario.email = email.trim();
+            req.session.usuario.nome = nome;
+            req.session.usuario.email = email;
 
             return res.redirect('/clientes');
         } catch (erro) {
@@ -124,8 +141,6 @@ const clienteControle = {
         }
     },
 
-    // As operações administrativas não são disponibilizadas
-    // pela área pessoal do cliente.
     async novo(req, res) {
         return res.status(403).send(
             'O cadastro de clientes deve ser realizado pela área apropriada.'

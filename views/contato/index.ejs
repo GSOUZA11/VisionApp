@@ -1,174 +1,195 @@
-<div class="titulo-contato">
 
-    <h1>Fale Conosco</h1>
+<div class="contato-page">
 
-    <p>
-        Estamos aqui para ajudar! Entre em contato conosco.
-    </p>
+  <!-- CABEÇALHO -->
+  <section class="contato-hero">
+    <div class="contato-container">
+      <span class="contato-tag">VISIONAPP · ATENDIMENTO</span>
 
-</div>
+      <h1>Estamos aqui para <span>ajudar você.</span></h1>
 
-<div class="secao-contato">
+      <p>
+        Tem alguma dúvida sobre nossos óculos ou precisa de ajuda
+        com seu pedido? Entre em contato com nossa equipe.
+      </p>
 
-    <div class="form-container">
-
-        <h2>Envie sua Mensagem</h2>
-
-        <form>
-
-            <div class="form-group">
-
-                <label>Nome</label>
-
-                <input
-                    type="text"
-                    placeholder="Seu nome">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>E-mail</label>
-
-                <input
-                    type="email"
-                    placeholder="seu@email.com">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Assunto</label>
-
-                <select>
-
-                    <option>Selecione</option>
-                    <option>Dúvida</option>
-                    <option>Sugestão</option>
-                    <option>Reclamação</option>
-                    <option>Informações sobre pedido</option>
-                    <option>Outro</option>
-
-                </select>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Mensagem</label>
-
-                <textarea
-                    placeholder="Escreva sua mensagem..."></textarea>
-
-            </div>
-
-            <button
-                type="submit"
-                class="btn-enviar">
-
-                Enviar Mensagem
-
-            </button>
-
-        </form>
-
+      <a href="#formulario-contato" class="contato-btn">
+        Fale com a gente
+      </a>
     </div>
+  </section>
 
-    <div class="mapa-container">
-
-        <div class="mapa-local">
-
-            <iframe
-                src="https://maps.google.com/maps?q=Osasco&t=&z=13&ie=UTF8&iwloc=&output=embed">
-            </iframe>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="info-contato">
-
-    <h2>Nossas Informações</h2>
-
-    <div class="contatos-grid">
-
-        <div class="contato-card">
-
-            <i class="fas fa-map-marker-alt"></i>
-
-            <h3>Endereço</h3>
-
-            <p>
-                Rua Dante Batiston, 248<br>
-                Centro, Osasco - SP
-            </p>
-
-        </div>
-
-        <div class="contato-card">
-
-            <i class="fas fa-phone-alt"></i>
-
-            <h3>Telefone</h3>
-
-            <p>(11) 99999-9999</p>
-
-        </div>
-
-        <div class="contato-card">
-
-            <i class="fas fa-envelope"></i>
-
-            <h3>E-mail</h3>
-
-            <p>visionstore@gmail.com</p>
-
-        </div>
-
-        <div class="contato-card">
-
-            <i class="fas fa-clock"></i>
-
-            <h3>Horário</h3>
-
-            <p>
-                Seg a Sex: 9h às 18h<br>
-                Sábado: 9h às 13h
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="info-simples">
-
-    <div class="info-item">
-
-        <span>Email:</span>
+  <!-- CANAIS DE ATENDIMENTO -->
+  <section class="contato-container contato-canais">
+    <article class="contato-card">
+      <div class="contato-icone">✉</div>
+      <h3>E-mail</h3>
+      <p>Envie sua dúvida para nossa equipe.</p>
+      <a href="mailto:visionstore@gmail.com">
         visionstore@gmail.com
+      </a>
+    </article>
 
+    <article class="contato-card">
+      <div class="contato-icone">☎</div>
+      <h3>Telefone</h3>
+      <p>Estamos disponíveis para ajudar.</p>
+      <a href="tel:+5511999999999">
+        (11) 9002-8922
+      </a>
+    </article>
+
+    <article class="contato-card">
+      <div class="contato-icone">⌖</div>
+      <h3>Localização</h3>
+      <p>Venha conhecer nossa loja.</p>
+      <a
+        href="https://www.google.com/maps/search/?api=1&query=Rua+Dante+Batiston+248+Osasco"
+        target="_blank"
+        rel="noopener noreferrer">
+        Ver no mapa
+      </a>
+    </article>
+  </section>
+
+  <!-- FORMULÁRIO E INFORMAÇÕES -->
+  <section class="contato-container contato-conteudo">
+
+    <div class="contato-info">
+      <span class="contato-tag">FALE CONOSCO</span>
+      <h2>Como podemos ajudar?</h2>
+
+      <p>
+        Preencha o formulário ao lado com sua mensagem.
+        Queremos tornar sua experiência com a VisionApp cada vez melhor.
+      </p>
+
+      <div class="contato-info-item">
+        <strong>Atendimento</strong>
+        <span>Dúvidas, pedidos e informações sobre produtos.</span>
+      </div>
+
+      <div class="contato-info-item">
+        <strong>Endereço</strong>
+        <span>Rua Dante Batiston, 248 — Osasco, SP</span>
+      </div>
+
+      <a
+        class="contato-whatsapp"
+        href="https://wa.me/551190028922"
+        target="_blank"
+        rel="noopener noreferrer">
+        Conversar pelo WhatsApp ↗
+      </a>
     </div>
 
-    <div class="info-item">
+    <div class="contato-form-card" id="formulario-contato">
+      <h2>Envie sua mensagem</h2>
+      <p>Preencha os campos abaixo.</p>
 
-        <span>Telefone:</span>
-        (11) 99999-9999
+      <form id="formContato">
+        <div class="contato-campo">
+          <label for="nome">Nome completo</label>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Digite seu nome"
+            required>
+        </div>
 
+        <div class="contato-campo">
+          <label for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="voce@exemplo.com"
+            required>
+        </div>
+
+        <div class="contato-campo">
+          <label for="assunto">Assunto</label>
+          <select id="assunto" name="assunto" required>
+            <option value="">Selecione um assunto</option>
+            <option value="Pedido">Meu pedido</option>
+            <option value="Produtos">Dúvidas sobre produtos</option>
+            <option value="Pagamento">Pagamento</option>
+            <option value="Troca">Trocas e devoluções</option>
+            <option value="Outro">Outro assunto</option>
+          </select>
+        </div>
+
+        <div class="contato-campo">
+          <label for="mensagem">Mensagem</label>
+          <textarea
+            id="mensagem"
+            name="mensagem"
+            rows="5"
+            placeholder="Escreva sua mensagem..."
+            required></textarea>
+        </div>
+
+        <button type="submit" class="contato-btn contato-btn-enviar">
+          Preparar mensagem ↗
+        </button>
+
+        <p class="contato-aviso">
+          Ao enviar, seu aplicativo de e-mail será aberto com a mensagem preenchida.
+        </p>
+      </form>
     </div>
+
+  </section>
+
+  <!-- MAPA -->
+  <section class="contato-mapa">
+    <div class="contato-container">
+      <div class="contato-mapa-titulo">
+        <div>
+          <span class="contato-tag">ONDE ESTAMOS</span>
+          <h2>Visite nossa loja</h2>
+        </div>
+
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Rua+Dante+Batiston+248+Osasco"
+          target="_blank"
+          rel="noopener noreferrer">
+          Abrir no Google Maps ↗
+        </a>
+      </div>
+
+      <iframe
+        title="Localização da VisionApp em Osasco"
+        src="https://maps.google.com/maps?q=Rua%20Dante%20Batiston%20248%20Osasco&t=&z=15&ie=UTF8&iwloc=&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
 
 </div>
 
-<a
-    href="https://wa.me/5511999999999"
-    class="whatsapp-button"
-    target="_blank">
+<script>
+  document.getElementById("formContato").addEventListener("submit", function (event) {
+    event.preventDefault();
 
-    <img
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-        alt="WhatsApp">
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const assunto = document.getElementById("assunto").value;
+    const mensagem = document.getElementById("mensagem").value.trim();
 
-</a>
+    const corpo =
+      "Nome: " + nome + "\n" +
+      "E-mail: " + email + "\n" +
+      "Assunto: " + assunto + "\n\n" +
+      "Mensagem:\n" + mensagem;
+
+    const destino = "visionstore@gmail.com";
+
+    window.location.href =
+      "mailto:" + destino +
+      "?subject=" + encodeURIComponent("Contato VisionApp - " + assunto) +
+      "&body=" + encodeURIComponent(corpo);
+  });
+</script>

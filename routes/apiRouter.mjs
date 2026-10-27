@@ -20,6 +20,7 @@ apiRouter.get(
     async (req, res) => {
 
         try {
+<<<<<<< HEAD
 
             const cliente = await ClienteModelo.buscarPorId(
                 req.usuario.id
@@ -74,10 +75,65 @@ apiRouter.put(
             })
 
         }
+=======
+>>>>>>> 7fe33817ed743d3f69f633bdaeccc30fef799fb5
 
+            const cliente =
+                await ClienteModelo.buscarPorId(
+                    req.usuario.id
+                )
+
+            res.json({
+                id: cliente.id,
+                nome: cliente.nome,
+                email: cliente.email,
+                telefone: cliente.telefone
+            })
+
+        } catch (erro) {
+
+            console.error(erro)
+
+            res.status(500).json({
+                mensagem: erro.message
+            })
+        }
     }
 )
+apiRouter.put(
+    '/perfil',
+    verificarJWT,
+    async (req, res) => {
 
+        try {
+
+            const {
+                nome,
+                email,
+                telefone
+            } = req.body
+
+            await ClienteModelo.atualizar(
+                req.usuario.id,
+                nome,
+                telefone,
+                email
+            )
+
+            res.status(200).json({
+                mensagem: 'Perfil atualizado com sucesso'
+            })
+
+        } catch (erro) {
+
+            console.error(erro)
+
+            res.status(500).json({
+                mensagem: erro.message
+            })
+        }
+    }
+)
 // Leitura
 apiRouter.get('/oculos', verificarJWT, oculosApiControle.listar)
 apiRouter.get('/oculos/:id', oculosApiControle.buscar)

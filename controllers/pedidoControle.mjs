@@ -1,39 +1,32 @@
+
 import PedidoModelo from '../models/pedidoModelo.mjs'
+import ClienteModelo from '../models/clienteModelo.mjs'
+import OculosModelo from '../models/oculosModelo.mjs'
 
 const pedidoControle = {
 
     async index(req, res) {
+        const usuario = req.session.usuario
 
-        const pedidos =
-            await PedidoModelo.listar()
+        const pedidos = usuario.clienteID
+            ? await PedidoModelo.listarPorCliente(usuario.clienteID)
+            : []
 
-        res.render(
-            'pedido/index',
-            { pedidos }
-        )
+        res.render('pedido/index', { pedidos })
     },
 
     async novo(req, res) {
+        const clientes = await ClienteModelo.listar()
+        const oculos = await OculosModelo.listar()
 
-        const clientes =
-            await ClienteModelo.listar()
-
-        const oculos =
-            await OculosModelo.listar()
-
-        res.render(
-            'pedido/novo',
-            {
-                clientes,
-                oculos
-            }
-        )
+        res.render('pedido/novo', {
+            clientes,
+            oculos
+        })
     },
 
     async criar(req, res) {
-
-        const itens =
-            JSON.parse(req.body.itens)
+        const itens = JSON.parse(req.body.itens)
 
         await PedidoModelo.criar(
             req.body.clienteID,
@@ -43,58 +36,32 @@ const pedidoControle = {
 
         res.redirect('/pedido')
     },
-    
+
     async mostrar(req, res) {
+        const usuario = req.session.usuario
 
-        const pedido =
-            await PedidoModelo.buscarPorId(
-                req.params.id
-            )
-
-        res.render(
-            'pedido/mostrar',
-            { pedido }
+        const pedido = await PedidoModelo.buscarPorId(
+            req.params.id,
+            usuario.clienteID
         )
+
+        if (!pedido) {
+            return res.status(404).send('Pedido não encontrado.')
+        }
+
+        res.render('pedido/mostrar', { pedido })
     },
 
     async excluir(req, res) {
-
-        await PedidoModelo.excluir(
-            req.params.id
+        return res.status(403).send(
+            'A exclusão de pedidos não está disponível para o usuário.'
         )
-
-        res.redirect('/pedido')
     },
 
     async relatorio(req, res) {
-
-        const dados =
-            await PedidoModelo.relatorio()
-
-        const csv =
-            createObjectCsvWriter({
-
-                path: 'relatorio.csv',
-
-                header: [
-                    {
-                        id: 'id',
-                        title: 'PEDIDO'
-                    },
-                    {
-                        id: 'cliente',
-                        title: 'CLIENTE'
-                    },
-                    {
-                        id: 'total',
-                        title: 'TOTAL'
-                    }
-                ]
-            })
-
-        await csv.writeRecords(dados)
-
-        res.download('relatorio.csv')
+        return res.status(403).send(
+            'Relatório não disponível para o usuário.'
+        )
     }
 }
 

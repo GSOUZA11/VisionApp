@@ -1,0 +1,431 @@
+<%
+    const listaPedidos = Array.isArray(pedidos) ? pedidos : [];
+
+    const dinheiro = (valor) => {
+        return Number(valor || 0).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+    };
+
+    const dataFormatada = (valor) => {
+        if (!valor) return '-';
+
+        const data = new Date(valor);
+
+        if (isNaN(data.getTime())) return '-';
+
+        return data.toLocaleDateString('pt-BR');
+    };
+
+    const totalGasto = listaPedidos.reduce((total, pedido) => {
+        return total + Number(pedido.total || 0);
+    }, 0);
+%>
+
+<div class="pagina-pedidos">
+
+    <div class="cabecalho-pedidos">
+        <div>
+            <p class="subtitulo-pedidos">ÁREA DO CLIENTE</p>
+            <h1>Meus pedidos</h1>
+            <p class="descricao-pedidos">
+                Consulte suas compras e acompanhe os detalhes dos pedidos.
+            </p>
+        </div>
+    </div>
+
+    <div class="resumo-pedidos">
+        <div class="resumo-card">
+            <span>Total de pedidos</span>
+            <strong><%= listaPedidos.length %></strong>
+        </div>
+
+        <div class="resumo-card">
+            <span>Valor total dos pedidos</span>
+            <strong><%= dinheiro(totalGasto) %></strong>
+        </div>
+    </div>
+
+    <section class="conteudo-pedidos">
+
+        <div class="titulo-lista">
+            <div>
+                <h2>Histórico de compras</h2>
+                <p>Veja abaixo os seus pedidos.</p>
+            </div>
+
+            <input
+                type="search"
+                id="buscaPedidos"
+                placeholder="Pesquisar pedido..."
+                aria-label="Pesquisar pedido"
+            >
+        </div>
+
+        <% if (listaPedidos.length > 0) { %>
+
+            <div class="tabela-responsiva">
+                <table class="tabela-pedidos">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaPedidos">
+                        <% listaPedidos.forEach((pedido) => { %>
+                            <tr class="pedido-linha">
+                                <td>
+                                    <strong class="numero-pedido">
+                                        #<%= pedido.id %>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <%= dataFormatada(pedido.dataPedido) %>
+                                </td>
+
+                                <td>
+                                    <span class="status-pedido">
+                                        <%= pedido.status || 'Em processamento' %>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        <%= dinheiro(pedido.total) %>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <a
+                                        href="/pedido/mostrar/<%= pedido.id %>"
+                                        class="botao-detalhes"
+                                    >
+                                        Ver detalhes
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="mensagemBusca" class="mensagem-busca" hidden>
+                Nenhum pedido encontrado.
+            </p>
+
+        <% } else { %>
+
+            <div class="sem-pedidos">
+                <h3>Nenhum pedido encontrado</h3>
+
+                <p>
+                    Você ainda não possui pedidos para exibir.
+                    Quando realizar uma compra, ela aparecerá aqui.
+                </p>
+
+                <a href="/oculos" class="botao-comprar">
+                    Ver óculos
+                </a>
+            </div>
+
+        <% } %>
+
+    </section>
+
+    <div class="rodape-pedidos">
+    <a href="/clientes" class="btn btn-outline-dark">
+        <i class="bi bi-arrow-left me-2"></i>
+        Voltar para minha conta
+    </a>
+</div>
+
+</div>
+
+<style>
+    .pagina-pedidos {
+        max-width: 1200px;
+        width: calc(100% - 32px);
+        margin: 35px auto;
+        color: #24364b;
+    }
+
+    .cabecalho-pedidos {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .subtitulo-pedidos {
+        margin: 0 0 8px;
+        color: #2476b8;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .cabecalho-pedidos h1 {
+        margin: 0 0 10px;
+        color: #173653;
+        font-size: 32px;
+    }
+
+    .descricao-pedidos,
+    .titulo-lista p {
+        margin: 0;
+        color: #6b7b8d;
+        line-height: 1.6;
+    }
+
+    .botao-comprar,
+    .botao-voltar,
+    .botao-detalhes {
+        display: inline-block;
+        padding: 11px 16px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+        text-align: center;
+        transition: background-color 0.25s ease,
+                    color 0.25s ease,
+                    border-color 0.25s ease;
+    }
+
+    .botao-comprar {
+        background: #1769aa;
+        color: #fff;
+    }
+
+    .botao-comprar:hover {
+        background: #10558d;
+        color: #fff;
+    }
+
+    .resumo-pedidos {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .resumo-card {
+        padding: 22px;
+        border: 1px solid #e0e8f0;
+        border-radius: 9px;
+        background: #fff;
+    }
+
+    .resumo-card span {
+        display: block;
+        margin-bottom: 10px;
+        color: #6b7b8d;
+        font-size: 14px;
+    }
+
+    .resumo-card strong {
+        color: #173653;
+        font-size: 24px;
+        overflow-wrap: anywhere;
+    }
+
+    .conteudo-pedidos {
+        overflow: hidden;
+        border: 1px solid #e0e8f0;
+        border-radius: 9px;
+        background: #fff;
+    }
+
+    .titulo-lista {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 22px;
+        border-bottom: 1px solid #e7edf4;
+    }
+
+    .titulo-lista h2 {
+        margin: 0 0 7px;
+        color: #173653;
+        font-size: 20px;
+    }
+
+    #buscaPedidos {
+        width: 240px;
+        max-width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #d5e0eb;
+        border-radius: 7px;
+        outline: none;
+        font: inherit;
+    }
+
+    #buscaPedidos:focus {
+        border-color: #2476b8;
+    }
+
+    .tabela-responsiva {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .tabela-pedidos {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .tabela-pedidos th {
+        padding: 15px;
+        background: #f1f6fb;
+        color: #52677d;
+        font-size: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .tabela-pedidos td {
+        padding: 16px 15px;
+        border-top: 1px solid #edf1f5;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .pedido-linha:hover {
+        background: #f8fbff;
+    }
+
+    .numero-pedido {
+        color: #1769aa;
+    }
+
+    .status-pedido {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 5px;
+        background: #eaf3ff;
+        color: #1769aa;
+        font-size: 12px;
+    }
+
+    .botao-detalhes {
+        padding: 8px 11px;
+        border: 1px solid #c8def5;
+        color: #1769aa;
+        font-size: 13px;
+    }
+
+    .botao-detalhes:hover {
+        background: #eaf3ff;
+    }
+
+    .sem-pedidos {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .sem-pedidos h3 {
+        color: #173653;
+    }
+
+    .sem-pedidos p {
+        max-width: 450px;
+        margin: 10px auto 20px;
+        color: #6b7b8d;
+        line-height: 1.7;
+    }
+
+    .mensagem-busca {
+        padding: 20px;
+        color: #6b7b8d;
+        text-align: center;
+    }
+
+    .rodape-pedidos {
+        margin-top: 25px;
+        padding-bottom: 20px;
+    }
+
+    /* Botão laranja com hover amarelo */
+    .botao-voltar {
+        border: 1px solid #ff9800;
+        background: #ff9800;
+        color: #fff;
+    }
+
+    .botao-voltar:hover,
+    .botao-voltar:focus-visible {
+        border-color: #1e90ff;
+        background: #1e90ff;
+        color: #222;
+    }
+
+    @media (max-width: 700px) {
+        .cabecalho-pedidos {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .cabecalho-pedidos h1 {
+            font-size: 27px;
+        }
+
+        .resumo-pedidos {
+            grid-template-columns: 1fr;
+        }
+
+        .titulo-lista {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        #buscaPedidos {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .botao-comprar,
+        .botao-voltar {
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<script>
+    (() => {
+        const campo = document.getElementById('buscaPedidos');
+        const linhas = document.querySelectorAll('.pedido-linha');
+        const mensagem = document.getElementById('mensagemBusca');
+
+        if (!campo) return;
+
+        campo.addEventListener('input', () => {
+            const termo = campo.value.toLowerCase().trim();
+            let quantidadeVisivel = 0;
+
+            linhas.forEach((linha) => {
+                const corresponde = linha.textContent
+                    .toLowerCase()
+                    .includes(termo);
+
+                linha.style.display = corresponde ? '' : 'none';
+
+                if (corresponde) {
+                    quantidadeVisivel++;
+                }
+            });
+
+            if (mensagem) {
+                mensagem.hidden = quantidadeVisivel > 0;
+            }
+        });
+    })();
+</script>

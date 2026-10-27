@@ -1,0 +1,460 @@
+<%
+    const statusOriginal = String(pedido.status || 'Pendente').trim().toLowerCase();
+
+    const etapas = [
+        { nome: 'Pedido realizado', descricao: 'Recebemos seu pedido.', icone: 'bi-receipt' },
+        { nome: 'Pagamento aprovado', descricao: 'O pagamento foi confirmado.', icone: 'bi-credit-card' },
+        { nome: 'Preparando pedido', descricao: 'Estamos preparando seus produtos.', icone: 'bi-box-seam' },
+        { nome: 'Pedido enviado', descricao: 'Seu pedido está a caminho.', icone: 'bi-truck' },
+        { nome: 'Pedido entregue', descricao: 'Sua compra chegou ao destino.', icone: 'bi-house-check' }
+    ];
+
+    const statusEtapas = {
+        'pendente': 0,
+        'aguardando pagamento': 0,
+        'aguardando_pagamento': 0,
+        'aguardando pagamento': 0,
+        'pago': 1,
+        'pagamento aprovado': 1,
+        'aprovado': 1,
+        'em preparação': 2,
+        'em preparacao': 2,
+        'preparando': 2,
+        'em processamento': 2,
+        'processando': 2,
+        'enviado': 3,
+        'em trânsito': 3,
+        'em transito': 3,
+        'a caminho': 3,
+        'entregue': 4,
+        'cancelado': -1,
+        'cancelada': -1
+    };
+
+    const etapaAtual = Object.prototype.hasOwnProperty.call(statusEtapas, statusOriginal)
+        ? statusEtapas[statusOriginal]
+        : 0;
+
+    const cancelado = etapaAtual === -1;
+
+    const formatarMoeda = valor => Number(valor || 0).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+
+    const dataPedido = pedido.dataPedido
+        ? new Date(pedido.dataPedido)
+        : null;
+%>
+
+<style>
+    .pedido-pagina {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .pedido-cabecalho {
+        background: #f2f7fc;
+        border: 1px solid #e0eaf5;
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .pedido-numero {
+        color: #173b65;
+        font-weight: 750;
+    }
+
+    .pedido-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 30px;
+        padding: 8px 14px;
+        background: #e2edfb;
+        color: #174a7e;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .pedido-card {
+        border: 1px solid #e8edf2;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .pedido-card .card-body {
+        padding: 24px;
+    }
+
+    .pedido-titulo {
+        color: #20354b;
+        font-weight: 700;
+    }
+
+    .pedido-rastreio {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 24px;
+    }
+
+    .rastreio-etapa {
+        display: flex;
+        gap: 16px;
+        min-height: 100px;
+        position: relative;
+    }
+
+    .rastreio-coluna {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 42px;
+        flex-shrink: 0;
+    }
+
+    .rastreio-icone {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 2px solid #d9e0e8;
+        background: #fff;
+        color: #8a98a8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        z-index: 1;
+    }
+
+    .rastreio-linha {
+        width: 3px;
+        flex: 1;
+        min-height: 45px;
+        background: #e0e6ed;
+    }
+
+    .rastreio-etapa.concluida .rastreio-icone {
+        color: #fff;
+        background: #198754;
+        border-color: #198754;
+    }
+
+    .rastreio-etapa.concluida .rastreio-linha {
+        background: #198754;
+    }
+
+    .rastreio-etapa.atual .rastreio-icone {
+        background: #e8f2ff;
+        color: #145ca8;
+        border: 2px solid #2474c6;
+        box-shadow: 0 0 0 5px #edf5ff;
+    }
+
+    .rastreio-etapa.atual .rastreio-texto h3 {
+        color: #145ca8;
+    }
+
+    .rastreio-texto {
+        padding: 7px 0 24px;
+    }
+
+    .rastreio-texto h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #263b50;
+    }
+
+    .rastreio-texto p {
+        color: #758294;
+        font-size: .9rem;
+        margin-bottom: 0;
+    }
+
+    .pedido-tabela th {
+        background: #f5f8fb;
+        color: #536477;
+        font-size: .85rem;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .pedido-tabela td,
+    .pedido-tabela th {
+        padding: 16px;
+    }
+
+    .pedido-total {
+        background: #f5f8fb;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .pedido-info-label {
+        color: #788797;
+        font-size: .85rem;
+        margin-bottom: 5px;
+    }
+
+    .pedido-info-valor {
+        color: #263b50;
+        font-weight: 650;
+        margin-bottom: 0;
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 576px) {
+        .pedido-cabecalho {
+            padding: 20px;
+        }
+
+        .pedido-card .card-body {
+            padding: 18px;
+        }
+
+        .pedido-tabela td,
+        .pedido-tabela th {
+            padding: 12px;
+        }
+
+        .rastreio-etapa {
+            min-height: 105px;
+        }
+    }
+</style>
+
+<div class="container py-4 py-md-5 pedido-pagina">
+
+    <!-- Cabeçalho do pedido -->
+    <div class="pedido-cabecalho mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+            <div>
+                <div class="text-muted small mb-2">
+                    <i class="bi bi-bag-check me-1"></i>
+                    Acompanhamento da compra
+                </div>
+
+                <h1 class="h3 pedido-numero mb-2">
+                    Pedido #<%= pedido.id %>
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Acompanhe as etapas do seu pedido pela Vision.
+                </p>
+            </div>
+
+            <span class="pedido-status">
+                <i class="bi <%= cancelado ? 'bi-x-circle' : etapaAtual === 4 ? 'bi-check-circle' : 'bi-box-seam' %>"></i>
+                <%= pedido.status || 'Pendente' %>
+            </span>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-3">
+            <div class="col-6 col-md-4">
+                <p class="pedido-info-label">Número do pedido</p>
+                <p class="pedido-info-valor">#<%= pedido.id %></p>
+            </div>
+
+            <div class="col-6 col-md-4">
+                <p class="pedido-info-label">Data da compra</p>
+                <p class="pedido-info-valor">
+                    <%= dataPedido && !isNaN(dataPedido.getTime())
+                        ? dataPedido.toLocaleDateString('pt-BR')
+                        : '-' %>
+                </p>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <p class="pedido-info-label">Valor total</p>
+                <p class="pedido-info-valor text-primary fs-5">
+                    <%= formatarMoeda(pedido.total) %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Linha do tempo -->
+        <div class="col-12 col-lg-5">
+            <div class="card pedido-card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 pedido-titulo mb-2">
+                        <i class="bi bi-geo-alt me-2 text-primary"></i>
+                        Rastreamento do pedido
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Veja o andamento da sua compra.
+                    </p>
+
+                    <% if (cancelado) { %>
+                        <div class="alert alert-danger mt-4 mb-0">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Este pedido está marcado como cancelado.
+                        </div>
+                    <% } else { %>
+
+                        <div class="pedido-rastreio">
+                            <% etapas.forEach((etapa, indice) => {
+                                const concluida = indice < etapaAtual;
+                                const atual = indice === etapaAtual;
+                                const ultima = indice === etapas.length - 1;
+                            %>
+
+                                <div class="rastreio-etapa
+                                    <%= concluida ? 'concluida' : '' %>
+                                    <%= atual ? 'atual' : '' %>">
+
+                                    <div class="rastreio-coluna">
+                                        <div class="rastreio-icone">
+                                            <% if (concluida) { %>
+                                                <i class="bi bi-check-lg"></i>
+                                            <% } else { %>
+                                                <i class="bi <%= etapa.icone %>"></i>
+                                            <% } %>
+                                        </div>
+
+                                        <% if (!ultima) { %>
+                                            <div class="rastreio-linha"></div>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="rastreio-texto">
+                                        <h3><%= etapa.nome %></h3>
+                                        <p><%= etapa.descricao %></p>
+
+                                        <% if (atual) { %>
+                                            <span class="badge text-bg-primary mt-2">
+                                                Etapa atual
+                                            </span>
+                                        <% } else if (concluida) { %>
+                                            <span class="small text-success mt-2 d-inline-block">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Etapa concluída
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                            <% }) %>
+                        </div>
+
+                        <div class="alert alert-light border small mb-0">
+                            <i class="bi bi-info-circle me-2 text-primary"></i>
+                            As etapas exibidas dependem do status registrado para este pedido.
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produtos -->
+        <div class="col-12 col-lg-7">
+            <div class="card pedido-card shadow-sm">
+                <div class="card-body border-bottom">
+                    <h2 class="h5 pedido-titulo mb-1">
+                        <i class="bi bi-bag me-2 text-primary"></i>
+                        Produtos comprados
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Confira os itens que fazem parte deste pedido.
+                    </p>
+                </div>
+
+                <% if (pedido.itens && pedido.itens.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle pedido-tabela mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th class="text-center">Qtd.</th>
+                                    <th class="text-end">Preço</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% pedido.itens.forEach(item => {
+                                    const quantidade = Number(item.quantidade || 0);
+                                    const preco = Number(item.precoUnitario || 0);
+                                %>
+                                    <tr>
+                                        <td>
+                                            <span class="fw-semibold">
+                                                <%= item.oculos || 'Óculos' %>
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <%= quantidade %>
+                                        </td>
+
+                                        <td class="text-end text-nowrap">
+                                            <%= formatarMoeda(preco) %>
+                                        </td>
+
+                                        <td class="text-end text-nowrap fw-semibold">
+                                            <%= formatarMoeda(preco * quantidade) %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="card-body">
+                        <div class="alert alert-light border mb-0">
+                            Nenhum produto foi encontrado neste pedido.
+                        </div>
+                    </div>
+                <% } %>
+
+                <div class="card-body">
+                    <div class="pedido-total">
+                        <div class="d-flex justify-content-between align-items-center gap-3">
+                            <span class="text-muted">Total do pedido</span>
+                            <strong class="fs-4 text-primary text-nowrap">
+                                <%= formatarMoeda(pedido.total) %>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações adicionais -->
+            <div class="card pedido-card shadow-sm mt-4">
+                <div class="card-body">
+                    <h2 class="h6 pedido-titulo mb-3">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>
+                        Informações da compra
+                    </h2>
+
+                    <p class="mb-2">
+                        <span class="text-muted">Cliente:</span>
+                        <strong><%= pedido.cliente || 'Cliente' %></strong>
+                    </p>
+
+                    <p class="text-muted small mb-0">
+                        Para obter informações atualizadas sobre envio e entrega,
+                        o sistema precisa receber os eventos reais de rastreamento.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegação -->
+    <div class="d-flex flex-wrap gap-2 mt-4">
+        <a href="/pedido" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar para meus pedidos
+        </a>
+    </div>
+
+</div>

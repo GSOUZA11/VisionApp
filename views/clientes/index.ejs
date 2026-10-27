@@ -1,121 +1,315 @@
-
 <div class="container py-5">
+
+    <!-- Cabeçalho -->
     <div class="mb-4">
-        <h1 class="h3 mb-2">Minha conta</h1>
+        <p class="text-muted small text-uppercase fw-semibold mb-2">
+            ÁREA DO CLIENTE
+        </p>
+
+        <h1 class="h2 fw-bold mb-2">Minha conta</h1>
+
         <p class="text-muted mb-0">
-            Consulte seus dados e acompanhe suas compras na Vision.
+            Olá, <%= usuario.nome || 'Cliente' %>!
+                Acompanhe seus pedidos e gerencie seus dados.
         </p>
     </div>
 
+    <!-- Resumo da conta -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-3">
+
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Meus pedidos
+                            </p>
+
+                            <h2 class="h3 fw-bold mb-0">
+                                <%= resumo?.quantidadePedidos ?? 0 %>
+                            </h2>
+
+                            <small class="text-muted">
+                                Pedidos registrados na sua conta
+                            </small>
+                        </div>
+                    </div>
+
+                    <a href="/pedido" class="btn btn-dark mt-3">
+                        Consultar pedidos
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <tr>
+                        <tr>
+                            <div>
+                                <p class="text-muted mb-1">
+                                    Valor total dos pedidos
+                                </p>
+
+                                <h2 class="h3 fw-bold mb-0">
+                                    <%= Number(resumo?.valorTotal ?? 0).toLocaleString('pt-BR', { style: 'currency' ,
+                                        currency: 'BRL' }) %>
+                                </h2>
+
+                                <small class="text-muted">
+                                    Soma dos valores registrados
+                                </small>
+                            </div>
+                    </div>
+
+                    <a href="/pedido" class="btn btn-dark mt-3">
+                        Ver detalhes
+
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="row g-4">
-        <!-- Dados do usuário -->
-        <div class="col-12 col-lg-7">
+
+        <!-- Dados pessoais -->
+        <div class="col-12 col-lg-5">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center gap-3 mb-4">
-                        <div
-                            class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                            style="width: 64px; height: 64px;"
-                        >
-                            <i class="bi bi-person fs-2"></i>
-                        </div>
-
                         <div>
-                            <h2 class="h5 mb-1">
-                                Olá, <%= usuario.nome %>!
+                            <h2 class="h5 fw-bold mb-1">
+                                Seus dados
                             </h2>
-                            <p class="text-muted mb-0">
-                                Seus dados pessoais
+
+                            <p class="text-muted small mb-0">
+                                Informações da sua conta
                             </p>
                         </div>
                     </div>
 
                     <hr>
 
-                    <div class="mb-3">
-                        <label class="form-label text-muted">
+                    <div class="mb-4">
+                        <label class="form-label text-muted small mb-1">
                             Nome completo
                         </label>
+
                         <p class="fw-semibold mb-0">
                             <%= usuario.nome || 'Não informado' %>
                         </p>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label text-muted">
-                            E-mail
-                        </label>
-                        <p class="fw-semibold mb-0">
-                            <%= usuario.email || 'Não informado' %>
-                        </p>
-                    </div>
-
                     <div class="mb-4">
-                        <label class="form-label text-muted">
+                        <label class="form-label text-muted small mb-1">
                             Telefone
                         </label>
+
                         <p class="fw-semibold mb-0">
                             <%= usuario.telefone || 'Não informado' %>
                         </p>
                     </div>
 
-                    <a
-                        href="/clientes/editar"
-                        class="btn btn-dark"
-                    >
-                        <i class="bi bi-pencil me-2"></i>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                        data-bs-target="#modalEditarDados">
                         Editar meus dados
-                    </a>
+                    </button>
+
                 </div>
             </div>
         </div>
 
-        <!-- Atalhos da conta -->
-        <div class="col-12 col-lg-5">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start gap-3">
-                        <i class="bi bi-bag-check fs-3"></i>
+        <!-- Atalhos -->
+        <div class="col-12 col-lg-7">
 
-                        <div>
-                            <h2 class="h5">Meus pedidos</h2>
-                            <p class="text-muted">
-                                Consulte suas compras de óculos e acompanhe
-                                os detalhes dos seus pedidos.
-                            </p>
+            <h2 class="h5 fw-bold mb-3">Acesso rápido</h2>
 
-                            <a
-                                href="/pedido"
-                                class="btn btn-outline-dark"
-                            >
-                                Ver meus pedidos
-                            </a>
+            <div class="row g-3">
+
+                <!-- Pedidos -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 fw-bold">
+                                        Meus pedidos
+                                    </h3>
+
+                                    <p class="text-muted mb-3">
+                                        Consulte suas compras e os detalhes
+                                        dos pedidos registrados.
+                                    </p>
+
+                                    <a href="/pedido" class="btn btn-dark">
+                                        Ver meus pedidos
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-start gap-3">
-                        <i class="bi bi-eyeglasses fs-3"></i>
+                <!-- Catálogo -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                              
 
-                        <div>
-                            <h2 class="h5">Continuar comprando</h2>
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 fw-bold">
+                                        Nossa coleção
+                                    </h3>
+
+                                    <p class="text-muted mb-3">
+                                        Explore os modelos de óculos
+                                        disponíveis no catálogo.
+                                    </p>
+
+<<<<<<< HEAD
+                                    <a href="/oculos" class="btn btn-dark">
+                                        Explorar óculos
+                                    </a>
+                                </div>
+                            </div>
+=======
                             <p class="text-muted">
                                 Explore os modelos disponíveis no catálogo.
                             </p>
 
                             <a
-                                href="/oculos/completo"
+                                href="/oculos"
                                 class="btn btn-outline-dark"
                             >
+                                <i class="bi bi-shop me-2"></i>
                                 Ver óculos
                             </a>
+>>>>>>> 209f3ed7a9f079f7d3ca202f16ec69c4256b6610
                         </div>
                     </div>
                 </div>
+
+                <!-- Suporte -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3">
+                                
+
+                                <div class="flex-grow-1">
+                                    <h3 class="h6 fw-bold">
+                                        Precisa de ajuda?
+                                    </h3>
+
+                                    <p class="text-muted mb-3">
+                                        Entre em contato com a Vision
+                                        se tiver dúvidas.
+                                    </p>
+
+                                    <a href="/contato" class="btn btn-dark">
+                                        Falar com a Vision
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal para editar dados -->
+<div class="modal fade" id="modalEditarDados" tabindex="-1" aria-labelledby="tituloModalEditarDados" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header px-4 py-3">
+                <div>
+                    <h2 class="modal-title h5 mb-1" id="tituloModalEditarDados">
+                        Editar meus dados
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Atualize seu nome e telefone.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar">
+                </button>
+            </div>
+
+            <form action="/clientes/editar" method="POST">
+
+                <div class="modal-body p-4">
+
+                    <div class="mb-3">
+                        <label for="editarNome" class="form-label fw-semibold">
+                            Nome completo
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                            </span>
+
+                            <input type="text" class="form-control" id="editarNome" name="nome"
+                                value="<%= usuario.nome || '' %>" placeholder="Digite seu nome completo" maxlength="150"
+                                autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editarTelefone" class="form-label fw-semibold">
+                            Telefone
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+
+                            <input type="tel" class="form-control" id="editarTelefone" name="telefone"
+                                value="<%= usuario.telefone || '' %>" placeholder="Digite seu telefone" maxlength="20"
+                                autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <!-- Mantém o e-mail atual sem exibi-lo na página -->
+                    <input type="hidden" name="email" value="<%= usuario.email || '' %>">
+
+                    <p class="text-muted small mb-0">
+                        Confira seus dados antes de salvar as alterações.
+                    </p>
+
+                </div>
+
+                <div class="modal-footer px-4 py-3">
+
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-dark">
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
     </div>
 </div>

@@ -895,7 +895,7 @@
                         <% if (listaRecomendacoes.length> 0) { %>
                             <div class="vp-product-grid" id="vpGradeSugestoes">
                                 <% listaRecomendacoes.forEach((produto, indice)=> { %>
-                                    <article class="vp-suggestion" style="animation-delay:<%= indice * 35 %>ms">
+                                    <article class="vp-suggestion" data-delay="<%= indice * 35 %>">
                                         <a class="vp-suggestion-card-link" href="/oculos/produto/<%= produto.id %>">
                                             <div class="vp-suggestion-image">
                                                 <% if (produto.imagem) { %>
@@ -956,6 +956,7 @@
     </div>
 
     <script>
+
         (function () {
             'use strict';
 
@@ -1126,5 +1127,9 @@
                     adicionarAoCarrinho(true);
                 });
             }
+
+            document.querySelectorAll('.vp-suggestion').forEach((item) => {
+                item.style.animationDelay = `${item.dataset.delay}ms`;
+            });
         })();
     </script>

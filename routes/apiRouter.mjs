@@ -3,6 +3,7 @@ import oculosApiControle from '../controllers/api/oculosApiControle.mjs'
 import exigirLoginApi from '../middleware/exigirLoginApi.mjs'
 import authApiControleJWT from '../controllers/api/authApiControle.mjs'
 import verificarJWT from '../middleware/verificarJWT.mjs'
+import ClienteModelo from '../models/clienteModelo.mjs'
 
 const apiRouter = Router()
 
@@ -16,18 +17,66 @@ apiRouter.post(
 apiRouter.get(
     '/perfil',
     verificarJWT,
-    (req, res) => {
+    async (req, res) => {
 
-        res.json({
-            id: req.usuario.id,
-            nome: req.usuario.nome,
-            email: req.usuario.email,
-            telefone: ""
-        })
+        try {
 
+            const cliente =
+                await ClienteModelo.buscarPorId(
+                    req.usuario.id
+                )
+
+            res.json({
+                id: cliente.id,
+                nome: cliente.nome,
+                email: cliente.email,
+                telefone: cliente.telefone
+            })
+
+        } catch (erro) {
+
+            console.error(erro)
+
+            res.status(500).json({
+                mensagem: erro.message
+            })
+        }
     }
 )
+apiRouter.put(
+    '/perfil',
+    verificarJWT,
+    async (req, res) => {
 
+        try {
+
+            const {
+                nome,
+                email,
+                telefone
+            } = req.body
+
+            await ClienteModelo.atualizar(
+                req.usuario.id,
+                nome,
+                telefone,
+                email
+            )
+
+            res.status(200).json({
+                mensagem: 'Perfil atualizado com sucesso'
+            })
+
+        } catch (erro) {
+
+            console.error(erro)
+
+            res.status(500).json({
+                mensagem: erro.message
+            })
+        }
+    }
+)
 // Leitura
 apiRouter.get('/oculos',verificarJWT, oculosApiControle.listar)
 apiRouter.get('/oculos/:id', oculosApiControle.buscar)

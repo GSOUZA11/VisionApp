@@ -125,21 +125,24 @@ rota.post(
     oculosControle.excluir
 )
 
-rota.get(
-    '/buscar',
-    async (req, res) => {
+rota.get('/buscar', async (req, res, next) => {
+    try {
+        const nome = String(req.query.nome || '').trim();
 
-        const oculos =
-            await OculosModelo.pesquisar(
-                req.query.nome
-            )
+        if (!nome) {
+            return res.redirect('/oculos');
+        }
 
-        res.render(
-            'oculos/index',
-            { oculos }
-        )
+        const oculos = await OculosModelo.pesquisar(nome);
+
+        return res.render('oculos/index', {
+            oculos: oculos || [],
+            titulo: `Resultados para "${nome}"`,
+            mensagemVazia: `Nenhum óculos encontrado para "${nome}".`
+        });
+    } catch (erro) {
+        next(erro);
     }
-)
-
+});
 
 export default rota

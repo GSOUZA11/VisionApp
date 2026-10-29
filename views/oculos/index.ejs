@@ -84,6 +84,15 @@
                     Abrir Filtros
                 </button>
 
+                <form action="/oculos/buscar" method="GET" class="busca-produto">
+                    <input type="search" name="nome" placeholder="Buscar produto pelo nome..."
+                        aria-label="Buscar produto pelo nome" required>
+
+                
+                </form>
+
+
+
                 <p id="contagem-catalogo" class="small text-muted" aria-live="polite"></p>
                 <div class="grid-produtos">
                     <% if (oculos && oculos.length> 0) { %>
@@ -477,6 +486,9 @@
                 max-height: 140px;
             }
         }
+
+
+        
     </style>
 
     <script>
